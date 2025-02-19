@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Project Title
 
-## Getting Started
+The Recipe Book
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The Recipe Book acts as a place to both store and share recipes.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Problem Space
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+No easy way to share your own recipes or to store recipes you find online (right now you need to copy everything down or share screenshots).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### User Profile
 
-## Learn More
+Amateur cooks
 
-To learn more about Next.js, take a look at the following resources:
+### Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- As a user, I want to be able to find public recipes based on tags/keywords.
+- As a user, I want to be able to share recipes through social media.
+- As a user, I want to be able to view the recipe and the ingredients in an easy, practical manner.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- As a user, I want to be able to create an account.
+- As a user, I want to be able to login to my account.
 
-## Deploy on Vercel
+- As a logged in user, I want to be able to create recipe books to organize my recipes.
+- As a logged in user, I want to be able to create recipes and add them to my recipe books.
+- As a logged in user, I want to be able to share my recipe book publicly or privately (google docs style).
+- As a logged in user, I want to be able to download recipes from external sources onto my cookbook.
+- As a logged in user, I want to be able to comment and rate others' recipes.
+- As a logged in user, I want to be able to delete recipes that I created or that I downloaded.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Implementation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Tech Stack
+
+- Nextjs
+- TypeScript
+- PostgreSQL
+- Vercel
+
+### APIs
+
+No external APIs will be used for the first sprint.
+
+### Sitemap
+
+- Search page
+- Recipe page
+- Recipe book page
+- Profile
+- Login
+- Register
+
+### Mockups
+
+
+
+### Data
+
+
+
+### Endpoints
+
+
+
+### Auth
+
+- Vercel auth
+
+## Roadmap
+
+
+
+## Future Implementations
+
+- Forgot password
+- OAuth
+- AI recommendation engine
+
