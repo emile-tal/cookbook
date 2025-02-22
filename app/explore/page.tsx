@@ -1,4 +1,4 @@
-export default function Explore() {
+export default function Page() {
     return (
         <div>Explore</div>
     )
