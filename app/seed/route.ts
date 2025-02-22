@@ -12,7 +12,7 @@ async function seedUsers() {
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       username VARCHAR(255) NOT NULL UNIQUE,
       email TEXT NOT NULL UNIQUE,
-      password TEXT NOT NULL
+      password TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
@@ -21,8 +21,8 @@ async function seedUsers() {
         users.map(async (user) => {
             const hashedPassword = await bcryptjs.hash(user.password, 10);
             return sql`
-        INSERT INTO users (id, name, email, password)
-        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
+        INSERT INTO users (id, username, email, password)
+        VALUES (${user.id}, ${user.username}, ${user.email}, ${hashedPassword})
         ON CONFLICT (id) DO NOTHING;
       `;
         }),
@@ -67,7 +67,7 @@ async function seedIngredients() {
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       recipe_id UUID REFERENCES recipes(id) ON DELETE CASCADE,
       amount VARCHAR(255),
-      ingredients VARCHAR(255) NOT NULL
+      ingredient VARCHAR(255) NOT NULL
     );
   `;
 
@@ -99,7 +99,7 @@ async function seedInstructions() {
             (instruction) => sql`
         INSERT INTO instructions (recipe_id, order, instruction)
         VALUES (${instruction.recipe_id}, ${instruction.order}, ${instruction.instruction})
-        ON CONFLICT (month) DO NOTHING;
+        ON CONFLICT (id) DO NOTHING;
       `,
         ),
     );
@@ -122,7 +122,7 @@ async function seedRecipeBooks() {
             (recipeBook) => sql`
         INSERT INTO recipeBooks (id, user_id, name)
         VALUES (${recipeBook.id}, ${recipeBook.user_id}, ${recipeBook.name})
-        ON CONFLICT (month) DO NOTHING;
+        ON CONFLICT (id) DO NOTHING;
       `,
         ),
     );
@@ -142,9 +142,9 @@ async function seedRecipeBookRecipes() {
     const insertedRecipeBookRecipes = await Promise.all(
         recipeBookRecipes.map(
             (recipeBookRecipe) => sql`
-        INSERT INTO recipeBooks (book_id, recipe_id)
+        INSERT INTO recipeBookRecipes (book_id, recipe_id)
         VALUES (${recipeBookRecipe.book_id}, ${recipeBookRecipe.recipe_id})
-        ON CONFLICT (month) DO NOTHING;
+        ON CONFLICT (id) DO NOTHING;
       `,
         ),
     );
@@ -165,9 +165,9 @@ async function seedPermissions() {
     const insertedPermissions = await Promise.all(
         permissions.map(
             (permission) => sql`
-        INSERT INTO recipeBooks (book_id, user_id, can_edit)
+        INSERT INTO permissions (book_id, user_id, can_edit)
         VALUES (${permission.book_id}, ${permission.user_id}, ${permission.can_edit})
-        ON CONFLICT (month) DO NOTHING;
+        ON CONFLICT (id) DO NOTHING;
       `,
         ),
     );
@@ -185,9 +185,9 @@ export async function GET() {
             await seedRecipeBooks()
             await seedRecipeBookRecipes()
             await seedPermissions()
+            return { message: 'Database seeded successfully' }
         });
 
-        console.log(result)
         return Response.json({ message: 'Database seeded successfully' });
     } catch (error) {
         return Response.json({ error }, { status: 500 });
