@@ -122,67 +122,67 @@ const ingredients = [
 const instructions = [
     {
         recipe_id: recipes[0].id,
-        order: 1,
+        position: 1,
         instruction: 'Preheat oven to 340F (170C).'
     },
     {
         recipe_id: recipes[0].id,
-        order: 2,
+        position: 2,
         instruction: 'Grease a 22cm tart dish.'
     },
     {
         recipe_id: recipes[0].id,
-        order: 3,
+        position: 3,
         instruction: 'Spread dough out in the dish (do not attempt to roll out the dough, it is to crumbly, it must be spread out with your hands while already in the dish).'
     },
     {
         recipe_id: recipes[0].id,
-        order: 4,
+        position: 4,
         instruction: 'Bake for 10 minutes.'
     },
     {
         recipe_id: recipes[0].id,
-        order: 5,
+        position: 5,
         instruction: 'Meanwhile, mix butter with powdered sugar and almond flour in an electric mixer. Pour in the vanilla extract and dark rum. Then mix in the eggs.'
     },
     {
         recipe_id: recipes[0].id,
-        order: 6,
+        position: 6,
         instruction: 'When tart has finished cooking, spread out almond cream evenly over tart and bake for additional 15-20 minutes.'
     },
     {
         recipe_id: recipes[0].id,
-        order: 7,
+        position: 7,
         instruction: 'Allow tart to cool off and top with berries.'
     },
     {
         recipe_id: recipes[1].id,
-        order: 1,
+        position: 1,
         instruction: 'Preheat oven to 350F.'
     },
     {
         recipe_id: recipes[1].id,
-        order: 2,
+        position: 2,
         instruction: 'Massage chicken with salt, pepper, and oil.'
     },
     {
         recipe_id: recipes[1].id,
-        order: 3,
+        position: 3,
         instruction: 'Cook chicken covered for 30 minutes.'
     },
     {
         recipe_id: recipes[1].id,
-        order: 4,
+        position: 4,
         instruction: 'Meanwhile, dilute honey with wine and add lemon juice and tomato paste.'
     },
     {
         recipe_id: recipes[1].id,
-        order: 5,
+        position: 5,
         instruction: 'After chicken has cooked, add apples/pears, dates, and prunes to dish. Cover with sauce and cook covered for 45 minutes.'
     },
     {
         recipe_id: recipes[1].id,
-        order: 6,
+        position: 6,
         instruction: 'Remove foil and cook for another hour.'
     }
 ]

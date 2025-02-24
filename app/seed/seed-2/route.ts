@@ -5,11 +5,13 @@ import postgres from 'postgres';
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 async function seedInstructions() {
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
     await sql`
     CREATE TABLE IF NOT EXISTS instructions (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       recipe_id UUID REFERENCES recipes(id) ON DELETE CASCADE,
-      order INT NOT NULL,
+      position INT NOT NULL,
       instruction TEXT NOT NULL
     );
   `;
@@ -17,9 +19,8 @@ async function seedInstructions() {
     const insertedInstructions = await Promise.all(
         instructions.map(
             (instruction) => sql`
-        INSERT INTO instructions (recipe_id, order, instruction)
-        VALUES (${instruction.recipe_id}, ${instruction.order}, ${instruction.instruction})
-        ON CONFLICT (id) DO NOTHING;
+        INSERT INTO instructions (recipe_id, position, instruction)
+        VALUES (${instruction.recipe_id}, ${instruction.position}, ${instruction.instruction})
       `,
         ),
     );
@@ -28,6 +29,8 @@ async function seedInstructions() {
 }
 
 async function seedRecipeBooks() {
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
     await sql`
     CREATE TABLE IF NOT EXISTS recipeBooks (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -42,7 +45,6 @@ async function seedRecipeBooks() {
             (recipeBook) => sql`
         INSERT INTO recipeBooks (id, user_id, name)
         VALUES (${recipeBook.id}, ${recipeBook.user_id}, ${recipeBook.name})
-        ON CONFLICT (id) DO NOTHING;
       `,
         ),
     );
@@ -51,6 +53,8 @@ async function seedRecipeBooks() {
 }
 
 async function seedRecipeBookRecipes() {
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
     await sql`
     CREATE TABLE IF NOT EXISTS recipeBookRecipes (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -64,7 +68,6 @@ async function seedRecipeBookRecipes() {
             (recipeBookRecipe) => sql`
         INSERT INTO recipeBookRecipes (book_id, recipe_id)
         VALUES (${recipeBookRecipe.book_id}, ${recipeBookRecipe.recipe_id})
-        ON CONFLICT (id) DO NOTHING;
       `,
         ),
     );
@@ -73,6 +76,8 @@ async function seedRecipeBookRecipes() {
 }
 
 async function seedPermissions() {
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+
     await sql`
     CREATE TABLE IF NOT EXISTS permissions (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -87,7 +92,6 @@ async function seedPermissions() {
             (permission) => sql`
         INSERT INTO permissions (book_id, user_id, can_edit)
         VALUES (${permission.book_id}, ${permission.user_id}, ${permission.can_edit})
-        ON CONFLICT (id) DO NOTHING;
       `,
         ),
     );
