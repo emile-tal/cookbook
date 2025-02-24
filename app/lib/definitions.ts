@@ -1,5 +1,5 @@
 export type Book = {
     id: string,
     name: string,
-    owner: string
+    username: string
 }
