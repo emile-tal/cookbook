@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link';
+import Person from '@mui/icons-material/PersonOutline';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 
@@ -11,6 +12,8 @@ const links = [
 
 export default function NavLinks() {
     const pathname = usePathname()
+    console.log(pathname)
+
     return (
         <>
             {links.map((link) => {
@@ -19,16 +22,16 @@ export default function NavLinks() {
                         key={link.name}
                         href={link.href}
                         className={clsx(
-                            'text-black',
-                            {
-                                'bg-sky-100 text-blue-600': pathname === link.href,
-                            },
+                            { 'glow': pathname === link.href },
                         )}
                     >
-                        <p className="hidden md:block">{link.name}</p>
+                        <p className="md:block">{link.name}</p>
                     </Link>
                 );
             })}
+            <Link href='/account' className={clsx({ 'glow': pathname === '/account' })}>
+                <Person className='md:l' />
+            </Link>
         </>
     );
 }

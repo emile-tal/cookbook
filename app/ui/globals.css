@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+body {
+  color: var(--foreground);
+  background: #F8F9FA;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container-spacing {
+  @apply mx-8 md:mx-12 xl:w-desktop xl:mx-auto
+}
+
+.glow {
+  text-shadow: 0 0 10px white, 0 0 20px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.5);
+}
