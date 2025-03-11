@@ -12,7 +12,6 @@ const links = [
 
 export default function NavLinks() {
     const pathname = usePathname()
-    console.log(pathname)
 
     return (
         <>

@@ -1,6 +1,5 @@
 import { BookCards } from "../ui/books/book-cards"
 import { fetchUserBooks } from "../lib/data"
-
 export default async function Page() {
 
     // Placeholder user id for now
@@ -14,7 +13,9 @@ export default async function Page() {
         <main>
             <div>
                 <h2>My Books</h2>
-                {myBooks && <BookCards books={myBooks} />}
+                <div className="flex flex-wrap gap-4">
+                    <BookCards books={myBooks} />
+                </div>
             </div>
             <div>
                 <h2>Saved Books</h2>
