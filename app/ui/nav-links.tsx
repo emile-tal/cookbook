@@ -18,20 +18,18 @@ export default function NavLinks() {
         <>
             {links.map((link) => {
                 return (
-                    <Link
-                        key={link.name}
-                        href={link.href}
-                        className={clsx(
-                            { 'glow': pathname === link.href },
-                        )}
-                    >
-                        <p className="md:block">{link.name}</p>
-                    </Link>
+                    <div key={link.name} className={clsx({ 'glow': pathname === link.href })}>
+                        <Link href={link.href}>
+                            <p className="md:block">{link.name}</p>
+                        </Link>
+                    </div>
                 );
             })}
-            <Link href='/account' className={clsx({ 'glow': pathname === '/account' })}>
-                <Person className='md:l' />
-            </Link>
+            <div className={clsx({ 'glow': pathname === '/account' })}>
+                <Link href='/account' className={clsx({ 'glow': pathname === '/account' })}>
+                    <Person className='md:l' />
+                </Link>
+            </div>
         </>
     );
 }
