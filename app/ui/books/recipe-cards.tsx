@@ -31,7 +31,7 @@ export function RecipeCards({ recipes }: Props) {
             <div className={clsx("flex", view === "grid" ? "flex-wrap gap-4" : "flex-col")}>
                 {recipes?.map((recipe) => (
                     <div key={recipe.id} className={clsx('py-2', { "grid grid-cols-4 w-full": view === "list", 'h-lg w-lg bg-background': view === "grid" })}>
-                        {view === "grid" && <Image src={recipe.image_url} alt={recipe.title} width={100} height={100} />}
+                        {view === "grid" && <Image src={recipe.image_url} alt={recipe.title} width={100} height={100} onClick={() => router.push(`/recipe/${recipe.id}`)} className="hover:cursor-pointer" />}
                         <span onClick={() => router.push(`/recipe/${recipe.id}`)} className="hover:cursor-pointer">{recipe.title}</span>
                         {view === "list" && <><span>{recipe.username}</span>
                             {/* <span>{recipe.category}</span> */}

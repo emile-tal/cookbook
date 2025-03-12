@@ -52,15 +52,54 @@ export async function fetchRecipesByBookId(id: string) {
 }
 
 
-export async function fetchRecipe(id: string) {
+export async function fetchRecipeById(id: string) {
     try {
         const recipe = await sql<Recipe[]>`
-        SELECT recipes.id, recipes.title, recipes.description, recipes.image_url, recipes.is_public
-        FROM recipes
-        WHERE recipes.id = ${id}`
-        return recipe[0] || null
+        WITH recipe_base AS (
+            SELECT 
+                recipes.id, 
+                recipes.title, 
+                recipes.description, 
+                recipes.image_url, 
+                recipes.is_public,
+                users.username
+            FROM recipes
+            JOIN users ON recipes.user_id = users.id
+            WHERE recipes.id = ${id}
+        ),
+        recipe_ingredients AS (
+            SELECT 
+                recipe_id,
+                json_agg(json_build_object(
+                    'amount', amount,
+                    'ingredient', ingredient
+                )) as ingredients
+            FROM ingredients
+            WHERE recipe_id = ${id}
+            GROUP BY recipe_id
+        ),
+        recipe_instructions AS (
+            SELECT 
+                recipe_id,
+                json_agg(json_build_object(
+                    'position', position,
+                    'instruction', instruction
+                ) ORDER BY position) as instructions
+            FROM instructions
+            WHERE recipe_id = ${id}
+            GROUP BY recipe_id
+        )
+        SELECT 
+            rb.*,
+            COALESCE(ri.ingredients, '[]'::json) as ingredients,
+            COALESCE(rins.instructions, '[]'::json) as instructions
+        FROM recipe_base rb
+        LEFT JOIN recipe_ingredients ri ON rb.id = ri.recipe_id
+        LEFT JOIN recipe_instructions rins ON rb.id = rins.recipe_id`;
+
+        return recipe[0] || null;
     } catch (error) {
-        console.error(`Database error: ${error}`)
-        return null
+        console.error(`Database error: ${error}`);
+        return null;
     }
 }
