@@ -25,7 +25,7 @@ export default function NavLinks() {
                 );
             })}
             <div className={clsx({ 'glow': pathname === '/account' })}>
-                <Link href='/account' className={clsx({ 'glow': pathname === '/account' })}>
+                <Link href='/profile' className={clsx({ 'glow': pathname === '/profile' })}>
                     <Person className='md:l' />
                 </Link>
             </div>

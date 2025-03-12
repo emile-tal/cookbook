@@ -1,11 +1,11 @@
 'use client'
 
-import { LiteBook } from "@/app/lib/definitions";
+import { Book } from "@/app/lib/definitions";
 import { useRouter } from 'next/navigation';
 import { useView } from "@/app/context/view-context";
 
 interface Props {
-    books: LiteBook[]
+    books: Book[]
 }
 
 export function BookCards({ books }: Props) {

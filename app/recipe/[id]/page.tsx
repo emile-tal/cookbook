@@ -9,6 +9,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     }
 
     return (
-        <div>{recipe?.[0].title}</div>
+        <div>{recipe.title}</div>
     );
 }
