@@ -15,6 +15,8 @@ const recipes = [
         description: 'Delicious and fruity!',
         image_url: '/images/recipes/almond-cream-tart.JPG',
         is_public: true,
+        category: 'Dessert',
+        duration: 45
     },
     {
         id: 'eb4d7ad3-c4bb-46a1-b160-5df022bb134d',
@@ -23,6 +25,8 @@ const recipes = [
         description: 'Homey, warm, and filling!',
         image_url: '/images/recipes/noas-chicken.JPG',
         is_public: true,
+        category: 'Main',
+        duration: 180
     }
 ]
 
@@ -191,7 +195,8 @@ const recipeBooks = [
     {
         id: 'dc42165b-072f-4480-b09e-681461585427',
         user_id: users[0].id,
-        name: 'My book'
+        name: 'My book',
+        image_url: '/images/recipes/almond-cream-tart.JPG',
     }
 ]
 

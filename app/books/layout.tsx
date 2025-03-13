@@ -1,9 +1,9 @@
 'use client'
 
-import { ViewContext, useView } from "@/app/context/view-context";
 import { useEffect, useState } from "react";
 
 import { BookNavBar } from "@/app/ui/books/nav-bar";
+import { ViewContext } from "@/app/context/view-context";
 
 interface BooksLayoutProps {
     children: React.ReactNode;

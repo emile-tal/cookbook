@@ -1,4 +1,4 @@
-import { ingredients, recipes, users } from '../../lib/seed-data';
+import { ingredients, recipes, users } from '../seed-data';
 
 import bcryptjs from 'bcryptjs'
 import postgres from 'postgres';
@@ -42,15 +42,17 @@ async function seedRecipes() {
       description TEXT,
       image_url TEXT,
       is_public BOOLEAN DEFAULT TRUE,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      category VARCHAR(255) NULL,
+      duration INTEGER NULL
     );
   `;
 
   const insertedRecipes = await Promise.all(
     recipes.map(
       (recipe) => sql`
-        INSERT INTO recipes (id, user_id, title, description, image_url, is_public)
-        VALUES (${recipe.id}, ${recipe.user_id}, ${recipe.title}, ${recipe.description}, ${recipe.image_url}, ${recipe.is_public})
+        INSERT INTO recipes (id, user_id, title, description, image_url, is_public, category, duration)
+        VALUES (${recipe.id}, ${recipe.user_id}, ${recipe.title}, ${recipe.description}, ${recipe.image_url}, ${recipe.is_public}, ${recipe.category}, ${recipe.duration})
         ON CONFLICT (id) DO NOTHING;
       `,
     ),

@@ -34,8 +34,8 @@ export function RecipeCards({ recipes }: Props) {
                         {view === "grid" && <Image src={recipe.image_url} alt={recipe.title} width={100} height={100} onClick={() => router.push(`/recipe/${recipe.id}`)} className="hover:cursor-pointer" />}
                         <span onClick={() => router.push(`/recipe/${recipe.id}`)} className="hover:cursor-pointer">{recipe.title}</span>
                         {view === "list" && <><span>{recipe.username}</span>
-                            {/* <span>{recipe.category}</span> */}
-                            {/* <span>{recipe.duration}</span> */}
+                            <span>{recipe.category}</span>
+                            <span>{recipe.duration} minutes</span>
                         </>}
                     </div>
                 ))}

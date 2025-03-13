@@ -1,14 +1,17 @@
 export type Book = {
     id: string,
     name: string,
-    username: string
+    username: string,
+    image_url: string
 }
 
 export type LiteRecipe = {
     id: string,
     title: string,
     image_url: string,
-    username: string
+    username: string,
+    category: string,
+    duration: number
 }
 
 export type Ingredient = {

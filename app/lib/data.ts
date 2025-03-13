@@ -62,6 +62,8 @@ export async function fetchRecipeById(id: string) {
                 recipes.description, 
                 recipes.image_url, 
                 recipes.is_public,
+                recipes.category,
+                recipes.duration,
                 users.username
             FROM recipes
             JOIN users ON recipes.user_id = users.id
