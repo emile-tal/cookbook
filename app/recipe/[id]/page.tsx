@@ -2,7 +2,7 @@ import Image from "next/image";
 import { fetchRecipeById } from "@/app/lib/data";
 
 export default async function Page({ params }: { params: { id: string } }) {
-    const { id } = params;
+    const { id } = await params;
     const recipe = await fetchRecipeById(id);
 
     if (!recipe) {

@@ -2,8 +2,12 @@ import { fetchBookByBookId, fetchRecipesByBookId } from "@/app/lib/data";
 
 import { RecipeCards } from "@/app/ui/books/recipe-cards";
 
-export default async function Page({ params }: { params: { id: string } }) {
-    const { id } = params;
+type Props = {
+    params: { id: string }
+}
+
+export default async function Page({ params }: Props) {
+    const { id } = await params;
     const book = await fetchBookByBookId(id);
     const recipes = await fetchRecipesByBookId(id);
 
