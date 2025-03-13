@@ -1,7 +1,11 @@
 import Image from "next/image";
 import { fetchRecipeById } from "@/app/lib/data";
 
-export default async function Page({ params }: { params: { id: string } }) {
+type Props = {
+    params: Promise<{ id: string }>;
+};
+
+export default async function Page({ params }: Props) {
     const { id } = await params;
     const recipe = await fetchRecipeById(id);
 

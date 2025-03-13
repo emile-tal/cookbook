@@ -3,7 +3,7 @@ import { fetchBookByBookId, fetchRecipesByBookId } from "@/app/lib/data";
 import { RecipeCards } from "@/app/ui/books/recipe-cards";
 
 type Props = {
-    params: Promise<{ id: string }>; // Ensure params is awaited
+    params: Promise<{ id: string }>;
 };
 
 export default async function Page({ params }: Props) {
