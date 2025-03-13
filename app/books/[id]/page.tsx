@@ -3,7 +3,7 @@ import { fetchBookByBookId, fetchRecipesByBookId } from "@/app/lib/data";
 import { RecipeCards } from "@/app/ui/books/recipe-cards";
 
 export default async function Page({ params }: { params: { id: string } }) {
-    const { id } = await params;
+    const { id } = params;
     const book = await fetchBookByBookId(id);
     const recipes = await fetchRecipesByBookId(id);
 
