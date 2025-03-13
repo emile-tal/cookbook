@@ -7,7 +7,7 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
 export async function fetchUserBooks(id: string) {
     try {
         const userBooks = await sql<Book[]>`
-        SELECT recipeBooks.id, recipeBooks.name, users.username
+        SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
         FROM recipeBooks
         JOIN users ON recipeBooks.user_id = users.id
         WHERE recipeBooks.user_id = ${id}`
@@ -24,6 +24,7 @@ export async function fetchBookByBookId(id: string) {
         SELECT 
           recipeBooks.id, 
           recipeBooks.name, 
+          recipeBooks.image_url,
           users.username
         FROM recipeBooks
         JOIN users ON recipeBooks.user_id = users.id
@@ -39,7 +40,7 @@ export async function fetchBookByBookId(id: string) {
 export async function fetchRecipesByBookId(id: string) {
     try {
         const recipes = await sql<LiteRecipe[]>`
-        SELECT recipes.id, recipes.title, recipes.image_url, users.username
+        SELECT recipes.id, recipes.title, recipes.image_url, users.username, recipes.category, recipes.duration
         FROM recipeBookRecipes
         JOIN recipes ON recipeBookRecipes.recipe_id = recipes.id
         JOIN users ON recipes.user_id = users.id

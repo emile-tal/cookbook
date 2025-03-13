@@ -31,7 +31,7 @@ export default async function Page({ params }: Props) {
                     </div>
                     <div className="col-span-3">
                         <h2 className="text-lg font-bold pb-2">Instructions</h2>
-                        {recipe.instructions.map((instruction, index) => (
+                        {recipe.instructions.sort((a, b) => a.position - b.position).map((instruction, index) => (
                             <div key={index} className="flex gap-2 py-2">
                                 <span className="text-2xl font-bold">{instruction.position}</span>
                                 <span>{instruction.instruction}</span>
