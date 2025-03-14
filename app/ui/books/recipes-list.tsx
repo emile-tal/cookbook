@@ -20,7 +20,7 @@ export default function RecipesList({ recipes }: Props) {
                     <p className="col-span-2">{recipe.category}</p>
                     <p className="col-span-2">{recipe.duration} minutes</p>
                     <div className="col-span-1 flex gap-2 justify-end">
-                        <EditIcon />
+                        <EditIcon onClick={() => router.push(`/recipe/${recipe.id}/edit`)} className="hover:cursor-pointer" />
                     </div>
                 </div>
             ))}

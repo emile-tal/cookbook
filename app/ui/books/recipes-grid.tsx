@@ -9,7 +9,7 @@ interface Props {
     recipes: LiteRecipe[] | null
 }
 
-export default function RecipesList({ recipes }: Props) {
+export default function RecipesGrid({ recipes }: Props) {
     const router = useRouter();
 
     return (
@@ -24,7 +24,7 @@ export default function RecipesList({ recipes }: Props) {
                             className="object-cover rounded-t-xl max-w-full" />
                         ) : (
                             <RestaurantIcon className="w-full h-full text-gray-300" />)}
-                        <div className="absolute top-1 right-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group">
+                        <div className="absolute top-1 right-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group" onClick={() => router.push(`/recipe/${recipe.id}/edit`)}>
                             <EditIcon className="text-text text-base group-hover:text-lg" />
                         </div>
                     </div>

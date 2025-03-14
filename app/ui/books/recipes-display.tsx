@@ -6,7 +6,6 @@ import { LiteRecipe } from "@/app/lib/definitions";
 import RecipesGrid from "./recipes-grid";
 import RecipesList from "./recipes-list";
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import { useRouter } from 'next/navigation';
 import { useView } from "@/app/context/view-context";
 
 const tableHeaders = [
@@ -36,8 +35,7 @@ interface Props {
     recipes: LiteRecipe[] | null
 }
 
-export function RecipeDisplay({ recipes }: Props) {
-    const router = useRouter();
+export function RecipesDisplay({ recipes }: Props) {
     const { view } = useView()
     const [sort, setSort] = useState<string>("title")
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")

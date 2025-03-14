@@ -14,7 +14,7 @@ export default async function Page({ params }: Props) {
     }
 
     return (
-        <div className="container-spacing py-8">
+        <main className="container-spacing py-8">
             <div className="flex flex-col items-center gap-4">
                 <Image src={recipe.image_url} alt={recipe.title} width={200} height={200} className="rounded-lg" />
                 <h1 className="text-2xl font-bold">{recipe.title}</h1>
@@ -40,6 +40,6 @@ export default async function Page({ params }: Props) {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
