@@ -1,6 +1,6 @@
 import { fetchBookByBookId, fetchRecipesByBookId } from "@/app/lib/data";
 
-import { RecipeCards } from "@/app/ui/books/recipe-cards";
+import { RecipeDisplay } from "@/app/ui/books/recipe-display";
 
 type Props = {
     params: Promise<{ id: string }>;
@@ -19,7 +19,7 @@ export default async function Page({ params }: Props) {
         <div>
             <main>
                 <h1 className="text-2xl font-bold">{book.name}</h1>
-                <RecipeCards recipes={recipes} />
+                <RecipeDisplay recipes={recipes} />
             </main>
         </div>
     )

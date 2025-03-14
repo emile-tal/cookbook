@@ -1,4 +1,4 @@
-import { BookCards } from "../ui/books/book-cards"
+import { BookDisplay } from "../ui/books/book-display"
 import { fetchUserBooks } from "../lib/data"
 export default async function Page() {
 
@@ -14,7 +14,7 @@ export default async function Page() {
             <div>
                 <h2>My Books</h2>
                 <div className="flex flex-wrap gap-4">
-                    <BookCards books={myBooks} />
+                    <BookDisplay books={myBooks} />
                 </div>
             </div>
             <div>

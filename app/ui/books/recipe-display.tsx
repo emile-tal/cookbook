@@ -2,12 +2,10 @@
 
 import { useMemo, useState } from "react";
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import Image from "next/image";
 import { LiteRecipe } from "@/app/lib/definitions";
+import RecipesGrid from "./recipes-grid";
+import RecipesList from "./recipes-list";
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import clsx from "clsx";
 import { useRouter } from 'next/navigation';
 import { useView } from "@/app/context/view-context";
 
@@ -38,7 +36,7 @@ interface Props {
     recipes: LiteRecipe[] | null
 }
 
-export function RecipeCards({ recipes }: Props) {
+export function RecipeDisplay({ recipes }: Props) {
     const router = useRouter();
     const { view } = useView()
     const [sort, setSort] = useState<string>("title")
@@ -76,33 +74,23 @@ export function RecipeCards({ recipes }: Props) {
 
     return (
         <div className="py-4">
-            {view === "list" &&
-                <div className="grid grid-cols-12 py-2 font-bold">
-                    {tableHeaders.map((header) => (
-                        <div key={header.sort} className={`col-span-${header.column} flex gap-2`}>
-                            <h3>{header.label}</h3>
-                            <SwapVertIcon className="hover:cursor-pointer" onClick={() => handleSort(header.sort)} />
-                        </div>
+            {view === "list" ?
+                (
+                    <>
+                        <div className="grid grid-cols-12 py-2 font-bold">
+                            {tableHeaders.map((header) => (
+                                <div key={header.sort} className={`col-span-${header.column} flex gap-2 hover:cursor-pointer`} onClick={() => handleSort(header.sort)}>
+                                    <h3>{header.label}</h3>
+                                    <SwapVertIcon />
+                                </div>
 
-                    ))}
-                </div>}
-            <div className={clsx("flex", view === "grid" ? "flex-wrap gap-4" : "flex-col")}>
-                {sortedRecipes.map((recipe) => (
-                    <div key={recipe.id} className={clsx('py-2', { "grid grid-cols-12 w-full": view === "list", 'h-lg w-lg bg-background': view === "grid" })}>
-                        {view === "grid" && <Image src={recipe.image_url} alt={recipe.title} width={100} height={100} onClick={() => router.push(`/recipe/${recipe.id}`)} className="hover:cursor-pointer" />}
-                        <p onClick={() => router.push(`/recipe/${recipe.id}`)} className={clsx("hover:cursor-pointer", { "col-span-4": view === "list" })}>{recipe.title}</p>
-                        {view === "list" && <>
-                            <p className="col-span-3">{recipe.username}</p>
-                            <p className="col-span-2">{recipe.category}</p>
-                            <p className="col-span-2">{recipe.duration} minutes</p>
-                            <div className="col-span-1 flex gap-2 justify-end">
-                                <EditIcon />
-                                <DeleteIcon />
-                            </div>
-                        </>}
-                    </div>
-                ))}
-            </div>
+                            ))}
+                        </div>
+                        <RecipesList recipes={sortedRecipes} />
+                    </>
+                ) : (
+                    <RecipesGrid recipes={sortedRecipes} />
+                )}
         </div >
     )
 }

@@ -7,7 +7,7 @@ interface Props {
     books: Book[]
 }
 
-export function BookCards({ books }: Props) {
+export function BookDisplay({ books }: Props) {
     const router = useRouter();
 
     return (
