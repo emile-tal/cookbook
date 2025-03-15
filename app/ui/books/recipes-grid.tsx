@@ -24,9 +24,14 @@ export default function RecipesGrid({ recipes }: Props) {
                             className="object-cover rounded-t-xl max-w-full" />
                         ) : (
                             <RestaurantIcon className="w-full h-full text-gray-300" />)}
-                        <div className="absolute top-1 right-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group" onClick={() => router.push(`/recipe/${recipe.id}/edit`)}>
+                        <button
+                            className="absolute top-1 right-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(`/recipe/${recipe.id}/edit`);
+                            }}>
                             <EditIcon className="text-text text-base group-hover:text-lg" />
-                        </div>
+                        </button>
                     </div>
                     <p className="py-2 text-text">{recipe.title}</p>
                 </div>

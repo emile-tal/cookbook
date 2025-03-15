@@ -40,10 +40,6 @@ export function RecipesDisplay({ recipes }: Props) {
     const [sort, setSort] = useState<string>("title")
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
 
-    if (recipes === null) {
-        return <div>No recipes added to this book yet! Add some recipes to your book to get started.</div>
-    }
-
     const handleSort = (header: string) => {
         if (sort === header) {
             setSortDirection(sortDirection === "asc" ? "desc" : "asc")
@@ -69,6 +65,9 @@ export function RecipesDisplay({ recipes }: Props) {
         });
     }, [recipes, sort, sortDirection])
 
+    if (recipes === null) {
+        return <div>No recipes added to this book yet! Add some recipes to your book to get started.</div>
+    }
 
     return (
         <div className="py-4">

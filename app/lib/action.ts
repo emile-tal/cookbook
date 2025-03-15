@@ -110,16 +110,9 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             message: `Recipe ${id ? 'updated' : 'added'} successfully.`
         };
     } catch (error) {
+        console.error(error);
         return {
             message: `Database Error: Failed to ${id ? 'update' : 'create'} recipe.`,
-            errors: {}
         };
     }
 }
-
-// Keep these as aliases for backward compatibility if needed
-// export const addRecipe = (prevState: RecipeFormState, formData: FormData) =>
-//     recipeAction(prevState, formData);
-
-// export const updateRecipe = (prevState: RecipeFormState, formData: FormData, id: string) =>
-//     recipeAction(prevState, formData, id);
