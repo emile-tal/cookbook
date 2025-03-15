@@ -3,6 +3,8 @@
 import { Ingredient, Instruction, Recipe } from "@/app/lib/definitions"
 import { useActionState, useEffect, useRef, useState } from "react"
 
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { RecipeFormState } from "@/app/lib/action"
 
 interface Props {
@@ -12,22 +14,67 @@ interface Props {
 
 export default function RecipeForm({ formAction, recipe }: Props) {
     const initialState: RecipeFormState = { message: null, errors: {} }
-    const [state, dispatch] = useActionState(formAction, initialState)
-    const [ingredients, setIngredients] = useState<Ingredient[]>(recipe?.ingredients || [])
-    const [instructions, setInstructions] = useState<Instruction[]>(recipe?.instructions || [])
+    const [state, dispatch] = useActionState(
+        (prevState: RecipeFormState, formData: FormData) =>
+            formAction(prevState, formData, recipe?.id),
+        initialState
+    )
+    const [ingredients, setIngredients] = useState<Ingredient[]>(recipe?.ingredients || [{ amount: '', ingredient: '' }])
+    const [instructions, setInstructions] = useState<Instruction[]>(
+        recipe?.instructions || [{ position: 1, instruction: '' }]
+    )
+    const [title, setTitle] = useState(recipe?.title || '')
     const titleRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        setTitle(recipe?.title || '')
+    }, [recipe?.title])
 
     useEffect(() => {
         if (titleRef.current) {
             titleRef.current.style.width = 'auto'
             titleRef.current.style.width = `${Math.max(titleRef.current.scrollWidth, 300)}px`
         }
-    }, [])
+    }, [title])
 
     const handleTitleInput = (e: React.FormEvent<HTMLInputElement>) => {
         const input = e.currentTarget
+        setTitle(input.value)
         input.style.width = 'auto'
         input.style.width = `${Math.max(input.scrollWidth, 300)}px`
+    }
+
+    const addIngredient = () => {
+        setIngredients([...ingredients, { amount: '', ingredient: '' }])
+    }
+
+    const removeIngredient = (index: number) => {
+        setIngredients(ingredients.filter((_, i) => i !== index))
+    }
+
+    const addInstruction = () => {
+        const nextPosition = instructions.length + 1
+        setInstructions([...instructions, { position: nextPosition, instruction: '' }])
+    }
+
+    const removeInstruction = (position: number) => {
+        const updatedInstructions = instructions
+            .filter(inst => inst.position !== position)
+            .map((inst, idx) => ({ ...inst, position: idx + 1 }))
+        setInstructions(updatedInstructions)
+    }
+
+    const updateIngredient = (index: number, field: keyof Ingredient, value: string) => {
+        const updatedIngredients = [...ingredients]
+        updatedIngredients[index] = { ...updatedIngredients[index], [field]: value }
+        setIngredients(updatedIngredients)
+    }
+
+    const updateInstruction = (position: number, value: string) => {
+        const updatedInstructions = instructions.map(inst =>
+            inst.position === position ? { ...inst, instruction: value } : inst
+        )
+        setInstructions(updatedInstructions)
     }
 
     return (
@@ -43,9 +90,10 @@ export default function RecipeForm({ formAction, recipe }: Props) {
                         ref={titleRef}
                         type="text"
                         name="title"
-                        defaultValue={recipe?.title}
-                        placeholder="Recipe title"
+                        value={title}
+                        onChange={handleTitleInput}
                         onInput={handleTitleInput}
+                        placeholder="Recipe title"
                         className="text-2xl px-3 py-2 bg-background focus:outline-none focus:border-b-2 focus:border-secondary"
                         style={{ minWidth: '300px' }}
                     />
@@ -104,42 +152,83 @@ export default function RecipeForm({ formAction, recipe }: Props) {
                 </div>
 
                 <div>
-                    <label htmlFor="ingredients" className="block text-sm font-medium">Ingredients</label>
-                    <div className="grid grid-cols-8 gap-2">
-                        <span className="col-span-1">Quantity</span>
-                        <span className="col-span-7">Ingredient</span>
+                    <label htmlFor="ingredients" className="block text-sm font-medium mb-2">Ingredients</label>
+                    <div className="grid grid-cols-12 gap-2 mb-2">
+                        <span className="col-span-2">Quantity</span>
+                        <span className="col-span-9">Ingredient</span>
+                        <span className="col-span-1"></span>
                     </div>
                     {ingredients.map((ingredient, index) => (
-                        <div key={index} className="grid grid-cols-8 gap-2">
+                        <div key={index} className="grid grid-cols-12 gap-2 items-center mb-2">
                             <input
                                 type="text"
-                                name="ingredients"
-                                defaultValue={ingredient.amount}
-                                className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-1"
+                                name={`ingredient_amount_${index}`}
+                                value={ingredient.amount}
+                                onChange={(e) => updateIngredient(index, 'amount', e.target.value)}
+                                className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-2"
                             />
                             <input
                                 type="text"
-                                name="ingredients"
-                                defaultValue={ingredient.ingredient}
-                                className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-7"
+                                name={`ingredient_name_${index}`}
+                                value={ingredient.ingredient}
+                                onChange={(e) => updateIngredient(index, 'ingredient', e.target.value)}
+                                className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-9"
                             />
+                            <button
+                                type="button"
+                                onClick={() => removeIngredient(index)}
+                                className="col-span-1 text-rose-300 hover:text-rose-500 flex justify-center items-center"
+                            >
+                                <DeleteOutlineIcon />
+                            </button>
                         </div>
                     ))}
+                    <div className="grid grid-cols-12 gap-2">
+                        <div className="col-span-11"></div>
+                        <button
+                            type="button"
+                            onClick={addIngredient}
+                            className="col-span-1 text-gray-400 hover:text-gray-600 flex justify-center items-center h-10"
+                        >
+                            <AddCircleOutlineIcon />
+                        </button>
+                    </div>
+                    <input type="hidden" name="ingredients" value={JSON.stringify(ingredients)} />
                 </div>
+
                 <div>
-                    <label htmlFor="instructions" className="block text-sm font-medium">Instructions</label>
-                    {instructions.sort((a, b) => a.position - b.position).map((instruction) => (
-                        <div key={instruction.position} className="grid grid-cols-12 gap-2">
+                    <label htmlFor="instructions" className="block text-sm font-medium mb-2">Instructions</label>
+                    {instructions.map((instruction) => (
+                        <div key={instruction.position} className="grid grid-cols-12 gap-2 items-center mb-2">
                             <div className="col-span-1 flex items-center">
                                 <span>{instruction.position}.</span>
                             </div>
                             <textarea
-                                name="instructions"
-                                defaultValue={instruction.instruction}
-                                className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-11"
+                                name={`instruction_${instruction.position}`}
+                                value={instruction.instruction}
+                                onChange={(e) => updateInstruction(instruction.position, e.target.value)}
+                                className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-10"
                             />
+                            <button
+                                type="button"
+                                onClick={() => removeInstruction(instruction.position)}
+                                className="col-span-1 text-rose-300 hover:text-rose-500 flex justify-center items-center"
+                            >
+                                <DeleteOutlineIcon />
+                            </button>
                         </div>
                     ))}
+                    <div className="grid grid-cols-12 gap-2">
+                        <div className="col-span-11"></div>
+                        <button
+                            type="button"
+                            onClick={addInstruction}
+                            className="col-span-1 text-gray-400 hover:text-gray-600 flex justify-center items-center h-10"
+                        >
+                            <AddCircleOutlineIcon />
+                        </button>
+                    </div>
+                    <input type="hidden" name="instructions" value={JSON.stringify(instructions)} />
                 </div>
 
                 <button
