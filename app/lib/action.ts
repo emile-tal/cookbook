@@ -10,6 +10,11 @@ type RawIngredient = {
     ingredient: string;
 };
 
+type RawInstruction = {
+    position: number;
+    instruction: string;
+};
+
 const ingredientSchema = z.object({
     amount: z.string().nullable().transform(val => val || ''),
     ingredient: z.string()
@@ -39,7 +44,7 @@ const recipeSchema = z.object({
     instructions: z.string().transform((str) => {
         const parsed = JSON.parse(str);
         return z.array(instructionSchema).parse(
-            parsed.filter((inst: any) => inst.instruction.trim() !== "")
+            parsed.filter((inst: RawInstruction) => inst.instruction.trim() !== "")
         );
     }),
 });
@@ -180,10 +185,12 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             return redirect(`/recipe/${newRecipe.id}`);
         }
 
-        return {
-            message: `Recipe ${id ? 'updated' : 'added'} successfully.`
-        };
     } catch (error) {
+        // Ignore Next.js redirect errors - they're expected behavior
+        if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
+            throw error; // Re-throw redirect errors for Next.js to handle
+        }
+
         console.error('Recipe action error:', error);
         if (error instanceof Error) {
             return {
