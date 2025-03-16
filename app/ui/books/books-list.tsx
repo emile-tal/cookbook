@@ -23,12 +23,8 @@ export default function BooksList({ books, recipeCountByBook = {} }: Props) {
                         {book.name}
                     </p>
                     <p className="col-span-5 truncate">{book.username}</p>
-                    <div className="col-span-2 flex justify-end items-center">
-                        <span className="mr-3">{recipeCountByBook[book.id] || 0} recipes</span>
-                        <EditIcon
-                            onClick={() => router.push(`/books/${book.id}`)}
-                            className="hover:cursor-pointer text-gray-500 hover:text-gray-700"
-                        />
+                    <div className="col-span-2 items-center">
+                        <span>{recipeCountByBook[book.id] || 0} recipes</span>
                     </div>
                 </div>
             ))}
