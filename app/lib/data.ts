@@ -52,7 +52,6 @@ export async function fetchRecipesByBookId(id: string) {
     }
 }
 
-
 export async function fetchRecipeById(id: string) {
     try {
         const recipe = await sql<Recipe[]>`
@@ -104,5 +103,26 @@ export async function fetchRecipeById(id: string) {
     } catch (error) {
         console.error(`Database error: ${error}`);
         return null;
+    }
+}
+
+export async function fetchRecipeCountByBookId() {
+    try {
+        const recipeCounts = await sql<{ book_id: string, count: number }[]>`
+            SELECT book_id, COUNT(recipe_id) as count
+            FROM recipeBookRecipes
+            GROUP BY book_id
+        `;
+
+        // Convert array to a map of book_id -> count
+        const countMap: Record<string, number> = {};
+        recipeCounts.forEach(item => {
+            countMap[item.book_id] = Number(item.count);
+        });
+
+        return countMap;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return {};
     }
 }
