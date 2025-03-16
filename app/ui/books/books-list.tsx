@@ -1,7 +1,6 @@
 'use client'
 
 import { Book } from '@/app/lib/definitions';
-import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from 'next/navigation';
 
 interface Props {
