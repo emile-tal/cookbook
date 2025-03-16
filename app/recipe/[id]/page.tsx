@@ -1,4 +1,6 @@
+import EditIcon from '@mui/icons-material/Edit';
 import Image from "next/image";
+import Link from 'next/link';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { fetchRecipeById } from "@/app/lib/data";
 
@@ -38,14 +40,19 @@ export default async function Page({ params }: Props) {
                                 <RestaurantIcon className="text-gray-300 text-6xl" />
                             </div>
                         )}
-                        <h1 className="text-3xl font-bold text-center mb-3">{recipe.title}</h1>
+                        <div className="flex items-center gap-2 mb-3">
+                            <h1 className="text-3xl font-bold text-center">{recipe.title}</h1>
+                            <Link href={`/recipe/${id}/edit`} className="flex items-center justify-center bg-white rounded-full p-1 hover:bg-gray-100">
+                                <EditIcon className="text-gray-600 hover:text-gray-900" fontSize="small" />
+                            </Link>
+                        </div>
                         {recipe.description && (
                             <p className="text-center text-gray-600 max-w-2xl mb-2">{recipe.description}</p>
                         )}
                         <div className="flex gap-4 text-sm text-gray-500">
                             <span>By {recipe.username}</span>
-                            {recipe.category && <span>• {recipe.category}</span>}
-                            {recipe.duration > 0 && <span>• {recipe.duration} minutes</span>}
+                            {recipe.category && <span>{recipe.category}</span>}
+                            {recipe.duration > 0 && <span>{recipe.duration} minutes</span>}
                         </div>
                     </div>
 
