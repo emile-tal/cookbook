@@ -154,10 +154,12 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             return redirect(`/recipe/${id}`);
         } else {
             console.log('Creating new recipe');
-            // Create new recipe
+            // Create new recipe with a default user_id
+            const defaultUserId = '410544b2-4001-4271-9855-fec4b6a6442a'; // Placeholder user ID, should be replaced with actual user ID from auth
+
             const [newRecipe] = await sql<[{ id: string }]>`
-                INSERT INTO recipes (title, description, category, duration, is_public)
-                VALUES (${title}, ${description || ''}, ${category || ''}, ${duration || 0}, ${is_public})
+                INSERT INTO recipes (title, description, category, duration, is_public, user_id, image_url)
+                VALUES (${title}, ${description || ''}, ${category || ''}, ${duration || 0}, ${is_public}, ${defaultUserId}, NULL)
                 RETURNING id
             `;
 
@@ -179,6 +181,21 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
                                 VALUES (${newRecipe.id}, ${instruction.position}, ${instruction.instruction})`
                     )
                 );
+            }
+
+            // Check if a book ID was provided to associate this recipe with
+            const bookId = formData.get('bookId');
+            if (bookId) {
+                console.log(`Adding recipe ${newRecipe.id} to book ${bookId}`);
+                // Add the recipe to the specified book
+                await sql`
+                    INSERT INTO recipeBookRecipes (book_id, recipe_id)
+                    VALUES (${bookId.toString()}, ${newRecipe.id})
+                `;
+
+                // Redirect to the book page after adding the recipe
+                revalidatePath(`/books/${bookId}`);
+                return redirect(`/books/${bookId}`);
             }
 
             revalidatePath(`/recipe/${newRecipe.id}`);

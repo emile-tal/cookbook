@@ -40,10 +40,10 @@ export async function fetchBookByBookId(id: string) {
 export async function fetchRecipesByBookId(id: string) {
     try {
         const recipes = await sql<LiteRecipe[]>`
-        SELECT recipes.id, recipes.title, recipes.image_url, users.username, recipes.category, recipes.duration
+        SELECT recipes.id, recipes.title, recipes.image_url, COALESCE(users.username, 'Unknown') as username, recipes.category, recipes.duration
         FROM recipeBookRecipes
         JOIN recipes ON recipeBookRecipes.recipe_id = recipes.id
-        JOIN users ON recipes.user_id = users.id
+        LEFT JOIN users ON recipes.user_id = users.id
         WHERE recipeBookRecipes.book_id = ${id}`
         return recipes || null
     } catch (error) {
@@ -64,9 +64,9 @@ export async function fetchRecipeById(id: string) {
                 recipes.is_public,
                 recipes.category,
                 recipes.duration,
-                users.username
+                COALESCE(users.username, 'Unknown') as username
             FROM recipes
-            JOIN users ON recipes.user_id = users.id
+            LEFT JOIN users ON recipes.user_id = users.id
             WHERE recipes.id = ${id}
         ),
         recipe_ingredients AS (

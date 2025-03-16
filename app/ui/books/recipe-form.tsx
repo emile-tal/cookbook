@@ -10,13 +10,18 @@ import { RecipeFormState } from "@/app/lib/action"
 interface Props {
     formAction: (prevState: RecipeFormState, formData: FormData, id?: string) => Promise<RecipeFormState>
     recipe?: Recipe
+    bookId?: string | null
 }
 
-export default function RecipeForm({ formAction, recipe }: Props) {
+export default function RecipeForm({ formAction, recipe, bookId }: Props) {
     const initialState: RecipeFormState = { message: null, errors: {} }
     const [state, dispatch] = useActionState(
-        (prevState: RecipeFormState, formData: FormData) =>
-            formAction(prevState, formData, recipe?.id),
+        (prevState: RecipeFormState, formData: FormData) => {
+            if (bookId && !recipe?.id) {
+                formData.append('bookId', bookId);
+            }
+            return formAction(prevState, formData, recipe?.id);
+        },
         initialState
     )
     const [ingredients, setIngredients] = useState<Ingredient[]>(recipe?.ingredients || [{ amount: '', ingredient: '' }])
