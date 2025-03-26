@@ -2,9 +2,14 @@ import { fetchRecipeCountByBookId, fetchUserBooks } from "../lib/data"
 
 import { BookDisplay } from "../ui/books/book-display"
 
-export default async function Page() {
+export default async function Page({
+    searchParams,
+}: {
+    searchParams: { q?: string }
+}) {
+    const query = searchParams.q;
     // Placeholder user id for now
-    const myBooks = await fetchUserBooks('410544b2-4001-4271-9855-fec4b6a6442a')
+    const myBooks = await fetchUserBooks('410544b2-4001-4271-9855-fec4b6a6442a', query)
     const recipeCountByBook = await fetchRecipeCountByBookId()
 
     if (!myBooks) {

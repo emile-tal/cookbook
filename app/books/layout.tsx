@@ -1,39 +1,25 @@
-'use client'
+// Server Component
+import { fetchAllBooks, fetchAllRecipes } from "@/app/lib/data";
 
-import { useEffect, useState } from "react";
+import BooksClientLayout from "./client-layout";
+import { Suspense } from "react";
 
-import { BookNavBar } from "@/app/ui/books/nav-bar";
-import { ViewContext } from "@/app/context/view-context";
-
-interface BooksLayoutProps {
+export default async function BooksLayout({
+    children,
+}: {
     children: React.ReactNode;
-}
-
-export default function BooksLayout({ children }: BooksLayoutProps) {
-    const [view, setView] = useState<"list" | "grid">("grid");
-
-    // Load saved preference from localStorage
-    useEffect(() => {
-        const savedView = localStorage.getItem("booksView");
-        if (savedView === "list" || savedView === "grid") {
-            setView(savedView);
-        }
-    }, []);
-
-    // Save preference when it changes
-    const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: "list" | "grid" | null) => {
-        if (newView) {
-            setView(newView);
-            localStorage.setItem("booksView", newView);
-        }
-    };
+}) {
+    // Fetch data on the server
+    const [books, recipes] = await Promise.all([
+        fetchAllBooks(),
+        fetchAllRecipes()
+    ]);
 
     return (
-        <ViewContext.Provider value={{ view, setView }}>
-            <div className="container-spacing">
-                <BookNavBar view={view} handleViewChange={handleViewChange} />
-                <div>{children}</div>
-            </div>
-        </ViewContext.Provider>
+        <Suspense fallback={<div>Loading...</div>}>
+            <BooksClientLayout initialBooks={books} initialRecipes={recipes}>
+                {children}
+            </BooksClientLayout>
+        </Suspense>
     );
 }

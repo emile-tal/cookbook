@@ -4,13 +4,17 @@ import postgres from 'postgres'
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
 
-export async function fetchUserBooks(id: string) {
+export async function fetchUserBooks(id: string, searchQuery?: string) {
     try {
         const userBooks = await sql<Book[]>`
         SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
         FROM recipeBooks
         JOIN users ON recipeBooks.user_id = users.id
-        WHERE recipeBooks.user_id = ${id}`
+        WHERE recipeBooks.user_id = ${id}
+        ${searchQuery ? sql`AND (
+            recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
+            users.username ILIKE ${`%${searchQuery}%`}
+        )` : sql``}`
         return userBooks || null
     } catch (error) {
         console.error(`Database error: ${error}`)
@@ -37,14 +41,20 @@ export async function fetchBookByBookId(id: string) {
     }
 }
 
-export async function fetchRecipesByBookId(id: string) {
+export async function fetchRecipesByBookId(id: string, searchQuery?: string) {
     try {
         const recipes = await sql<LiteRecipe[]>`
         SELECT recipes.id, recipes.title, recipes.image_url, COALESCE(users.username, 'Unknown') as username, recipes.category, recipes.duration
         FROM recipeBookRecipes
         JOIN recipes ON recipeBookRecipes.recipe_id = recipes.id
         LEFT JOIN users ON recipes.user_id = users.id
-        WHERE recipeBookRecipes.book_id = ${id}`
+        WHERE recipeBookRecipes.book_id = ${id}
+        ${searchQuery ? sql`AND (
+            recipes.title ILIKE ${`%${searchQuery}%`} OR
+            recipes.category ILIKE ${`%${searchQuery}%`} OR
+            COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR
+            recipes.duration::text ILIKE ${`%${searchQuery}%`}
+        )` : sql``}`
         return recipes || null
     } catch (error) {
         console.error(`Database error: ${error}`)
@@ -124,5 +134,45 @@ export async function fetchRecipeCountByBookId() {
     } catch (error) {
         console.error(`Database error: ${error}`);
         return {};
+    }
+}
+
+export async function fetchAllBooks(searchQuery?: string) {
+    try {
+        const books = await sql<Book[]>`
+            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
+            FROM recipeBooks
+            JOIN users ON recipeBooks.user_id = users.id
+            ${searchQuery ? sql`WHERE (
+                recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
+                users.username ILIKE ${`%${searchQuery}%`}
+            )` : sql``}
+        `;
+        return books || [];
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return [];
+    }
+}
+
+export async function fetchAllRecipes() {
+    try {
+        const recipes = await sql<Recipe[]>`
+            SELECT 
+                recipes.id, 
+                recipes.title, 
+                recipes.description, 
+                recipes.image_url, 
+                recipes.is_public,
+                recipes.category,
+                recipes.duration,
+                COALESCE(users.username, 'Unknown') as username
+            FROM recipes
+            LEFT JOIN users ON recipes.user_id = users.id
+        `;
+        return recipes || [];
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return [];
     }
 }

@@ -1,4 +1,6 @@
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
+import { IconButton } from '@mui/material';
 import Image from "next/image";
 import Link from 'next/link';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
@@ -23,6 +25,20 @@ export default async function Page({ params }: Props) {
     return (
         <div className="bg-white min-h-screen">
             <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-5xl">
+                {/* Back arrow positioned outside the centered content */}
+                <div className="w-full flex justify-start mb-4">
+                    <Link href="javascript:history.back()">
+                        <IconButton
+                            aria-label="go back"
+                            size="small"
+                            sx={{
+                                color: 'var(--primary-color)',
+                            }}
+                        >
+                            <ArrowBackIcon />
+                        </IconButton>
+                    </Link>
+                </div>
                 <div className="flex flex-col items-center">
                     {/* Recipe header section */}
                     <div className="w-full flex flex-col items-center mb-8">

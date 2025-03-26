@@ -1,8 +1,12 @@
+'use client'
+
 import { IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
 
 import AddIcon from '@mui/icons-material/Add';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GridViewIcon from '@mui/icons-material/GridView';
+import { SearchBar } from '@/app/components/SearchBar';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ViewListIcon from '@mui/icons-material/ViewList';
 
@@ -16,19 +20,31 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
     const pathname = usePathname();
 
     const handleAddRecipe = () => {
-        // Extract book ID from the pathname if we're on a book detail page
         const bookId = pathname.match(/\/books\/([^\/]+)$/)?.[1];
         if (bookId) {
-            // Navigate to add recipe page, later we can add logic to associate with the book
             router.push(`/recipe/add?bookId=${bookId}`);
         }
     };
 
-    // Only show add button if we're on a specific book page
     const showAddButton = pathname.match(/\/books\/[^\/]+$/);
 
     return (
-        <nav className="flex justify-end py-2 items-center">
+        <nav className="flex justify-between py-2 items-center">
+            <IconButton
+                onClick={() => router.back()}
+                aria-label="go back"
+                size="small"
+                sx={{
+                    color: 'var(--primary-color)',
+                }}
+            >
+                <ArrowBackIcon />
+            </IconButton>
+
+            <div className="flex-1 max-w-xl mx-4">
+                <SearchBar placeholder="Search..." />
+            </div>
+
             <div className="flex items-center gap-2">
                 <ToggleButtonGroup
                     value={view}
