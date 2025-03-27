@@ -26,13 +26,17 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
         }
     };
 
+    const handleBack = () => {
+        router.push('/books');
+    };
+
     const showAddButton = pathname.match(/\/books\/[^\/]+$/);
 
     return (
         <nav className="flex justify-between py-2 items-center">
             <div>
                 {showAddButton && <IconButton
-                    onClick={() => router.back()}
+                    onClick={handleBack}
                     aria-label="go back"
                     size="small"
                     sx={{

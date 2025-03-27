@@ -10,7 +10,7 @@ type Props = {
 
 export default async function Page({ params, searchParams }: Props) {
     const { id } = await params;
-    const query = searchParams.q;
+    const query = await searchParams.q;
     const book = await fetchBookByBookId(id);
     const recipes = await fetchRecipesByBookId(id, query);
 
