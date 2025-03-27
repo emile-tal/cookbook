@@ -1,4 +1,4 @@
-import { Book, LiteRecipe, Recipe } from './definitions'
+import { Book, LiteRecipe, Recipe, User } from './definitions'
 
 import postgres from 'postgres'
 
@@ -174,5 +174,38 @@ export async function fetchAllRecipes() {
     } catch (error) {
         console.error(`Database error: ${error}`);
         return [];
+    }
+}
+
+export async function getUser(id: string) {
+    try {
+        const user = await sql<User[]>`
+            SELECT * FROM users WHERE id = ${id}
+        `;
+        return user[0] || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}
+
+export async function fetchUserRecipes(id: string, searchQuery?: string) {
+    try {
+        const userRecipes = await sql<Recipe[]>`
+        SELECT recipes.id, recipes.title, recipes.description, recipes.image_url, recipes.is_public, recipes.category, recipes.duration, COALESCE(users.username, 'Unknown') as username
+        FROM recipes
+        LEFT JOIN users ON recipes.user_id = users.id
+        WHERE recipes.user_id = ${id}
+        ${searchQuery ? sql`AND (
+            recipes.title ILIKE ${`%${searchQuery}%`} OR
+            recipes.description ILIKE ${`%${searchQuery}%`} OR
+            recipes.category ILIKE ${`%${searchQuery}%`} OR
+            COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR
+            recipes.duration::text ILIKE ${`%${searchQuery}%`}
+        )` : sql``}`
+        return userRecipes || null
+    } catch (error) {
+        console.error(`Database error: ${error}`)
+        return null
     }
 }

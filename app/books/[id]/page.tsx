@@ -10,7 +10,7 @@ type Props = {
 
 export default async function Page({ params, searchParams }: Props) {
     const { id } = await params;
-    const query = await searchParams.q;
+    const query = searchParams.q;
     const book = await fetchBookByBookId(id);
     const recipes = await fetchRecipesByBookId(id, query);
 
@@ -20,7 +20,7 @@ export default async function Page({ params, searchParams }: Props) {
 
     return (
         <main>
-            <h1 className="text-2xl font-bold mb-4">{book.name}</h1>
+            <h1 className="text-2xl font-bold my-4">{book.name}</h1>
             <Suspense fallback={<div>Loading recipes...</div>}>
                 <RecipesDisplay recipes={recipes} />
             </Suspense>

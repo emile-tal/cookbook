@@ -30,3 +30,9 @@ export type Recipe = LiteRecipe & {
     ingredients: Ingredient[],
     instructions: Instruction[]
 }
+
+export type User = {
+    id: string,
+    username: string,
+    email: string,
+}

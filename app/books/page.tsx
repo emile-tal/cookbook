@@ -12,15 +12,15 @@ export default async function Page({
     const myBooks = await fetchUserBooks('410544b2-4001-4271-9855-fec4b6a6442a', query)
     const recipeCountByBook = await fetchRecipeCountByBookId()
 
-    if (!myBooks) {
-        return <div>No books found</div>
-    }
-
     return (
         <main className="py-4">
             <div className="mb-8">
                 <h2 className="text-2xl font-bold mb-4">My Books</h2>
-                <BookDisplay books={myBooks} recipeCountByBook={recipeCountByBook} />
+                {myBooks ? (
+                    <BookDisplay books={myBooks} recipeCountByBook={recipeCountByBook} />
+                ) : (
+                    <p className="text-gray-500">No books found</p>
+                )}
             </div>
             <div>
                 <h2 className="text-2xl font-bold mb-4">Saved Books</h2>

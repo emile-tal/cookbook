@@ -6,6 +6,7 @@ import { useActionState, useEffect, useRef, useState } from "react"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { RecipeFormState } from "@/app/lib/action"
+import { useRouter } from "next/navigation";
 
 interface Props {
     formAction: (prevState: RecipeFormState, formData: FormData, id?: string) => Promise<RecipeFormState>
@@ -30,6 +31,7 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
     )
     const [title, setTitle] = useState(recipe?.title || '')
     const titleRef = useRef<HTMLInputElement>(null)
+    const router = useRouter()
 
     useEffect(() => {
         setTitle(recipe?.title || '')
@@ -235,13 +237,21 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
                     </div>
                     <input type="hidden" name="instructions" value={JSON.stringify(instructions)} />
                 </div>
-
-                <button
-                    type="submit"
-                    className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90"
-                >
-                    Save Recipe
-                </button>
+                <div className="flex justify-end gap-2">
+                    <button
+                        type="button"
+                        className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90"
+                        onClick={() => router.back()}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90"
+                    >
+                        Save Recipe
+                    </button>
+                </div>
             </div>
         </form>
     )

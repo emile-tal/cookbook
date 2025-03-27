@@ -80,9 +80,6 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             )
         };
 
-        console.log('Processing recipe with ID:', id);
-        console.log('Form data:', formDataWithBoolean);
-
         // Use different schema based on whether we're updating or creating
         const validatedFields = id
             ? recipeSchema.safeParse({ ...formDataWithBoolean, id })
@@ -221,3 +218,13 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
         };
     }
 }
+
+export async function updateUsername(id: string, username: string) {
+    try {
+        await sql`UPDATE users SET username = ${username} WHERE id = ${id}`;
+        return { success: true };
+    } catch (error) {
+        console.error('Error updating username:', error);
+        return { success: false, error: 'Failed to update username' };
+    }
+} 

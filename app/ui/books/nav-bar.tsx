@@ -30,12 +30,12 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
         router.push('/books');
     };
 
-    const showAddButton = pathname.match(/\/books\/[^\/]+$/);
+    const showBackButton = pathname.match(/\/books\/[^\/]+$/);
 
     return (
         <nav className="flex justify-between py-2 items-center">
             <div>
-                {showAddButton && <IconButton
+                {showBackButton && <IconButton
                     onClick={handleBack}
                     aria-label="go back"
                     size="small"
@@ -72,18 +72,16 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
                     </ToggleButton>
                 </ToggleButtonGroup>
 
-                {showAddButton && (
-                    <IconButton
-                        onClick={handleAddRecipe}
-                        aria-label="add recipe"
-                        size="small"
-                        sx={{
-                            color: 'var(--primary-color)',
-                        }}
-                    >
-                        <AddIcon />
-                    </IconButton>
-                )}
+                <IconButton
+                    onClick={handleAddRecipe}
+                    aria-label="add recipe"
+                    size="small"
+                    sx={{
+                        color: 'var(--primary-color)',
+                    }}
+                >
+                    <AddIcon />
+                </IconButton>
 
                 <SettingsIcon />
             </div>
