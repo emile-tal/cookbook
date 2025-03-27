@@ -26,11 +26,11 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
     }, 300);
 
     return (
-        <div className="relative w-full max-w-sm">
+        <div className="relative w-full">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
                 placeholder={placeholder}
-                className="pl-8"
+                className="pl-8 min-w-full rounded-xl focus:ring-0 focus:outline-none shadow-sm"
                 defaultValue={currentQuery}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => debouncedSearch(e.target.value)}
             />

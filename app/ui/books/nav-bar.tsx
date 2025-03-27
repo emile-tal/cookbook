@@ -30,18 +30,20 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
 
     return (
         <nav className="flex justify-between py-2 items-center">
-            <IconButton
-                onClick={() => router.back()}
-                aria-label="go back"
-                size="small"
-                sx={{
-                    color: 'var(--primary-color)',
-                }}
-            >
-                <ArrowBackIcon />
-            </IconButton>
+            <div>
+                {showAddButton && <IconButton
+                    onClick={() => router.back()}
+                    aria-label="go back"
+                    size="small"
+                    sx={{
+                        color: 'var(--primary-color)',
+                    }}
+                >
+                    <ArrowBackIcon />
+                </IconButton>}
+            </div>
 
-            <div className="flex-1 max-w-xl mx-4">
+            <div className="flex-1 min-w-[300px] max-w-[500px] mx-2">
                 <SearchBar placeholder="Search..." />
             </div>
 

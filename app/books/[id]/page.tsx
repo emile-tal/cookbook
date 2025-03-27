@@ -8,9 +8,6 @@ type Props = {
     searchParams: { q?: string };
 };
 
-// This ensures the page doesn't cache and always fetches fresh data
-export const dynamic = 'force-dynamic';
-
 export default async function Page({ params, searchParams }: Props) {
     const { id } = await params;
     const query = searchParams.q;
