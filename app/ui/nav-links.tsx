@@ -1,6 +1,7 @@
 'use client'
 
 import { signOut, useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import IconButton from '@mui/material/IconButton';
@@ -9,7 +10,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Person from '@mui/icons-material/PersonOutline';
 import clsx from 'clsx';
-import { useState } from 'react';
 
 const links = [
     { name: 'My Books', href: '/books' },
@@ -22,9 +22,14 @@ export default function NavLinks() {
     const open = Boolean(anchorEl);
     const [loggedIn, setLoggedIn] = useState(false);
     const router = useRouter();
-    if (status === 'authenticated') {
-        setLoggedIn(true);
-    }
+
+    useEffect(() => {
+        if (status === 'authenticated') {
+            setLoggedIn(true);
+        } else {
+            setLoggedIn(false);
+        }
+    }, [status]);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
