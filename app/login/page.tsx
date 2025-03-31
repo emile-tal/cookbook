@@ -45,24 +45,87 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen">
-            <h1 className="text-2xl font-bold">Login</h1>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                <label htmlFor="email">Email</label>
-                <input type="email" name="email" />
-                {signup &&
-                    <>
-                        <label htmlFor="username">Username</label>
-                        <input type="text" name="username" />
-                    </>}
-                <label htmlFor="password">Password</label>
-                <input type="password" name="password" />
-                <button type="submit">{signup ? "Signup" : "Login"}</button>
-            </form>
-            {error && <p className="text-red-500">{error}</p>}
-            <button onClick={() => setSignup(!signup)} className="text-gray-500">
-                {signup ? "Already have an account? Login here" : "Don't have an account? Signup here"}
-            </button>
+        <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-md">
+                <div>
+                    <h2 className="mt-6 text-center text-2xl font-bold text-text">
+                        {signup ? "Create your account" : "Sign in to your account"}
+                    </h2>
+                    <p className="mt-2 text-center text-sm text-gray-600">
+                        {signup ? "Already have an account?" : "Don't have an account?"}{" "}
+                        <button
+                            onClick={() => setSignup(!signup)}
+                            className="font-medium text-text hover:text-gray-700"
+                        >
+                            {signup ? "Sign in" : "Sign up"}
+                        </button>
+                    </p>
+                </div>
+                <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+                    <div className="space-y-4">
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-text">
+                                Email address
+                            </label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                required
+                                className="appearance-none relative block min-w-full px-3 py-2 mt-1 border border-gray-100 rounded-xl placeholder-gray-500 text-text focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 focus:z-10 sm:text-sm"
+                                placeholder="Enter your email"
+                            />
+                        </div>
+                        {signup && (
+                            <div>
+                                <label htmlFor="username" className="block text-sm font-medium text-text">
+                                    Username
+                                </label>
+                                <input
+                                    id="username"
+                                    name="username"
+                                    type="text"
+                                    required
+                                    className="appearance-none relative block min-w-full px-3 py-2 mt-1 border border-gray-100 rounded-xl placeholder-gray-500 text-text focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 focus:z-10 sm:text-sm"
+                                    placeholder="Choose a username"
+                                />
+                            </div>
+                        )}
+                        <div>
+                            <label htmlFor="password" className="block text-sm font-medium text-text">
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                required
+                                className="appearance-none relative block min-w-full px-3 py-2 mt-1 border border-gray-100 rounded-xl placeholder-gray-500 text-text focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 focus:z-10 sm:text-sm"
+                                placeholder="Enter your password"
+                            />
+                        </div>
+                    </div>
+
+                    {error && (
+                        <div className="rounded-xl bg-red-50 p-4">
+                            <div className="flex">
+                                <div className="ml-3">
+                                    <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex justify-center">
+                        <button
+                            type="submit"
+                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-text hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-200"
+                        >
+                            {signup ? "Create account" : "Sign in"}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     )
 }
