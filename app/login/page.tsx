@@ -12,17 +12,19 @@ export default function LoginPage() {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setError(null); // Clear any previous errors
         const formData = new FormData(event.target as HTMLFormElement);
-        const email = formData.get("email")
-        const password = formData.get("password")
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
 
         if (signup) {
-            const username = formData.get("username")
-            const result = await register(email as string, password as string, username as string)
-            if ("error" in result) {
-                setError(result.error)
-                return
+            const username = formData.get("username") as string;
+            const result = await register(email, password, username);
+            if (!result.success) {
+                setError(result.error as string || "Registration failed");
+                return;
             }
+            // Registration successful, proceed with sign in
         }
 
         try {
@@ -55,7 +57,7 @@ export default function LoginPage() {
                     </>}
                 <label htmlFor="password">Password</label>
                 <input type="password" name="password" />
-                <button type="submit">Login</button>
+                <button type="submit">{signup ? "Signup" : "Login"}</button>
             </form>
             {error && <p className="text-red-500">{error}</p>}
             <button onClick={() => setSignup(!signup)} className="text-gray-500">
