@@ -8,8 +8,7 @@ export default async function Page({
     searchParams: { q?: string }
 }) {
     const query = searchParams.q;
-    // Placeholder user id for now
-    const myBooks = await fetchUserBooks('410544b2-4001-4271-9855-fec4b6a6442a', query)
+    const myBooks = await fetchUserBooks(query)
     const recipeCountByBook = await fetchRecipeCountByBookId()
 
     return (

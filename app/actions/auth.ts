@@ -1,12 +1,10 @@
 'use server'
 
 import { createUser, isEmailUnique, isUsernameUnique, updateUsername } from "@/app/lib/data/user";
-
-import bcryptjs from "bcryptjs";
-import { getCurrentUser } from "../lib/auth";
+import { getCurrentUser, hashPassword } from "../lib/auth";
 
 export async function register(email: string, password: string, username: string) {
-    const hashedPassword = await bcryptjs.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
     try {
         if (!await isEmailUnique(email)) {
             return { success: false, error: "Email already exists" };

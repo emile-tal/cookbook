@@ -1,6 +1,7 @@
 'use server'
 
 import { Book } from '../../types/definitions'
+import { getCurrentUser } from '../auth';
 import postgres from 'postgres'
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
@@ -23,21 +24,26 @@ export async function fetchAllBooks(searchQuery?: string) {
     }
 }
 
-export async function fetchUserBooks(id: string, searchQuery?: string) {
+export async function fetchUserBooks(searchQuery?: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
     try {
         const userBooks = await sql<Book[]>`
-        SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
-        FROM recipeBooks
-        JOIN users ON recipeBooks.user_id = users.id
-        WHERE recipeBooks.user_id = ${id}
-        ${searchQuery ? sql`AND (
-            recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
-            users.username ILIKE ${`%${searchQuery}%`}
-        )` : sql``}`
-        return userBooks || null
+            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
+            FROM recipeBooks
+            JOIN users ON recipeBooks.user_id = users.id
+            WHERE recipeBooks.user_id = ${user.id}
+            ${searchQuery ? sql`AND (
+                recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
+                users.username ILIKE ${`%${searchQuery}%`}
+            )` : sql``}
+        `;
+        return userBooks || null;
     } catch (error) {
-        console.error(`Database error: ${error}`)
-        return null
+        console.error(`Database error: ${error}`);
+        return null;
     }
 }
 

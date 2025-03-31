@@ -1,5 +1,6 @@
 'use server'
 
+import { getCurrentUser } from "../lib/auth";
 import postgres from "postgres";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -61,6 +62,15 @@ export type RecipeFormState = {
 }
 
 export async function recipeAction(prevState: RecipeFormState, formData: FormData, id?: string): Promise<RecipeFormState> {
+    const user = await getCurrentUser();
+    if (!user) {
+        return {
+            errors: {
+                message: ["You must be logged in to create or edit a recipe"]
+            }
+        }
+    }
+
     try {
         // Parse the form data
         const rawFormData = Object.fromEntries(formData);
@@ -149,13 +159,10 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             revalidatePath(`/recipe/${id}`);
             return redirect(`/recipe/${id}`);
         } else {
-            console.log('Creating new recipe');
-            // Create new recipe with a default user_id
-            const defaultUserId = '410544b2-4001-4271-9855-fec4b6a6442a'; // Placeholder user ID, should be replaced with actual user ID from auth
 
             const [newRecipe] = await sql<[{ id: string }]>`
                 INSERT INTO recipes (title, description, category, duration, is_public, user_id, image_url)
-                VALUES (${title}, ${description || ''}, ${category || ''}, ${duration || 0}, ${is_public}, ${defaultUserId}, NULL)
+                VALUES (${title}, ${description || ''}, ${category || ''}, ${duration || 0}, ${is_public}, ${user.id}, NULL)
                 RETURNING id
             `;
 
