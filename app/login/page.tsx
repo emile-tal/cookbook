@@ -1,6 +1,6 @@
 "use client"
 
-import { register } from "../api/register/route";
+import { register } from "../actions/auth";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

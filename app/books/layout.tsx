@@ -1,8 +1,8 @@
-// Server Component
-import { fetchAllBooks, fetchAllRecipes } from "@/app/lib/data";
-
 import BooksClientLayout from "./client-layout";
 import { Suspense } from "react";
+// Server Component
+import { fetchAllBooks } from "@/app/lib/data/recipeBook";
+import { fetchAllRecipes } from "@/app/lib/data/recipes";
 
 export default async function BooksLayout({
     children,

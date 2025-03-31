@@ -1,7 +1,7 @@
-import { fetchBookByBookId, fetchRecipesByBookId } from "@/app/lib/data";
-
 import { RecipesDisplay } from "@/app/ui/books/recipes-display";
 import { Suspense } from "react";
+import { fetchBookByBookId } from "@/app/lib/data/recipeBook";
+import { fetchRecipesByBookId } from "@/app/lib/data/recipes";
 
 type Props = {
     params: Promise<{ id: string }>;

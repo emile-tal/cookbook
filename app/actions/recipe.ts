@@ -111,7 +111,6 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
         }
 
         if (id) {
-            console.log('Updating recipe:', id);
             // Update existing recipe
             await sql`
                 UPDATE recipes
@@ -218,13 +217,3 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
         };
     }
 }
-
-export async function updateUsername(id: string, username: string) {
-    try {
-        await sql`UPDATE users SET username = ${username} WHERE id = ${id}`;
-        return { success: true };
-    } catch (error) {
-        console.error('Error updating username:', error);
-        return { success: false, error: 'Failed to update username' };
-    }
-} 

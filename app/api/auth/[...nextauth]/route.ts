@@ -1,13 +1,13 @@
 import NextAuth, { AuthOptions } from "next-auth"
 
 import CredentialsProvider from "next-auth/providers/credentials"
-import { UserCredentials } from "@/app/lib/definitions"
+import { UserCredentials } from "@/app/types/definitions"
 import bcryptjs from "bcryptjs"
 import postgres from "postgres"
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
     providers: [
         CredentialsProvider({
             name: "credentials",
@@ -44,8 +44,29 @@ export const authOptions = {
         strategy: "jwt",
         maxAge: 30 * 24 * 60 * 60
     },
-    secret: process.env.NEXTAUTH_SECRET
+    secret: process.env.NEXTAUTH_SECRET,
+    callbacks: {
+        async jwt({ token, user }) {
+            // Runs on login and when token is refreshed
+            if (user) {
+                token.id = user.id;
+                token.username = user.username;
+                token.email = user.email;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            // Runs when session is checked
+            session.user.id = token.id as string;
+            session.user.username = token.username as string;
+            session.user.email = token.email as string;
+            return session;
+        }
+    },
+    pages: {
+        signIn: '/login',
+    }
 };
 
-const handler = NextAuth(authOptions as AuthOptions);
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST }

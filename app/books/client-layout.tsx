@@ -1,6 +1,6 @@
 'use client'
 
-import { Book, Recipe } from "@/app/lib/definitions";
+import { Book, Recipe } from "@/app/types/definitions";
 import React, { useEffect, useState } from "react";
 
 import { BookNavBar } from "@/app/ui/books/nav-bar";

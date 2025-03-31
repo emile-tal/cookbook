@@ -2,7 +2,7 @@
 
 import EditIcon from '@mui/icons-material/Edit';
 import Image from "next/image";
-import { LiteRecipe } from "@/app/lib/definitions";
+import { LiteRecipe } from "@/app/types/definitions";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { useRouter } from "next/navigation";
 interface Props {

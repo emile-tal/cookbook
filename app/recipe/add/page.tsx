@@ -2,8 +2,8 @@
 
 import { Suspense, useEffect, useState } from "react";
 
-import RecipeForm from "@/app/ui/books/recipe-form";
-import { recipeAction } from "@/app/lib/action";
+import RecipeForm from "@/app/ui/recipe/recipe-form";
+import { recipeAction } from "@/app/actions/recipe";
 import { useSearchParams } from "next/navigation";
 
 // Client component that uses useSearchParams

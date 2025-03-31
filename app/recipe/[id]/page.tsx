@@ -1,9 +1,9 @@
-import { BackButton } from './back-button';
+import { BackButton } from '../../ui/recipe/back-button';
 import EditIcon from '@mui/icons-material/Edit';
 import Image from "next/image";
 import Link from 'next/link';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import { fetchRecipeById } from "@/app/lib/data";
+import { fetchRecipeById } from "@/app/lib/data/recipes";
 
 type Props = {
     params: Promise<{ id: string }>;

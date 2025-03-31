@@ -1,7 +1,7 @@
 'use client'
 
 import EditIcon from '@mui/icons-material/Edit';
-import { LiteRecipe } from '@/app/lib/definitions';
+import { LiteRecipe } from '@/app/types/definitions';
 import { useRouter } from 'next/navigation';
 
 interface Props {

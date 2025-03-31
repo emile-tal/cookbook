@@ -1,6 +1,6 @@
 'use client'
 
-import { Book } from '@/app/lib/definitions';
+import { Book } from '@/app/types/definitions';
 import { useRouter } from 'next/navigation';
 
 interface Props {

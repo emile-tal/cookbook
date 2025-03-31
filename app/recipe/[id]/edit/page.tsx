@@ -1,8 +1,8 @@
 'use server'
 
-import RecipeForm from "@/app/ui/books/recipe-form";
-import { fetchRecipeById } from "@/app/lib/data";
-import { recipeAction } from "@/app/lib/action";
+import RecipeForm from "@/app/ui/recipe/recipe-form";
+import { fetchRecipeById } from "@/app/lib/data/recipes";
+import { recipeAction } from "@/app/actions/recipe";
 
 interface Props {
     params: Promise<{ id: string }>;

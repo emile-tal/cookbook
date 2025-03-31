@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-import { LiteRecipe } from "@/app/lib/definitions";
+import { LiteRecipe } from "@/app/types/definitions";
 import RecipesGrid from "./recipes-grid";
 import RecipesList from "./recipes-list";
 import SwapVertIcon from '@mui/icons-material/SwapVert';

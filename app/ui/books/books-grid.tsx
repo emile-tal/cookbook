@@ -1,7 +1,6 @@
 'use client'
 
-import { Book } from "@/app/lib/definitions";
-import EditIcon from '@mui/icons-material/Edit';
+import { Book } from "@/app/types/definitions";
 import Image from "next/image";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { useRouter } from "next/navigation";

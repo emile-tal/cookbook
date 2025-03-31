@@ -2,16 +2,16 @@
 
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
-import { updateUsername } from '@/app/lib/action';
+import { changeUsername } from '@/app/actions/auth';
 import { useState } from 'react';
 
-export default function EditUsername({ username, userId }: { username: string, userId: string }) {
+export default function EditUsername({ username }: { username: string }) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedUsername, setEditedUsername] = useState(username);
     const [updatedUsername, setUpdatedUsername] = useState(username);
 
     const handleSave = async () => {
-        const result = await updateUsername(userId, editedUsername);
+        const result = await changeUsername(editedUsername);
         if (result.success) {
             setIsEditing(false);
             setUpdatedUsername(editedUsername);

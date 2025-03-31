@@ -1,5 +1,5 @@
 import EditUsername from "../ui/profile/edit-username";
-import { getUser } from "../lib/data";
+import { getUser } from "@/app/lib/data/user";
 
 export default async function Page() {
     const user = await getUser('410544b2-4001-4271-9855-fec4b6a6442a');
@@ -12,7 +12,7 @@ export default async function Page() {
         <main className="container-spacing">
             <div className="flex gap-8">
                 <div>{/* User avatar */}</div>
-                <EditUsername username={user.username} userId={user.id} />
+                <EditUsername username={user.username} />
             </div>
         </main>
     )

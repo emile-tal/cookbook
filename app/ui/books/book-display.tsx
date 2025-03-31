@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-import { Book } from "@/app/lib/definitions";
+import { Book } from "@/app/types/definitions";
 import BooksGrid from "./books-grid";
 import BooksList from "./books-list";
 import SwapVertIcon from '@mui/icons-material/SwapVert';

@@ -1,11 +1,11 @@
 'use client'
 
-import { Ingredient, Instruction, Recipe } from "@/app/lib/definitions"
+import { Ingredient, Instruction, Recipe } from "@/app/types/definitions"
 import { useActionState, useEffect, useRef, useState } from "react"
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { RecipeFormState } from "@/app/lib/action"
+import { RecipeFormState } from "@/app/actions/recipe"
 import { useRouter } from "next/navigation";
 
 interface Props {
