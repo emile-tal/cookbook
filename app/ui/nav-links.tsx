@@ -1,25 +1,30 @@
 'use client'
 
+import { signOut, useSession } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
+
 import IconButton from '@mui/material/IconButton';
 import Link from 'next/link';
-import Logout from '@mui/icons-material/Logout';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Person from '@mui/icons-material/PersonOutline';
 import clsx from 'clsx';
-import { signOut } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 const links = [
-    { name: 'Explore', href: '/explore' },
     { name: 'My Books', href: '/books' },
 ];
 
 export default function NavLinks() {
+    const { data: session, status } = useSession()
     const pathname = usePathname();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const [loggedIn, setLoggedIn] = useState(false);
+    const router = useRouter();
+    if (status === 'authenticated') {
+        setLoggedIn(true);
+    }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -30,21 +35,23 @@ export default function NavLinks() {
     };
 
     const handleSignOut = async () => {
-        await signOut({ callbackUrl: '/' });
+        await signOut({ callbackUrl: '/login' });
         handleClose();
     };
 
     return (
         <>
-            {links.map((link) => {
-                return (
-                    <div key={link.name} className={clsx('flex items-center', { 'glow': pathname === link.href })}>
-                        <Link href={link.href}>
-                            <p className="md:block">{link.name}</p>
-                        </Link>
-                    </div>
-                );
-            })}
+            {loggedIn &&
+                links.map((link) => {
+                    return (
+                        <div key={link.name} className={clsx('flex items-center', { 'glow': pathname === link.href })}>
+                            <Link href={link.href}>
+                                <p className="md:block">{link.name}</p>
+                            </Link>
+                        </div>
+                    );
+                })
+            }
             <div className={clsx({ 'glow': pathname === '/profile' })}>
                 <IconButton
                     onClick={handleClick}
@@ -81,7 +88,7 @@ export default function NavLinks() {
                         </Link>
                     </MenuItem>
                     <MenuItem
-                        onClick={handleSignOut}
+                        onClick={loggedIn ? handleSignOut : () => { router.push('/login') }}
                         sx={{
                             backgroundColor: '#fff5f5',
                             '&:hover': {
@@ -94,7 +101,7 @@ export default function NavLinks() {
                             }
                         }}
                     >
-                        Sign Out
+                        {loggedIn ? 'Sign Out' : 'Sign In'}
                     </MenuItem>
                 </Menu>
             </div>
