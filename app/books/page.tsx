@@ -1,6 +1,6 @@
+import { fetchRecipeCountByBookId, fetchUserBooks } from "@/app/lib/data/recipeBook"
+
 import { BookDisplay } from "@/app/ui/books/book-display"
-import { fetchRecipeCountByBookId } from "../lib/data/recipes";
-import { fetchUserBooks } from "@/app/lib/data/recipeBook"
 
 export default async function Page({
     searchParams,

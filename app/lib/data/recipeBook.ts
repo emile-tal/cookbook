@@ -66,3 +66,75 @@ export async function fetchBookByBookId(id: string) {
     }
 }
 
+export async function fetchRecipeCountByBookId() {
+    try {
+        const recipeCounts = await sql<{ book_id: string, count: number }[]>`
+            SELECT book_id, COUNT(recipe_id) as count
+            FROM recipeBookRecipes
+            GROUP BY book_id
+        `;
+
+        // Convert array to a map of book_id -> count
+        const countMap: Record<string, number> = {};
+        recipeCounts.forEach(item => {
+            countMap[item.book_id] = Number(item.count);
+        });
+
+        return countMap;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return {};
+    }
+}
+
+export async function fetchRecentlyViewedBooks() {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        const recentlyViewedBooks = await sql<Book[]>`
+            SELECT DISTINCT ON (recipeBooks.id) 
+                recipeBooks.id, 
+                recipeBooks.name, 
+                recipeBooks.image_url, 
+                users.username,
+                "recipeBookLogs".opened_at
+            FROM "recipeBookLogs"
+            JOIN recipeBooks ON "recipeBookLogs"."recipeBook_id" = recipeBooks.id
+            JOIN users ON "recipeBookLogs".user_id = users.id
+            WHERE "recipeBookLogs".user_id = ${user.id}
+            ORDER BY recipeBooks.id, "recipeBookLogs".opened_at DESC
+            LIMIT 4
+        `;
+        return recentlyViewedBooks || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}
+
+export async function fetchMostViewedBooks() {
+    try {
+        const mostViewedBooks = await sql<Book[]>`
+            SELECT DISTINCT ON (recipeBooks.id) 
+                recipeBooks.id, 
+                recipeBooks.name, 
+                recipeBooks.image_url, 
+                users.username,
+                COUNT("recipeBookLogs"."recipeBook_id") as view_count
+            FROM recipeBooks
+            JOIN users ON recipeBooks.user_id = users.id
+            LEFT JOIN "recipeBookLogs" ON recipeBooks.id = "recipeBookLogs"."recipeBook_id"
+            GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
+            ORDER BY recipeBooks.id, view_count DESC
+            LIMIT 4
+        `;
+        return mostViewedBooks || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}
+
+

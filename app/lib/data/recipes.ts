@@ -129,23 +129,61 @@ export async function fetchRecipesByBookId(id: string, searchQuery?: string) {
     }
 }
 
-export async function fetchRecipeCountByBookId() {
+export async function fetchRecentlyViewedRecipes() {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
     try {
-        const recipeCounts = await sql<{ book_id: string, count: number }[]>`
-            SELECT book_id, COUNT(recipe_id) as count
-            FROM recipeBookRecipes
-            GROUP BY book_id
+        const recentlyViewedRecipes = await sql<Recipe[]>`
+            SELECT DISTINCT ON (recipes.id) 
+                recipes.id, 
+                recipes.title, 
+                recipes.description, 
+                recipes.image_url, 
+                recipes.is_public,
+                recipes.category,
+                recipes.duration,
+                COALESCE(users.username, 'Unknown') as username,
+                "recipeLogs".opened_at
+            FROM "recipeLogs"
+            JOIN recipes ON "recipeLogs".recipe_id = recipes.id
+            LEFT JOIN users ON recipes.user_id = users.id
+            WHERE "recipeLogs".user_id = ${user.id}
+            ORDER BY recipes.id, "recipeLogs".opened_at DESC
+            LIMIT 4
         `;
-
-        // Convert array to a map of book_id -> count
-        const countMap: Record<string, number> = {};
-        recipeCounts.forEach(item => {
-            countMap[item.book_id] = Number(item.count);
-        });
-
-        return countMap;
+        return recentlyViewedRecipes || null;
     } catch (error) {
         console.error(`Database error: ${error}`);
-        return {};
+        return null;
+    }
+}
+
+export async function fetchMostViewedRecipes() {
+    try {
+        const mostViewedRecipes = await sql<Recipe[]>`
+            SELECT DISTINCT ON (recipes.id) 
+                recipes.id, 
+                recipes.title, 
+                recipes.description, 
+                recipes.image_url, 
+                recipes.is_public,
+                recipes.category,
+                recipes.duration,
+                COALESCE(users.username, 'Unknown') as username,
+                COUNT("recipeLogs".recipe_id) as view_count
+            FROM recipes
+            LEFT JOIN users ON recipes.user_id = users.id
+            LEFT JOIN "recipeLogs" ON recipes.id = "recipeLogs".recipe_id
+            GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url, 
+                     recipes.is_public, recipes.category, recipes.duration, users.username
+            ORDER BY recipes.id, view_count DESC
+            LIMIT 4
+        `;
+        return mostViewedRecipes || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
     }
 }

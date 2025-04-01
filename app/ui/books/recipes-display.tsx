@@ -86,7 +86,7 @@ export function RecipesDisplay({ recipes }: Props) {
                         <RecipesList recipes={sortedRecipes} />
                     </>
                 ) : (
-                    <RecipesGrid recipes={sortedRecipes} />
+                    <RecipesGrid recipes={sortedRecipes} edit={true} />
                 )}
         </div >
     )
