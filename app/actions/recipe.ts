@@ -33,6 +33,7 @@ const recipeSchema = z.object({
     category: z.string().default(''),
     duration: z.coerce.number().optional().default(0),
     is_public: z.boolean(),
+    image_url: z.string().optional(),
     ingredients: z.string().transform((str) => {
         const parsed = JSON.parse(str);
         return z.array(ingredientSchema).parse(
@@ -103,7 +104,7 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             };
         }
 
-        const { title, description, category, duration, is_public, ingredients, instructions } = validatedFields.data;
+        const { title, description, category, duration, is_public, ingredients, instructions, image_url } = validatedFields.data;
 
         // Ensure we have at least one ingredient and one instruction
         if (ingredients.length === 0) {
@@ -128,7 +129,8 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
                     description = ${description || ''}, 
                     category = ${category || ''}, 
                     duration = ${duration || 0}, 
-                    is_public = ${is_public}
+                    is_public = ${is_public},
+                    image_url = ${image_url || null}
                 WHERE id = ${id}
             `;
 
@@ -159,10 +161,9 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             revalidatePath(`/recipe/${id}`);
             return redirect(`/recipe/${id}`);
         } else {
-
             const [newRecipe] = await sql<[{ id: string }]>`
                 INSERT INTO recipes (title, description, category, duration, is_public, user_id, image_url)
-                VALUES (${title}, ${description || ''}, ${category || ''}, ${duration || 0}, ${is_public}, ${user.id}, NULL)
+                VALUES (${title}, ${description || ''}, ${category || ''}, ${duration || 0}, ${is_public}, ${user.id}, ${image_url || null})
                 RETURNING id
             `;
 

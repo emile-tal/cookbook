@@ -3,9 +3,13 @@
 import { Ingredient, Instruction, Recipe } from "@/app/types/definitions"
 import { useActionState, useEffect, useRef, useState } from "react"
 
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditIcon from '@mui/icons-material/Edit';
+import Image from "next/image"
 import { RecipeFormState } from "@/app/actions/recipe"
+import { uploadImage } from "@/app/lib/uploadImage"
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -30,6 +34,10 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
         recipe?.instructions || [{ position: 1, instruction: '' }]
     )
     const [title, setTitle] = useState(recipe?.title || '')
+    const [imageUrl, setImageUrl] = useState<string | null>(recipe?.image_url || null)
+    const [isUploading, setIsUploading] = useState(false)
+    const [isHovering, setIsHovering] = useState(false)
+    const fileInputRef = useRef<HTMLInputElement>(null)
     const titleRef = useRef<HTMLInputElement>(null)
     const router = useRouter()
 
@@ -84,6 +92,25 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
         setInstructions(updatedInstructions)
     }
 
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        try {
+            setIsUploading(true)
+            const url = await uploadImage(file)
+            setImageUrl(url)
+        } catch (error) {
+            console.error('Failed to upload image:', error)
+        } finally {
+            setIsUploading(false)
+        }
+    }
+
+    const handleImageClick = () => {
+        fileInputRef.current?.click()
+    }
+
     return (
         <form action={dispatch}>
             <div className="space-y-4">
@@ -109,6 +136,56 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
                     )}
                 </div>
 
+                <div className="w-full">
+                    <label htmlFor="image" className="block text-sm font-medium mb-2">Recipe Image</label>
+                    <div className="relative">
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            id="image"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            disabled={isUploading}
+                            className="hidden"
+                        />
+                        {imageUrl ? (
+                            <div
+                                className="relative w-full h-64 cursor-pointer group"
+                                onClick={handleImageClick}
+                                onMouseEnter={() => setIsHovering(true)}
+                                onMouseLeave={() => setIsHovering(false)}
+                            >
+                                <Image
+                                    src={imageUrl}
+                                    alt="Recipe preview"
+                                    fill
+                                    className={`object-cover rounded-lg transition-opacity duration-200 ${isHovering ? 'opacity-75' : 'opacity-100'
+                                        }`}
+                                />
+                                {isHovering && (
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <EditIcon className="text-white text-4xl" />
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div
+                                className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors duration-200"
+                                onClick={handleImageClick}
+                            >
+                                <AddAPhotoIcon className="text-gray-400 text-4xl mb-2" />
+                                <p className="text-gray-500">Click to upload recipe image</p>
+                            </div>
+                        )}
+                        {isUploading && (
+                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
+                                <p className="text-white">Uploading image...</p>
+                            </div>
+                        )}
+                    </div>
+                    <input type="hidden" name="image_url" value={imageUrl || ''} />
+                </div>
+
                 <div>
                     <label htmlFor="description" className="block text-sm font-medium">Description</label>
                     <textarea
@@ -122,17 +199,7 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
                     )}
                 </div>
 
-                <div>
-                    <label className="block text-sm font-medium">
-                        <input
-                            type="checkbox"
-                            name="is_public"
-                            defaultChecked={recipe?.is_public ?? true}
-                            className="mr-2"
-                        />
-                        Make recipe public
-                    </label>
-                </div>
+
 
                 <div>
                     <label htmlFor="category" className="block text-sm font-medium">Category</label>
@@ -146,7 +213,7 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
                 </div>
 
                 <div>
-                    <label htmlFor="duration" className="block text-sm font-medium">Duration (minutes)</label>
+                    <label htmlFor="duration" className="block text-sm font-medium">Cook time (minutes)</label>
                     <input
                         type="number"
                         name="duration"
@@ -159,10 +226,10 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
                 </div>
 
                 <div>
-                    <label htmlFor="ingredients" className="block text-sm font-medium mb-2">Ingredients</label>
+                    <label htmlFor="ingredients" className="hidden">Ingredients</label>
                     <div className="grid grid-cols-12 gap-2 mb-2">
-                        <span className="col-span-2">Quantity</span>
-                        <span className="col-span-9">Ingredient</span>
+                        <span className="col-span-2 text-sm">Quantity</span>
+                        <span className="col-span-9 text-sm">Ingredient</span>
                         <span className="col-span-1"></span>
                     </div>
                     {ingredients.map((ingredient, index) => (
@@ -234,6 +301,17 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
                         >
                             <AddCircleOutlineIcon />
                         </button>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium">
+                            <input
+                                type="checkbox"
+                                name="is_public"
+                                defaultChecked={recipe?.is_public ?? true}
+                                className="mr-2"
+                            />
+                            Make recipe public
+                        </label>
                     </div>
                     <input type="hidden" name="instructions" value={JSON.stringify(instructions)} />
                 </div>
