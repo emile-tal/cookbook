@@ -2,6 +2,7 @@ import { BackButton } from '../../ui/recipe/back-button';
 import EditIcon from '@mui/icons-material/Edit';
 import Image from "next/image";
 import Link from 'next/link';
+import RecipeLogger from "@/app/components/RecipeLogger";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { fetchRecipeById } from "@/app/lib/data/recipes";
 
@@ -23,6 +24,7 @@ export default async function Page({ params }: Props) {
 
     return (
         <div className="bg-white min-h-screen">
+            <RecipeLogger recipeId={id} />
             <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-5xl">
                 {/* Back arrow positioned outside the centered content */}
                 <div className="w-full flex justify-start mb-4">

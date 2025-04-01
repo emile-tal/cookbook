@@ -2,6 +2,7 @@
 
 import { LiteRecipe, Recipe } from '../../types/definitions'
 
+import { getCurrentUser } from '../auth';
 import postgres from 'postgres'
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
@@ -28,13 +29,17 @@ export async function fetchAllRecipes() {
     }
 }
 
-export async function fetchUserRecipes(id: string, searchQuery?: string) {
+export async function fetchUserRecipes(searchQuery?: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
     try {
         const userRecipes = await sql<Recipe[]>`
         SELECT recipes.id, recipes.title, recipes.description, recipes.image_url, recipes.is_public, recipes.category, recipes.duration, COALESCE(users.username, 'Unknown') as username
         FROM recipes
         LEFT JOIN users ON recipes.user_id = users.id
-        WHERE recipes.user_id = ${id}
+        WHERE recipes.user_id = ${user.id}
         ${searchQuery ? sql`AND (
             recipes.title ILIKE ${`%${searchQuery}%`} OR
             recipes.description ILIKE ${`%${searchQuery}%`} OR

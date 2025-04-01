@@ -1,3 +1,4 @@
+import BookLogger from "@/app/components/BookLogger";
 import { RecipesDisplay } from "@/app/ui/books/recipes-display";
 import { Suspense } from "react";
 import { fetchBookByBookId } from "@/app/lib/data/recipeBook";
@@ -20,6 +21,7 @@ export default async function Page({ params, searchParams }: Props) {
 
     return (
         <main>
+            <BookLogger bookId={id} />
             <h1 className="text-2xl font-bold my-4">{book.name}</h1>
             <Suspense fallback={<div>Loading recipes...</div>}>
                 <RecipesDisplay recipes={recipes} />
