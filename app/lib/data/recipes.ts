@@ -129,7 +129,7 @@ export async function fetchRecipesByBookId(id: string, searchQuery?: string) {
     }
 }
 
-export async function fetchRecentlyViewedRecipes() {
+export async function fetchRecentlyViewedRecipesByUser() {
     const user = await getCurrentUser();
     if (!user) {
         return null;
@@ -176,6 +176,39 @@ export async function fetchMostViewedRecipes() {
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN "recipeLogs" ON recipes.id = "recipeLogs".recipe_id
+            GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url, 
+                     recipes.is_public, recipes.category, recipes.duration, users.username
+            ORDER BY recipes.id, view_count DESC
+            LIMIT 4
+        `;
+        return mostViewedRecipes || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}
+
+export async function fetchMostViewedRecipesByUser() {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        const mostViewedRecipes = await sql<Recipe[]>`
+            SELECT DISTINCT ON (recipes.id) 
+                recipes.id, 
+                recipes.title, 
+                recipes.description, 
+                recipes.image_url, 
+                recipes.is_public,
+                recipes.category,
+                recipes.duration,
+                COALESCE(users.username, 'Unknown') as username,
+                COUNT("recipeLogs".recipe_id) as view_count
+            FROM recipes
+            LEFT JOIN users ON recipes.user_id = users.id
+            LEFT JOIN "recipeLogs" ON recipes.id = "recipeLogs".recipe_id
+            WHERE "recipeLogs".user_id = ${user.id}
             GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url, 
                      recipes.is_public, recipes.category, recipes.duration, users.username
             ORDER BY recipes.id, view_count DESC

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import RecipeLogger from "@/app/components/RecipeLogger";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { fetchRecipeById } from "@/app/lib/data/recipes";
+import { getCurrentUser } from '@/app/lib/auth';
 
 type Props = {
     params: Promise<{ id: string }>;
@@ -13,6 +14,7 @@ type Props = {
 export default async function Page({ params }: Props) {
     const { id } = await params;
     const recipe = await fetchRecipeById(id);
+    const user = await getCurrentUser();
 
     if (!recipe) {
         return <div>Recipe not found</div>;
@@ -49,9 +51,9 @@ export default async function Page({ params }: Props) {
                         )}
                         <div className="flex items-center gap-2 mb-3">
                             <h1 className="text-3xl font-bold text-center">{recipe.title}</h1>
-                            <Link href={`/recipe/${id}/edit`} className="flex items-center justify-center bg-white rounded-full p-1 hover:bg-gray-100">
+                            {user?.username === recipe.username && <Link href={`/recipe/${id}/edit`} className="flex items-center justify-center bg-white rounded-full p-1 hover:bg-gray-100">
                                 <EditIcon className="text-gray-600 hover:text-gray-900" fontSize="small" />
-                            </Link>
+                            </Link>}
                         </div>
                         {recipe.description && (
                             <p className="text-center text-gray-600 max-w-2xl mb-2">{recipe.description}</p>
