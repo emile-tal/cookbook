@@ -34,7 +34,7 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
 
     return (
         <nav className="flex justify-between py-2 items-center">
-            <div>
+            <div className="min-w-[24px] sm:min-w-[34px] lg:min-w-[40px]">
                 {showBackButton && <IconButton
                     onClick={handleBack}
                     aria-label="go back"
