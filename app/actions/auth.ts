@@ -3,6 +3,8 @@
 import { createUser, isEmailUnique, isUsernameUnique, updateUsername } from "@/app/lib/data/user";
 import { getCurrentUser, hashPassword } from "../lib/auth";
 
+import sql from '../lib/db';
+
 export async function register(email: string, password: string, username: string) {
     const hashedPassword = await hashPassword(password);
     try {

@@ -1,9 +1,9 @@
 'use server'
 
 import { getCurrentUser } from "../lib/auth";
-import postgres from "postgres";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import sql from '../lib/db';
 import { z } from "zod";
 
 type RawIngredient = {
@@ -52,8 +52,6 @@ const recipeSchema = z.object({
 });
 
 const recipeFormSchema = recipeSchema.omit({ id: true });
-
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 export type RecipeFormState = {
     errors?: {

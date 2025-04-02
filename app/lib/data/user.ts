@@ -2,9 +2,7 @@
 
 import { User, UserCredentials } from "../../types/definitions";
 
-import postgres from "postgres";
-
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
+import sql from '../db';
 
 export async function isEmailUnique(email: string) {
     const emailExists = await sql<UserCredentials[]>`SELECT * FROM users WHERE email = ${email}`;

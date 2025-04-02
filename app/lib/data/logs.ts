@@ -1,9 +1,7 @@
 'use server'
 
 import { getCurrentUser } from "../auth";
-import postgres from "postgres";
-
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
+import sql from '../db';
 
 export async function createLogByBookId(id: string) {
     const user = await getCurrentUser();

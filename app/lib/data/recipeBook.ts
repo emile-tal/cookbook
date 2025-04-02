@@ -2,9 +2,7 @@
 
 import { Book } from '../../types/definitions'
 import { getCurrentUser } from '../auth';
-import postgres from 'postgres'
-
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
+import sql from '../db';
 
 export async function fetchAllBooks(searchQuery?: string) {
     try {

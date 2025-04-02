@@ -1,8 +1,8 @@
 'use client'
 
+import { Book, LiteRecipe } from "@/app/types/definitions";
 import { useMemo, useState } from "react";
 
-import { LiteRecipe } from "@/app/types/definitions";
 import RecipesGrid from "./recipes-grid";
 import RecipesList from "./recipes-list";
 import SwapVertIcon from '@mui/icons-material/SwapVert';
@@ -32,10 +32,11 @@ const tableHeaders = [
 ]
 
 interface Props {
-    recipes: LiteRecipe[] | null
+    recipes: LiteRecipe[] | null,
+    books: Book[] | null
 }
 
-export function RecipesDisplay({ recipes }: Props) {
+export function RecipesDisplay({ recipes, books }: Props) {
     const { view } = useView()
     const [sort, setSort] = useState<string>("title")
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
@@ -83,10 +84,10 @@ export function RecipesDisplay({ recipes }: Props) {
 
                             ))}
                         </div>
-                        <RecipesList recipes={sortedRecipes} />
+                        <RecipesList recipes={sortedRecipes} books={books} />
                     </>
                 ) : (
-                    <RecipesGrid recipes={sortedRecipes} edit={true} />
+                    <RecipesGrid recipes={sortedRecipes} edit={true} books={books} />
                 )}
         </div >
     )

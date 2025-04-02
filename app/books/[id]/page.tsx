@@ -1,7 +1,8 @@
+import { fetchBookByBookId, fetchUserBooks } from "@/app/lib/data/recipeBook";
+
 import BookLogger from "@/app/components/BookLogger";
 import { RecipesDisplay } from "@/app/ui/books/recipes-display";
 import { Suspense } from "react";
-import { fetchBookByBookId } from "@/app/lib/data/recipeBook";
 import { fetchRecipesByBookId } from "@/app/lib/data/recipes";
 
 type Props = {
@@ -14,6 +15,7 @@ export default async function Page({ params, searchParams }: Props) {
     const query = searchParams.q;
     const book = await fetchBookByBookId(id);
     const recipes = await fetchRecipesByBookId(id, query);
+    const myBooks = await fetchUserBooks();
 
     if (!book) {
         return <div>Book not found</div>;

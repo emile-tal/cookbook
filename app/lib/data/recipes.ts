@@ -3,9 +3,7 @@
 import { LiteRecipe, Recipe } from '../../types/definitions'
 
 import { getCurrentUser } from '../auth';
-import postgres from 'postgres'
-
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
+import sql from '../db';
 
 export async function fetchAllRecipes() {
     try {
@@ -215,6 +213,19 @@ export async function fetchMostViewedRecipesByUser() {
             LIMIT 4
         `;
         return mostViewedRecipes || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}
+
+export async function addRecipeToBook(bookId: string, recipeId: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        await sql`INSERT INTO recipeBookRecipes (book_id, recipe_id) VALUES (${bookId}, ${recipeId})`;
     } catch (error) {
         console.error(`Database error: ${error}`);
         return null;
