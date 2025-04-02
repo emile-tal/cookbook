@@ -16,7 +16,7 @@ export default async function BooksLayout({
     ]);
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div className="container-spacing">Loading...</div>}>
             <BooksClientLayout initialBooks={books} initialRecipes={recipes}>
                 {children}
             </BooksClientLayout>

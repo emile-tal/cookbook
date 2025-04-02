@@ -32,14 +32,16 @@ export default function RecipesGrid({ recipes, edit }: Props) {
                         ) : (
                             <RestaurantIcon className="w-full h-full text-gray-300" />
                         )}
-                        {edit && <button
+                        {edit ? (<button
                             className="absolute top-1 right-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 router.push(`/recipe/${recipe.id}/edit`);
                             }}>
                             <EditIcon className="text-text text-base group-hover:text-lg" />
-                        </button>}
+                        </button>) : (
+                            null
+                        )}
                     </div>
                     <div className="pt-3 pb-2">
                         <h3 className="font-medium text-lg">{recipe.title}</h3>

@@ -1,4 +1,4 @@
-import { fetchRecipeCountByBookId, fetchUserBooks } from "@/app/lib/data/recipeBook"
+import { fetchRecipeCountByBookId, fetchSavedBooks, fetchUserBooks } from "@/app/lib/data/recipeBook"
 
 import { BookDisplay } from "@/app/ui/books/book-display"
 
@@ -10,6 +10,7 @@ export default async function Page({
     const query = searchParams.q;
     const myBooks = await fetchUserBooks(query)
     const recipeCountByBook = await fetchRecipeCountByBookId()
+    const savedBooks = await fetchSavedBooks(query)
 
     return (
         <main className="py-4">

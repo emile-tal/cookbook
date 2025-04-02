@@ -137,4 +137,27 @@ export async function fetchMostViewedBooks() {
     }
 }
 
+export async function fetchSavedBooks(searchQuery?: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        const savedBooks = await sql<Book[]>`
+            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
+            FROM recipeBooks
+            JOIN savedrecipebooks ON recipeBooks.id = savedrecipebooks.book_id
+            JOIN users ON recipeBooks.user_id = users.id
+            WHERE savedrecipebooks.user_id = ${user.id}
+            ${searchQuery ? sql`AND (
+                recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
+                users.username ILIKE ${`%${searchQuery}%`}
+            )` : sql``}
+        `;
+        return savedBooks || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}
 
