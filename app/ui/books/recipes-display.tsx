@@ -84,7 +84,7 @@ export function RecipesDisplay({ recipes, books }: Props) {
 
                             ))}
                         </div>
-                        <RecipesList recipes={sortedRecipes} books={books} />
+                        <RecipesList recipes={sortedRecipes} />
                     </>
                 ) : (
                     <RecipesGrid recipes={sortedRecipes} edit={true} books={books} />
