@@ -1,4 +1,4 @@
-import { fetchMostViewedBooks, fetchRecentlyViewedBooks, fetchRecipeCountByBookId } from "./lib/data/recipeBook";
+import { fetchMostViewedBooks, fetchRecentlyViewedBooks, fetchRecipeCountByBookId, fetchSavedBooks } from "./lib/data/recipeBook";
 import { fetchMostViewedRecipes, fetchMostViewedRecipesByUser, fetchRecentlyViewedRecipesByUser } from "./lib/data/recipes";
 
 import BooksGrid from "./ui/books/books-grid";
@@ -6,12 +6,13 @@ import RecipesGrid from "./ui/books/recipes-grid";
 
 export default async function Page() {
 
-  const [recentlyViewedRecipesByUser, mostViewedRecipesByUser, mostViewedRecipes, recentlyViewedBooks, mostViewedBooks] = await Promise.all([
+  const [recentlyViewedRecipesByUser, mostViewedRecipesByUser, mostViewedRecipes, recentlyViewedBooks, mostViewedBooks, savedBooks] = await Promise.all([
     fetchRecentlyViewedRecipesByUser(),
     fetchMostViewedRecipesByUser(),
     fetchMostViewedRecipes(),
     fetchRecentlyViewedBooks(),
-    fetchMostViewedBooks()
+    fetchMostViewedBooks(),
+    fetchSavedBooks()
   ]);
   const recipeCountByBook = await fetchRecipeCountByBookId();
 
@@ -31,11 +32,11 @@ export default async function Page() {
       </div>}
       {recentlyViewedBooks && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Your Recently Viewed Books</h2>
-        <BooksGrid books={recentlyViewedBooks} recipeCountByBook={recipeCountByBook} />
+        <BooksGrid books={recentlyViewedBooks} recipeCountByBook={recipeCountByBook} savedBooks={savedBooks?.map((book) => book.id) || []} />
       </div>}
       {mostViewedBooks && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Your Most Viewed Books</h2>
-        <BooksGrid books={mostViewedBooks} recipeCountByBook={recipeCountByBook} />
+        <BooksGrid books={mostViewedBooks} recipeCountByBook={recipeCountByBook} savedBooks={savedBooks?.map((book) => book.id) || []} />
       </div>}
 
     </main>

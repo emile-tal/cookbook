@@ -29,9 +29,10 @@ const tableHeaders = [
 interface Props {
     books: Book[];
     recipeCountByBook?: Record<string, number>;
+    savedBooks?: string[];
 }
 
-export function BookDisplay({ books, recipeCountByBook = {} }: Props) {
+export function BookDisplay({ books, recipeCountByBook = {}, savedBooks = [] }: Props) {
     const { view } = useView();
     const [sort, setSort] = useState<string>("name");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -84,7 +85,7 @@ export function BookDisplay({ books, recipeCountByBook = {} }: Props) {
                     <BooksList books={sortedBooks} recipeCountByBook={recipeCountByBook} />
                 </>
             ) : (
-                <BooksGrid books={sortedBooks} recipeCountByBook={recipeCountByBook} />
+                <BooksGrid books={sortedBooks} recipeCountByBook={recipeCountByBook} savedBooks={savedBooks} />
             )}
         </div>
     );

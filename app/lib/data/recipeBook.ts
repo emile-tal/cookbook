@@ -161,3 +161,30 @@ export async function fetchSavedBooks(searchQuery?: string) {
     }
 }
 
+export async function addSavedBook(bookId: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        await sql`INSERT INTO savedrecipebooks (user_id, book_id) VALUES (${user.id}, ${bookId})`;
+        return { success: true };
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return { success: false };
+    }
+}
+
+export async function removeSavedBook(bookId: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        await sql`DELETE FROM savedrecipebooks WHERE user_id = ${user.id} AND book_id = ${bookId}`;
+        return { success: true };
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return { success: false };
+    }
+}
