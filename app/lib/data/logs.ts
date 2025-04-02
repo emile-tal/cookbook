@@ -11,7 +11,7 @@ export async function createLogByBookId(id: string) {
         return null;
     }
     try {
-        await sql`INSERT INTO "recipeBookLogs" (user_id, "recipeBook_id") VALUES (${user.id}, ${id})`;
+        await sql`INSERT INTO recipebooklogs (user_id, book_id) VALUES (${user.id}, ${id})`;
     } catch (error) {
         console.error(`Database error: ${error}`);
     }
@@ -23,7 +23,7 @@ export async function createLogByRecipeId(id: string) {
         return null;
     }
     try {
-        await sql`INSERT INTO "recipeLogs" (user_id, recipe_id) VALUES (${user.id}, ${id})`;
+        await sql`INSERT INTO recipelogs (user_id, recipe_id) VALUES (${user.id}, ${id})`;
     } catch (error) {
         console.error(`Database error: ${error}`);
     }

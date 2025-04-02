@@ -99,12 +99,12 @@ export async function fetchRecentlyViewedBooks() {
                 recipeBooks.name, 
                 recipeBooks.image_url, 
                 users.username,
-                "recipeBookLogs".opened_at
-            FROM "recipeBookLogs"
-            JOIN recipeBooks ON "recipeBookLogs"."recipeBook_id" = recipeBooks.id
-            JOIN users ON "recipeBookLogs".user_id = users.id
-            WHERE "recipeBookLogs".user_id = ${user.id}
-            ORDER BY recipeBooks.id, "recipeBookLogs".opened_at DESC
+                recipebooklogs.opened_at
+            FROM recipebooklogs
+            JOIN recipeBooks ON recipebooklogs.book_id = recipeBooks.id
+            JOIN users ON recipebooklogs.user_id = users.id
+            WHERE recipebooklogs.user_id = ${user.id}
+            ORDER BY recipeBooks.id, recipebooklogs.opened_at DESC
             LIMIT 4
         `;
         return recentlyViewedBooks || null;
@@ -122,10 +122,10 @@ export async function fetchMostViewedBooks() {
                 recipeBooks.name, 
                 recipeBooks.image_url, 
                 users.username,
-                COUNT("recipeBookLogs"."recipeBook_id") as view_count
+                COUNT(recipebooklogs.book_id) as view_count
             FROM recipeBooks
             JOIN users ON recipeBooks.user_id = users.id
-            LEFT JOIN "recipeBookLogs" ON recipeBooks.id = "recipeBookLogs"."recipeBook_id"
+            LEFT JOIN recipebooklogs ON recipeBooks.id = recipebooklogs.book_id
             GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
             ORDER BY recipeBooks.id, view_count DESC
             LIMIT 4

@@ -145,12 +145,12 @@ export async function fetchRecentlyViewedRecipesByUser() {
                 recipes.category,
                 recipes.duration,
                 COALESCE(users.username, 'Unknown') as username,
-                "recipeLogs".opened_at
-            FROM "recipeLogs"
-            JOIN recipes ON "recipeLogs".recipe_id = recipes.id
+                recipelogs.opened_at
+            FROM recipelogs
+            JOIN recipes ON recipelogs.recipe_id = recipes.id
             LEFT JOIN users ON recipes.user_id = users.id
-            WHERE "recipeLogs".user_id = ${user.id}
-            ORDER BY recipes.id, "recipeLogs".opened_at DESC
+            WHERE recipelogs.user_id = ${user.id}
+            ORDER BY recipes.id, recipelogs.opened_at DESC
             LIMIT 4
         `;
         return recentlyViewedRecipes || null;
@@ -172,10 +172,10 @@ export async function fetchMostViewedRecipes() {
                 recipes.category,
                 recipes.duration,
                 COALESCE(users.username, 'Unknown') as username,
-                COUNT("recipeLogs".recipe_id) as view_count
+                COUNT(recipelogs.recipe_id) as view_count
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
-            LEFT JOIN "recipeLogs" ON recipes.id = "recipeLogs".recipe_id
+            LEFT JOIN recipelogs ON recipes.id = recipelogs.recipe_id
             GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url, 
                      recipes.is_public, recipes.category, recipes.duration, users.username
             ORDER BY recipes.id, view_count DESC
@@ -204,11 +204,11 @@ export async function fetchMostViewedRecipesByUser() {
                 recipes.category,
                 recipes.duration,
                 COALESCE(users.username, 'Unknown') as username,
-                COUNT("recipeLogs".recipe_id) as view_count
+                COUNT(recipelogs.recipe_id) as view_count
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
-            LEFT JOIN "recipeLogs" ON recipes.id = "recipeLogs".recipe_id
-            WHERE "recipeLogs".user_id = ${user.id}
+            LEFT JOIN recipelogs ON recipes.id = recipelogs.recipe_id
+            WHERE recipelogs.user_id = ${user.id}
             GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url, 
                      recipes.is_public, recipes.category, recipes.duration, users.username
             ORDER BY recipes.id, view_count DESC
