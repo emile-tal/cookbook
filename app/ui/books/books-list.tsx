@@ -1,26 +1,51 @@
 'use client'
 
 import { Book } from '@/app/types/definitions';
+import TurnedIn from '@mui/icons-material/TurnedIn';
+import TurnedInNot from '@mui/icons-material/TurnedInNot';
+import { addSavedBook } from '@/app/lib/data/recipeBook';
+import { removeSavedBook } from '@/app/lib/data/recipeBook';
 import { useRouter } from 'next/navigation';
 
 interface Props {
     books: Book[];
     recipeCountByBook?: Record<string, number>;
+    savedBooks: string[];
 }
 
-export default function BooksList({ books, recipeCountByBook = {} }: Props) {
+export default function BooksList({ books, recipeCountByBook = {}, savedBooks = [] }: Props) {
     const router = useRouter();
 
     return (
         <div className="flex flex-col w-full">
             {books?.map((book) => (
                 <div key={book.id} className='py-3 grid grid-cols-12 w-full border-b border-gray-100 items-center'>
-                    <p
-                        onClick={() => router.push(`/books/${book.id}`)}
-                        className="hover:cursor-pointer col-span-5 font-medium truncate"
-                    >
-                        {book.name}
-                    </p>
+                    <div className="col-span-5 flex items-center gap-2">
+                        <p
+                            onClick={() => router.push(`/books/${book.id}`)}
+                            className="hover:cursor-pointer font-medium truncate"
+                        >
+                            {book.name}
+                        </p>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (savedBooks.includes(book.id)) {
+                                    removeSavedBook(book.id);
+                                    router.refresh();
+                                } else {
+                                    addSavedBook(book.id);
+                                    router.refresh();
+                                }
+                            }}
+                        >
+                            {savedBooks.includes(book.id) ? (
+                                <TurnedIn className="text-red-500 text-base hover:cursor-pointer transition-transform duration-200 hover:translate-y-0.5" />
+                            ) : (
+                                <TurnedInNot className="text-text text-base hover:cursor-pointer transition-transform duration-200 hover:translate-y-0.5" />
+                            )}
+                        </button>
+                    </div>
                     <p className="col-span-5 truncate">{book.username}</p>
                     <div className="col-span-2 items-center">
                         <span>{recipeCountByBook[book.id] || 0} recipes</span>
