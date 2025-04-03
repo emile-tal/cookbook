@@ -200,3 +200,26 @@ export async function createBook(name: string) {
         return { success: false };
     }
 }
+
+export async function createBookWithRecipe(name: string, recipeId: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        const [book] = await sql<Book[]>`
+            INSERT INTO recipeBooks (user_id, name) 
+            VALUES (${user.id}, ${name})
+            RETURNING id, name, image_url, user_id
+        `;
+
+        if (book) {
+            await sql`INSERT INTO recipeBookRecipes (book_id, recipe_id) VALUES (${book.id}, ${recipeId})`;
+            return { success: true, book };
+        }
+        return { success: false };
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return { success: false };
+    }
+}
