@@ -15,7 +15,7 @@ export default async function Page({ params, searchParams }: Props) {
     const query = searchParams.q;
     const book = await fetchBookByBookId(id);
     const recipes = await fetchRecipesByBookId(id, query);
-    const myBooks = await fetchUserBooks();
+    const books = await fetchUserBooks();
 
     if (!book) {
         return <div>Book not found</div>;
@@ -26,7 +26,7 @@ export default async function Page({ params, searchParams }: Props) {
             <BookLogger bookId={id} />
             <h1 className="text-2xl font-bold my-4">{book.name}</h1>
             <Suspense fallback={<div>Loading recipes...</div>}>
-                <RecipesDisplay recipes={recipes} />
+                <RecipesDisplay recipes={recipes} books={books} />
             </Suspense>
         </main>
     );

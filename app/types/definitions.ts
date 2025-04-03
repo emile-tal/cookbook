@@ -35,6 +35,7 @@ export type User = {
     id: string,
     username: string,
     email: string,
+    user_image_url: string
 }
 
 export type UserCredentials = {

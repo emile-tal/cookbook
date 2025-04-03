@@ -1,17 +1,25 @@
-import EditUsername from "../ui/profile/edit-username";
+import EditUsername from "../ui/profile/username";
+import ProfilePhoto from "../ui/profile/profile-photo";
+import { getCurrentUser } from "../lib/auth";
 import { getUser } from "@/app/lib/data/user";
 
 export default async function Page() {
-    const user = await getUser('410544b2-4001-4271-9855-fec4b6a6442a');
+    const user = await getCurrentUser();
 
     if (!user) {
         return <div>User not found</div>
     }
 
+    const userData = await getUser(user?.id)
+
+    if (!userData) {
+        return <div>User not found</div>
+    }
+
     return (
         <main className="container-spacing">
-            <div className="flex gap-8">
-                <div>{/* User avatar */}</div>
+            <div className="flex gap-8 items-center">
+                <ProfilePhoto userData={userData} />
                 <EditUsername username={user.username} />
             </div>
         </main>

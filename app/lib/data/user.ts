@@ -39,3 +39,7 @@ export async function getUser(id: string) {
     const user = await sql<User[]>`SELECT * FROM users WHERE id = ${id}`;
     return user[0] || null;
 }
+
+export async function updateUserImage(id: string, imageUrl: string) {
+    await sql`UPDATE users SET user_image_url = ${imageUrl} WHERE id = ${id}`;
+}
