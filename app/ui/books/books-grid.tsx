@@ -37,13 +37,13 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                                     className="object-cover rounded-t-xl max-w-full"
                                 />
                             ) : (
-                                <MenuBookIcon className="w-full h-full text-gray-300" />
+                                <MenuBookIcon className="w-full h-full text-gray-300 scale-[300%]" />
                             )}
                             <button
                                 className="absolute top-1 right-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    if (savedBooks.includes(book.id)) {
+                                    if (saved) {
                                         removeSavedBook(book.id);
                                         router.refresh();
                                     } else {
@@ -51,7 +51,7 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                                         router.refresh();
                                     }
                                 }}>
-                                {savedBooks.includes(book.id) ? (
+                                {saved ? (
                                     <TurnedIn className="text-red-500 text-base group-hover:text-lg" />
                                 ) : (
                                     <TurnedInNot className="text-text text-base group-hover:text-lg" />

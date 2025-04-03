@@ -186,3 +186,17 @@ export async function removeSavedBook(bookId: string) {
         return { success: false };
     }
 }
+
+export async function createBook(name: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        await sql`INSERT INTO recipeBooks (user_id, name) VALUES (${user.id}, ${name})`;
+        return { success: true };
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return { success: false };
+    }
+}
