@@ -7,6 +7,7 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
+import EditTitle from './edit-title'
 import Image from "next/image"
 import { RecipeFormState } from "@/app/actions/recipe"
 import { uploadImage } from "@/app/lib/uploadImage"
@@ -45,19 +46,6 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
         setTitle(recipe?.title || '')
     }, [recipe?.title])
 
-    useEffect(() => {
-        if (titleRef.current) {
-            titleRef.current.style.width = 'auto'
-            titleRef.current.style.width = `${Math.max(titleRef.current.scrollWidth, 300)}px`
-        }
-    }, [title])
-
-    const handleTitleInput = (e: React.FormEvent<HTMLInputElement>) => {
-        const input = e.currentTarget
-        setTitle(input.value)
-        input.style.width = 'auto'
-        input.style.width = `${Math.max(input.scrollWidth, 300)}px`
-    }
 
     const addIngredient = () => {
         setIngredients([...ingredients, { amount: '', ingredient: '' }])
@@ -118,23 +106,11 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
                     <div className="text-red-500">{state.message}</div>
                 )}
 
-                <div className="w-full">
-                    <label htmlFor="title" className="hidden">Title</label>
-                    <input
-                        ref={titleRef}
-                        type="text"
-                        name="title"
-                        value={title}
-                        onChange={handleTitleInput}
-                        onInput={handleTitleInput}
-                        placeholder="Recipe title"
-                        className="text-2xl px-3 py-2 bg-background focus:outline-none focus:border-b-2 focus:border-secondary"
-                        style={{ minWidth: '300px' }}
-                    />
-                    {state?.errors?.title && (
-                        <div className="text-red-500 text-sm">{state.errors.title}</div>
-                    )}
-                </div>
+                <EditTitle
+                    title={title}
+                    onChange={setTitle}
+                    error={state?.errors?.title?.[0]}
+                />
 
                 <div className="w-full">
                     <label htmlFor="image" className="block text-sm font-medium mb-2">Recipe Image</label>
