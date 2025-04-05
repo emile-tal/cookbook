@@ -7,7 +7,6 @@ import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GridViewIcon from '@mui/icons-material/GridView';
 import { SearchBar } from '@/app/components/SearchBar';
-import SettingsIcon from '@mui/icons-material/Settings';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import { createBook } from '@/app/lib/data/recipeBook';
 import { useState } from 'react';
@@ -47,62 +46,63 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
     };
 
     const showBackButton = pathname.match(/\/books\/[^\/]+$/);
+    const showNavBar = !pathname.match(/edit$/);
 
     return (
         <>
-            <nav className="flex justify-between py-2 items-center">
-                <div className="min-w-[24px] sm:min-w-[34px] lg:min-w-[40px]">
-                    {showBackButton && <IconButton
-                        onClick={handleBack}
-                        aria-label="go back"
-                        size="small"
-                        sx={{
-                            color: 'var(--primary-color)',
-                        }}
-                    >
-                        <ArrowBackIcon />
-                    </IconButton>}
-                </div>
+            {showNavBar && (
+                <nav className="flex justify-between py-2 items-center">
+                    <div className="min-w-[24px] sm:min-w-[34px] lg:min-w-[40px]">
+                        {showBackButton && <IconButton
+                            onClick={handleBack}
+                            aria-label="go back"
+                            size="small"
+                            sx={{
+                                color: 'var(--primary-color)',
+                            }}
+                        >
+                            <ArrowBackIcon />
+                        </IconButton>}
+                    </div>
 
-                <div className="flex-1 min-w-[300px] max-w-[500px] mx-2">
-                    <SearchBar placeholder="Search..." />
-                </div>
+                    <div className="flex-1 min-w-[300px] max-w-[500px] mx-2">
+                        <SearchBar placeholder="Search..." />
+                    </div>
 
-                <div className="flex items-center gap-2">
-                    <ToggleButtonGroup
-                        value={view}
-                        exclusive
-                        onChange={handleViewChange}
-                        aria-label="view toggle"
-                        sx={{
-                            border: 'none',
-                            '& .MuiButtonBase-root': {
+                    <div className="flex items-center gap-2">
+                        <ToggleButtonGroup
+                            value={view}
+                            exclusive
+                            onChange={handleViewChange}
+                            aria-label="view toggle"
+                            sx={{
                                 border: 'none',
-                            },
-                        }}
-                    >
-                        <ToggleButton value="grid" aria-label="grid view">
-                            <GridViewIcon />
-                        </ToggleButton>
-                        <ToggleButton value="list" aria-label="list view">
-                            <ViewListIcon />
-                        </ToggleButton>
-                    </ToggleButtonGroup>
+                                '& .MuiButtonBase-root': {
+                                    border: 'none',
+                                },
+                            }}
+                        >
+                            <ToggleButton value="grid" aria-label="grid view">
+                                <GridViewIcon />
+                            </ToggleButton>
+                            <ToggleButton value="list" aria-label="list view">
+                                <ViewListIcon />
+                            </ToggleButton>
+                        </ToggleButtonGroup>
 
-                    <IconButton
-                        onClick={handleAdd}
-                        aria-label="add recipe"
-                        size="small"
-                        sx={{
-                            color: 'var(--primary-color)',
-                        }}
-                    >
-                        <AddIcon />
-                    </IconButton>
-
-                    <SettingsIcon />
-                </div>
-            </nav>
+                        <IconButton
+                            onClick={handleAdd}
+                            aria-label="add recipe"
+                            size="small"
+                            sx={{
+                                color: 'var(--primary-color)',
+                            }}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </div>
+                </nav>
+            )}
 
             <Dialog
                 open={openDialog}
