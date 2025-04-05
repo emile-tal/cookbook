@@ -8,7 +8,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteDialog from "@/app/components/DeleteDialog";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
-import EditTitle from './edit-title'
+import EditTitle from '@/app/components/EditTitle'
 import Image from "next/image"
 import { RecipeFormState } from "@/app/actions/recipe"
 import { deleteRecipe } from "@/app/lib/data/recipes";

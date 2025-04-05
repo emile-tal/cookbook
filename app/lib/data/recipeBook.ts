@@ -237,3 +237,17 @@ export async function deleteBook(id: string) {
         return { success: false };
     }
 }
+
+export async function updateBookName(id: string, name: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        await sql`UPDATE recipeBooks SET name = ${name} WHERE id = ${id} AND user_id = ${user.id}`;
+        return { success: true };
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return { success: false };
+    }
+}
