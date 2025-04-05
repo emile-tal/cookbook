@@ -3,11 +3,13 @@
 import { addSavedBook, removeSavedBook } from "@/app/lib/data/recipeBook";
 
 import { Book } from "@/app/types/definitions";
+import EditIcon from '@mui/icons-material/Edit';
 import Image from "next/image";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface Props {
     books: Book[];
@@ -17,6 +19,11 @@ interface Props {
 
 export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = [] }: Props) {
     const router = useRouter();
+    const { data: session, status } = useSession();
+
+    if (status === 'loading') {
+        return <div>Loading...</div>
+    }
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -39,6 +46,14 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                             ) : (
                                 <MenuBookIcon className="w-full h-full text-gray-300 scale-[300%]" />
                             )}
+                            {session?.user?.username === book.username && <button
+                                className="absolute top-1 left-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(`/books/${book.id}/edit`);
+                                }}>
+                                <EditIcon className="text-text text-base group-hover:text-lg" />
+                            </button>}
                             <button
                                 className="absolute top-1 right-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
                                 onClick={(e) => {

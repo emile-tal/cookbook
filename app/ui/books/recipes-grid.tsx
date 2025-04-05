@@ -13,20 +13,25 @@ import { addRecipeToBook } from '@/app/lib/data/recipes';
 import clsx from "clsx";
 import { createBookWithRecipe } from "@/app/lib/data/recipeBook";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface Props {
     recipes: LiteRecipe[] | null,
-    edit: boolean,
     books: Book[] | null
 }
 
-export default function RecipesGrid({ recipes, edit, books }: Props) {
+export default function RecipesGrid({ recipes, books }: Props) {
     const router = useRouter();
     const [showBooks, setShowBooks] = useState(false);
     const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
     const [newBookInputVisible, setNewBookInputVisible] = useState(false);
     const [newBook, setNewBook] = useState('');
     const newBookInputRef = useRef<HTMLInputElement>(null);
+    const { data: session, status } = useSession();
+
+    if (status === 'loading') {
+        return <div>Loading...</div>
+    }
 
     useEffect(() => {
         if (newBookInputVisible && newBookInputRef.current) {
@@ -131,7 +136,7 @@ export default function RecipesGrid({ recipes, edit, books }: Props) {
                             ) : (
                                 <RestaurantIcon className="w-full h-full text-gray-300 bg-gray-100 rounded-t-xl" />
                             ))}
-                        {(edit && (!showBooks || selectedRecipe !== recipe.id)) && (<button
+                        {session?.user?.username === recipe.username && (!showBooks || selectedRecipe !== recipe.id) && (<button
                             className="absolute top-1 left-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
                             onClick={(e) => {
                                 e.stopPropagation();
