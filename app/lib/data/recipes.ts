@@ -231,3 +231,16 @@ export async function addRecipeToBook(bookId: string, recipeId: string) {
         return null;
     }
 }
+
+export async function deleteRecipe(id: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        await sql`DELETE FROM recipes WHERE id = ${id} AND user_id = ${user.id}`;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}
