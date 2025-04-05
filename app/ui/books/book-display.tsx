@@ -17,7 +17,7 @@ const tableHeaders = [
     {
         label: "Owner",
         sort: "owner",
-        column: 5
+        column: 4
     },
     {
         label: "Recipes",

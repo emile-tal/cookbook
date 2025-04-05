@@ -1,12 +1,13 @@
 'use client'
 
 import { Book } from '@/app/types/definitions';
+import EditIcon from '@mui/icons-material/Edit';
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
 import { addSavedBook } from '@/app/lib/data/recipeBook';
 import { removeSavedBook } from '@/app/lib/data/recipeBook';
 import { useRouter } from 'next/navigation';
-
+import { useSession } from 'next-auth/react';
 interface Props {
     books: Book[];
     recipeCountByBook?: Record<string, number>;
@@ -15,6 +16,11 @@ interface Props {
 
 export default function BooksList({ books, recipeCountByBook = {}, savedBooks = [] }: Props) {
     const router = useRouter();
+    const { data: session, status } = useSession();
+
+    if (status === 'loading') {
+        return <div>Loading...</div>
+    }
 
     return (
         <div className="flex flex-col w-full">
@@ -27,6 +33,14 @@ export default function BooksList({ books, recipeCountByBook = {}, savedBooks = 
                         >
                             {book.name}
                         </p>
+
+                    </div>
+                    <p className="col-span-4 truncate">{book.username}</p>
+                    <div className="col-span-2 items-center">
+                        <span>{recipeCountByBook[book.id] || 0} recipes</span>
+                    </div>
+                    <div className="col-span-1 flex justify-end gap-2">
+                        {session?.user?.username === book.username && <EditIcon onClick={() => router.push(`/books/${book.id}/edit`)} className="hover:cursor-pointer" />}
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -45,10 +59,6 @@ export default function BooksList({ books, recipeCountByBook = {}, savedBooks = 
                                 <TurnedInNot className="text-text text-base hover:cursor-pointer transition-transform duration-200 hover:translate-y-0.5" />
                             )}
                         </button>
-                    </div>
-                    <p className="col-span-5 truncate">{book.username}</p>
-                    <div className="col-span-2 items-center">
-                        <span>{recipeCountByBook[book.id] || 0} recipes</span>
                     </div>
                 </div>
             ))}

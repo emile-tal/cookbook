@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import { changeUsername } from '@/app/actions/auth';
 import { useState } from 'react';
+
 export default function EditUsername({ username }: { username: string }) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedUsername, setEditedUsername] = useState(username);
