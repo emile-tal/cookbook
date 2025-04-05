@@ -5,11 +5,13 @@ import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import IconButton from '@mui/material/IconButton';
+import Image from 'next/image';
 import Link from 'next/link';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Person from '@mui/icons-material/PersonOutline';
 import clsx from 'clsx';
+import { getUser } from '../lib/data/user';
 
 const links = [
     { name: 'My Books', href: '/books' },
@@ -21,15 +23,24 @@ export default function NavLinks() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
         if (status === 'authenticated') {
             setLoggedIn(true);
+            fetchUserData()
         } else {
             setLoggedIn(false);
         }
     }, [status]);
+
+    const fetchUserData = async () => {
+        if (session?.user?.id) {
+            const user = await getUser(session?.user?.id);
+            setProfilePhoto(user?.user_image_url || null);
+        }
+    }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -65,7 +76,12 @@ export default function NavLinks() {
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                 >
-                    <Person className='md:l text-[rgb(30,30,30)]' />
+                    {profilePhoto ? (
+                        <div className="w-8 h-8 rounded-full overflow-hidden">
+                            <Image src={profilePhoto} alt="Profile Photo" width={32} height={32} />
+                        </div>
+                    ) : (
+                        <Person className='md:l text-[rgb(30,30,30)]' />)}
                 </IconButton>
                 <Menu
                     anchorEl={anchorEl}

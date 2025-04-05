@@ -69,6 +69,7 @@ export default function BookForm({ formAction, book }: Props) {
                 <div className="text-red-500">{state.message}</div>
             )}
             <div className="w-full">
+                <input type="hidden" name="id" value={book.id} />
                 <label htmlFor="image" className="hidden">Book Image</label>
                 <div className="relative">
                     <input
@@ -115,12 +116,24 @@ export default function BookForm({ formAction, book }: Props) {
                     )}
                 </div>
                 <input type="hidden" name="image_url" value={imageUrl || ''} />
-                <input type="hidden" name="id" value={book.id} />
-                <input type="hidden" name="is_public" value="on" />
+            </div>
+            <div>
+                <label className="block text-sm font-medium">
+                    <input
+                        type="checkbox"
+                        name="is_public"
+                        defaultChecked={book.is_public ?? false}
+                        className="mr-2"
+                    />
+                    Make book public
+                </label>
             </div>
             <div className="flex justify-between">
                 <button type="button" className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90" onClick={() => setOpenDeleteDialog(true)}>Delete</button>
-                <button type="submit" className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90">Save</button>
+                <div className="flex flex-end gap-2">
+                    <button type="button" className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90" onClick={() => router.back()}>Cancel</button>
+                    <button type="submit" className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90">Save</button>
+                </div>
             </div>
             <DeleteDialog
                 open={openDeleteDialog}

@@ -19,24 +19,24 @@ export default async function Page() {
 
   return (
     <main className="container-spacing">
-      {mostViewedRecipes && <div className="flex flex-col gap-4 py-4">
+      {mostViewedRecipes && mostViewedRecipes.length > 0 && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Most Popular Recipes</h2>
         <RecipesGrid recipes={mostViewedRecipes} books={userBooks} />
       </div>}
-      {recentlyViewedRecipesByUser && <div className="flex flex-col gap-4 py-4">
+      {recentlyViewedRecipesByUser && recentlyViewedRecipesByUser.length > 0 && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Your Recently Viewed Recipes</h2>
         <RecipesGrid recipes={recentlyViewedRecipesByUser} books={userBooks} />
       </div>}
-      {mostViewedRecipesByUser && <div className="flex flex-col gap-4 py-4">
+      {mostViewedRecipesByUser && mostViewedRecipesByUser.length > 0 && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Your Most Viewed Recipes</h2>
         <RecipesGrid recipes={mostViewedRecipesByUser} books={userBooks} />
       </div>}
-      {recentlyViewedBooks && <div className="flex flex-col gap-4 py-4">
+      {recentlyViewedBooks && recentlyViewedBooks.length > 0 && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Your Recently Viewed Books</h2>
         <BooksGrid books={recentlyViewedBooks} recipeCountByBook={recipeCountByBook} savedBooks={savedBooks?.map((book) => book.id) || []} />
       </div>}
-      {mostViewedBooks && <div className="flex flex-col gap-4 py-4">
-        <h2 className="text-xl font-bold">Your Most Viewed Books</h2>
+      {mostViewedBooks && mostViewedBooks.length > 0 && <div className="flex flex-col gap-4 py-4">
+        <h2 className="text-xl font-bold">Most Popular Books</h2>
         <BooksGrid books={mostViewedBooks} recipeCountByBook={recipeCountByBook} savedBooks={savedBooks?.map((book) => book.id) || []} />
       </div>}
 

@@ -29,15 +29,15 @@ export default function RecipesGrid({ recipes, books }: Props) {
     const newBookInputRef = useRef<HTMLInputElement>(null);
     const { data: session, status } = useSession();
 
-    if (status === 'loading') {
-        return <div>Loading...</div>
-    }
-
     useEffect(() => {
         if (newBookInputVisible && newBookInputRef.current) {
             newBookInputRef.current.focus();
         }
     }, [newBookInputVisible]);
+
+    if (status === 'loading') {
+        return <div>Loading...</div>
+    }
 
     const handleAddRecipeToBook = async (bookId: string, recipeId: string) => {
         await addRecipeToBook(bookId, recipeId);

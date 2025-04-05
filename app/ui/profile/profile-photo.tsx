@@ -8,11 +8,13 @@ import { Person } from "@mui/icons-material";
 import { User } from "@/app/types/definitions";
 import { updateUserImage } from "@/app/lib/data/user";
 import { uploadImage } from "@/app/lib/uploadImage";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePhoto({ userData }: { userData: User }) {
     const [isUploading, setIsUploading] = useState(false)
     const [isHovering, setIsHovering] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const router = useRouter();
 
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -26,6 +28,7 @@ export default function ProfilePhoto({ userData }: { userData: User }) {
             console.error('Failed to upload image:', error);
         } finally {
             setIsUploading(false);
+            router.refresh();
         }
     }
 
