@@ -7,7 +7,7 @@ import sql from '../db';
 export async function fetchAllBooks(searchQuery?: string) {
     try {
         const books = await sql<Book[]>`
-            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
+            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
             FROM recipeBooks
             JOIN users ON recipeBooks.user_id = users.id
             ${searchQuery ? sql`WHERE (
@@ -29,7 +29,7 @@ export async function fetchUserBooks(searchQuery?: string) {
     }
     try {
         const userBooks = await sql<Book[]>`
-            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
+            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
             FROM recipeBooks
             JOIN users ON recipeBooks.user_id = users.id
             WHERE recipeBooks.user_id = ${user.id}
@@ -52,6 +52,7 @@ export async function fetchBookByBookId(id: string) {
           recipeBooks.id, 
           recipeBooks.name, 
           recipeBooks.image_url,
+          recipeBooks.is_public,
           users.username
         FROM recipeBooks
         JOIN users ON recipeBooks.user_id = users.id
@@ -124,6 +125,7 @@ export async function fetchMostViewedBooks() {
             FROM recipeBooks
             JOIN users ON recipeBooks.user_id = users.id
             LEFT JOIN recipebooklogs ON recipeBooks.id = recipebooklogs.book_id
+            WHERE recipeBooks.is_public = true
             GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
             ORDER BY recipeBooks.id, view_count DESC
             LIMIT 4
@@ -142,7 +144,7 @@ export async function fetchSavedBooks(searchQuery?: string) {
     }
     try {
         const savedBooks = await sql<Book[]>`
-            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
+            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
             FROM recipeBooks
             JOIN savedrecipebooks ON recipeBooks.id = savedrecipebooks.book_id
             JOIN users ON recipeBooks.user_id = users.id
@@ -193,7 +195,7 @@ export async function createBook(name: string) {
         return null;
     }
     try {
-        await sql`INSERT INTO recipeBooks (user_id, name) VALUES (${user.id}, ${name})`;
+        await sql`INSERT INTO recipeBooks (user_id, name, is_public) VALUES (${user.id}, ${name}, false)`;
         return { success: true };
     } catch (error) {
         console.error(`Database error: ${error}`);
@@ -208,9 +210,9 @@ export async function createBookWithRecipe(name: string, recipeId: string) {
     }
     try {
         const [book] = await sql<Book[]>`
-            INSERT INTO recipeBooks (user_id, name) 
-            VALUES (${user.id}, ${name})
-            RETURNING id, name, image_url, user_id
+            INSERT INTO recipeBooks (user_id, name, is_public) 
+            VALUES (${user.id}, ${name}, false)
+            RETURNING id, name, image_url, user_id, is_public
         `;
 
         if (book) {
@@ -231,20 +233,6 @@ export async function deleteBook(id: string) {
     }
     try {
         await sql`DELETE FROM recipeBooks WHERE id = ${id} AND user_id = ${user.id}`;
-        return { success: true };
-    } catch (error) {
-        console.error(`Database error: ${error}`);
-        return { success: false };
-    }
-}
-
-export async function updateBookName(id: string, name: string) {
-    const user = await getCurrentUser();
-    if (!user) {
-        return null;
-    }
-    try {
-        await sql`UPDATE recipeBooks SET name = ${name} WHERE id = ${id} AND user_id = ${user.id}`;
         return { success: true };
     } catch (error) {
         console.error(`Database error: ${error}`);

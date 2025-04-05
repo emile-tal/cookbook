@@ -21,15 +21,15 @@ export default async function Page() {
     <main className="container-spacing">
       {mostViewedRecipes && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Most Popular Recipes</h2>
-        <RecipesGrid recipes={mostViewedRecipes} edit={false} books={userBooks} />
+        <RecipesGrid recipes={mostViewedRecipes} books={userBooks} />
       </div>}
       {recentlyViewedRecipesByUser && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Your Recently Viewed Recipes</h2>
-        <RecipesGrid recipes={recentlyViewedRecipesByUser} edit={false} books={userBooks} />
+        <RecipesGrid recipes={recentlyViewedRecipesByUser} books={userBooks} />
       </div>}
       {mostViewedRecipesByUser && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Your Most Viewed Recipes</h2>
-        <RecipesGrid recipes={mostViewedRecipesByUser} edit={false} books={userBooks} />
+        <RecipesGrid recipes={mostViewedRecipesByUser} books={userBooks} />
       </div>}
       {recentlyViewedBooks && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Your Recently Viewed Books</h2>

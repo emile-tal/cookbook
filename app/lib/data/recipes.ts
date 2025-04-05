@@ -19,6 +19,7 @@ export async function fetchAllRecipes() {
                 COALESCE(users.username, 'Unknown') as username
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
+            WHERE recipes.is_public = true
         `;
         return recipes || [];
     } catch (error) {
@@ -174,6 +175,7 @@ export async function fetchMostViewedRecipes() {
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipelogs ON recipes.id = recipelogs.recipe_id
+            WHERE recipes.is_public = true
             GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url, 
                      recipes.is_public, recipes.category, recipes.duration, users.username
             ORDER BY recipes.id, view_count DESC

@@ -2,7 +2,8 @@ export type Book = {
     id: string,
     name: string,
     username: string,
-    image_url: string
+    image_url: string,
+    is_public: boolean
 }
 
 export type LiteRecipe = {

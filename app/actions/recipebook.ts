@@ -42,7 +42,7 @@ export async function updateBook(formData: FormData) {
     const { id, name, image_url, is_public } = validatedFields.data;
 
     await sql`
-        UPDATE recipe_books
+        UPDATE recipebooks
         SET name = ${name}, image_url = ${image_url || null}, is_public = ${is_public}
         WHERE id = ${id}
     `;
