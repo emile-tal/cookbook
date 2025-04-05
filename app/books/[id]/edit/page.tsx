@@ -1,8 +1,8 @@
 'use server'
 
-import EditBookName from "@/app/ui/books/edit-bookname";
+import BookForm from "@/app/ui/books/book-form";
 import { fetchBookByBookId } from "@/app/lib/data/recipeBook";
-
+import { updateBook } from "@/app/actions/recipebook";
 interface Props {
     params: Promise<{ id: string }>;
 }
@@ -17,7 +17,7 @@ export default async function EditBookPage({ params }: Props) {
 
     return (
         <div className="max-w-2xl mx-auto py-8">
-            <EditBookName book={book} />
+            <BookForm book={book} formAction={updateBook} />
 
         </div>
     )

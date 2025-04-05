@@ -95,7 +95,6 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             : recipeFormSchema.safeParse(formDataWithBoolean);
 
         if (!validatedFields.success) {
-            console.log('Validation errors:', validatedFields.error.flatten().fieldErrors);
             return {
                 errors: validatedFields.error.flatten().fieldErrors,
                 message: `Missing Fields. Failed to ${id ? 'Update' : 'Create'} Recipe.`
