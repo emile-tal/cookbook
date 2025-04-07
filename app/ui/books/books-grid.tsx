@@ -46,7 +46,7 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                             ) : (
                                 <MenuBookIcon className="w-full h-full text-gray-300 scale-[300%]" />
                             )}
-                            {session?.user?.username === book.username && <button
+                            {(session?.user?.username === book.username) && <button
                                 className="absolute top-1 left-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
                                 onClick={(e) => {
                                     e.stopPropagation();

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
+import ErrorIcon from '@mui/icons-material/Error';
 import Image from "next/image";
 import MenuBook from "@mui/icons-material/MenuBook";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
@@ -27,6 +28,7 @@ export default function RecipesGrid({ recipes, books }: Props) {
     const [newBookInputVisible, setNewBookInputVisible] = useState(false);
     const [newBook, setNewBook] = useState('');
     const newBookInputRef = useRef<HTMLInputElement>(null);
+    const [errorAddingRecipe, setErrorAddingRecipe] = useState(false);
     const { data: session, status } = useSession();
 
     useEffect(() => {
@@ -40,9 +42,14 @@ export default function RecipesGrid({ recipes, books }: Props) {
     }
 
     const handleAddRecipeToBook = async (bookId: string, recipeId: string) => {
-        await addRecipeToBook(bookId, recipeId);
-        setShowBooks(false);
-        setSelectedRecipe(null);
+        const result = await addRecipeToBook(bookId, recipeId);
+        if (result?.result === 'success') {
+            setShowBooks(false);
+            setSelectedRecipe(null);
+            setErrorAddingRecipe(false);
+        } else {
+            setErrorAddingRecipe(true);
+        }
     }
 
     const handleCreateBookWithRecipe = async (recipeId: string) => {
@@ -64,18 +71,26 @@ export default function RecipesGrid({ recipes, books }: Props) {
                     <div className={clsx("flex w-full h-48 relative", showBooks && selectedRecipe === recipe.id ? "bg-gray-50 rounded-t-xl hover:cursor-default" : "items-center justify-center ")}>
                         {showBooks && selectedRecipe === recipe.id ? (
                             <div className="flex flex-col min-w-full h-full">
-                                <div className="flex items-center justify-between px-4 py-2 border-b min-w-full">
-                                    <h3 className="text-lg font-semibold text-gray-800">Add to Book</h3>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setShowBooks(false);
-                                            setSelectedRecipe(null);
-                                        }}
-                                        className="text-gray-500 hover:text-gray-700 p-1"
-                                    >
-                                        ✕
-                                    </button>
+                                <div className=" px-4 py-2 border-b min-w-full">
+                                    <div className="flex justify-between items-center">
+                                        <h3 className="text-lg font-semibold text-gray-800">Add to Book</h3>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setShowBooks(false);
+                                                setSelectedRecipe(null);
+                                            }}
+                                            className="text-gray-500 hover:text-gray-700 p-1"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                    {errorAddingRecipe && (
+                                        <div className="flex items-center gap-2  mt-2">
+                                            <ErrorIcon className="text-red-500 scale-75" />
+                                            <p className="text-red-500 text-sm">Recipe already in book</p>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex-1 overflow-y-auto">
                                     {newBookInputVisible ? (
@@ -134,7 +149,7 @@ export default function RecipesGrid({ recipes, books }: Props) {
                                     className="object-cover rounded-t-xl max-w-full"
                                 />
                             ) : (
-                                <RestaurantIcon className="w-full h-full text-gray-300 bg-gray-100 rounded-t-xl" />
+                                <RestaurantIcon className="scale-[200%] text-gray-300 " />
                             ))}
                         {session?.user?.username === recipe.username && (!showBooks || selectedRecipe !== recipe.id) && (<button
                             className="absolute top-1 left-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
@@ -150,6 +165,7 @@ export default function RecipesGrid({ recipes, books }: Props) {
                                 e.stopPropagation();
                                 showBooks ? setShowBooks(false) : setShowBooks(true);
                                 selectedRecipe === recipe.id ? setSelectedRecipe(null) : setSelectedRecipe(recipe.id);
+                                setErrorAddingRecipe(false);
                             }}>
                             <AddIcon className="text-text text-base group-hover:text-lg" />
                         </button>}

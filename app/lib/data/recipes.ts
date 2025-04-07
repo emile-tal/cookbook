@@ -227,10 +227,17 @@ export async function addRecipeToBook(bookId: string, recipeId: string) {
         return null;
     }
     try {
+        const existingRecipe = await sql<Recipe[]>`
+            SELECT * FROM recipeBookRecipes WHERE book_id = ${bookId} AND recipe_id = ${recipeId}
+        `;
+        if (existingRecipe.length > 0) {
+            return { result: 'error', message: 'Recipe already in book' };
+        }
         await sql`INSERT INTO recipeBookRecipes (book_id, recipe_id) VALUES (${bookId}, ${recipeId})`;
+        return { result: 'success', message: 'Recipe added to book' };
     } catch (error) {
         console.error(`Database error: ${error}`);
-        return null;
+        return { result: 'error', message: 'Failed to add recipe to book' };
     }
 }
 
