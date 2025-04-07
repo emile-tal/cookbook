@@ -107,7 +107,23 @@ export async function fetchRecipeById(id: string) {
     }
 }
 
-export async function fetchRecipesByBookId(id: string, searchQuery?: string) {
+export async function fetchRecipesByBookId(id: string) {
+    try {
+        const recipes = await sql<LiteRecipe[]>`
+            SELECT recipes.id, recipes.title, recipes.image_url, COALESCE(users.username, 'Unknown') as username, recipes.category, recipes.duration
+            FROM recipeBookRecipes
+            JOIN recipes ON recipeBookRecipes.recipe_id = recipes.id
+            LEFT JOIN users ON recipes.user_id = users.id
+            WHERE recipeBookRecipes.book_id = ${id}
+        `;
+        return recipes || null;
+    } catch (error) {
+        console.error(`Database error: ${error} `);
+        return null;
+    }
+}
+
+export async function fetchRecipesByBookIdAndQuery(id: string, searchQuery?: string) {
     try {
         const recipes = await sql<LiteRecipe[]>`
         SELECT recipes.id, recipes.title, recipes.image_url, COALESCE(users.username, 'Unknown') as username, recipes.category, recipes.duration
@@ -120,10 +136,11 @@ export async function fetchRecipesByBookId(id: string, searchQuery?: string) {
             recipes.category ILIKE ${`%${searchQuery}%`} OR
             COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR
             recipes.duration::text ILIKE ${`%${searchQuery}%`}
-        )` : sql``}`
+        )` : sql``
+            } `
         return recipes || null
     } catch (error) {
-        console.error(`Database error: ${error}`)
+        console.error(`Database error: ${error} `)
         return null
     }
 }
@@ -135,16 +152,16 @@ export async function fetchRecentlyViewedRecipesByUser() {
     }
     try {
         const recentlyViewedRecipes = await sql<Recipe[]>`
-            SELECT DISTINCT ON (recipes.id) 
-                recipes.id, 
-                recipes.title, 
-                recipes.description, 
-                recipes.image_url, 
-                recipes.is_public,
-                recipes.category,
-                recipes.duration,
-                COALESCE(users.username, 'Unknown') as username,
-                recipelogs.opened_at
+            SELECT DISTINCT ON(recipes.id)
+        recipes.id,
+            recipes.title,
+            recipes.description,
+            recipes.image_url,
+            recipes.is_public,
+            recipes.category,
+            recipes.duration,
+            COALESCE(users.username, 'Unknown') as username,
+            recipelogs.opened_at
             FROM recipelogs
             JOIN recipes ON recipelogs.recipe_id = recipes.id
             LEFT JOIN users ON recipes.user_id = users.id
@@ -154,7 +171,7 @@ export async function fetchRecentlyViewedRecipesByUser() {
         `;
         return recentlyViewedRecipes || null;
     } catch (error) {
-        console.error(`Database error: ${error}`);
+        console.error(`Database error: ${error} `);
         return null;
     }
 }
@@ -162,28 +179,28 @@ export async function fetchRecentlyViewedRecipesByUser() {
 export async function fetchMostViewedRecipes() {
     try {
         const mostViewedRecipes = await sql<Recipe[]>`
-            SELECT DISTINCT ON (recipes.id) 
-                recipes.id, 
-                recipes.title, 
-                recipes.description, 
-                recipes.image_url, 
-                recipes.is_public,
-                recipes.category,
-                recipes.duration,
-                COALESCE(users.username, 'Unknown') as username,
-                COUNT(recipelogs.recipe_id) as view_count
+            SELECT DISTINCT ON(recipes.id)
+        recipes.id,
+            recipes.title,
+            recipes.description,
+            recipes.image_url,
+            recipes.is_public,
+            recipes.category,
+            recipes.duration,
+            COALESCE(users.username, 'Unknown') as username,
+            COUNT(recipelogs.recipe_id) as view_count
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipelogs ON recipes.id = recipelogs.recipe_id
             WHERE recipes.is_public = true
-            GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url, 
-                     recipes.is_public, recipes.category, recipes.duration, users.username
+            GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url,
+            recipes.is_public, recipes.category, recipes.duration, users.username
             ORDER BY recipes.id, view_count DESC
             LIMIT 4
         `;
         return mostViewedRecipes || null;
     } catch (error) {
-        console.error(`Database error: ${error}`);
+        console.error(`Database error: ${error} `);
         return null;
     }
 }
@@ -195,28 +212,28 @@ export async function fetchMostViewedRecipesByUser() {
     }
     try {
         const mostViewedRecipes = await sql<Recipe[]>`
-            SELECT DISTINCT ON (recipes.id) 
-                recipes.id, 
-                recipes.title, 
-                recipes.description, 
-                recipes.image_url, 
-                recipes.is_public,
-                recipes.category,
-                recipes.duration,
-                COALESCE(users.username, 'Unknown') as username,
-                COUNT(recipelogs.recipe_id) as view_count
+            SELECT DISTINCT ON(recipes.id)
+        recipes.id,
+            recipes.title,
+            recipes.description,
+            recipes.image_url,
+            recipes.is_public,
+            recipes.category,
+            recipes.duration,
+            COALESCE(users.username, 'Unknown') as username,
+            COUNT(recipelogs.recipe_id) as view_count
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipelogs ON recipes.id = recipelogs.recipe_id
             WHERE recipelogs.user_id = ${user.id}
-            GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url, 
-                     recipes.is_public, recipes.category, recipes.duration, users.username
+            GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url,
+            recipes.is_public, recipes.category, recipes.duration, users.username
             ORDER BY recipes.id, view_count DESC
             LIMIT 4
         `;
         return mostViewedRecipes || null;
     } catch (error) {
-        console.error(`Database error: ${error}`);
+        console.error(`Database error: ${error} `);
         return null;
     }
 }
@@ -228,15 +245,15 @@ export async function addRecipeToBook(bookId: string, recipeId: string) {
     }
     try {
         const existingRecipe = await sql<Recipe[]>`
-            SELECT * FROM recipeBookRecipes WHERE book_id = ${bookId} AND recipe_id = ${recipeId}
+        SELECT * FROM recipeBookRecipes WHERE book_id = ${bookId} AND recipe_id = ${recipeId}
         `;
         if (existingRecipe.length > 0) {
             return { result: 'error', message: 'Recipe already in book' };
         }
-        await sql`INSERT INTO recipeBookRecipes (book_id, recipe_id) VALUES (${bookId}, ${recipeId})`;
+        await sql`INSERT INTO recipeBookRecipes(book_id, recipe_id) VALUES(${bookId}, ${recipeId})`;
         return { result: 'success', message: 'Recipe added to book' };
     } catch (error) {
-        console.error(`Database error: ${error}`);
+        console.error(`Database error: ${error} `);
         return { result: 'error', message: 'Failed to add recipe to book' };
     }
 }
@@ -247,9 +264,9 @@ export async function deleteRecipe(id: string) {
         return null;
     }
     try {
-        await sql`DELETE FROM recipes WHERE id = ${id} AND user_id = ${user.id}`;
+        await sql`DELETE FROM recipes WHERE id = ${id} AND user_id = ${user.id} `;
     } catch (error) {
-        console.error(`Database error: ${error}`);
+        console.error(`Database error: ${error} `);
         return null;
     }
 }
