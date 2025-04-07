@@ -9,6 +9,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import ErrorIcon from '@mui/icons-material/Error';
 import Image from "next/image";
 import MenuBook from "@mui/icons-material/MenuBook";
+import MenuIcon from '@mui/icons-material/Menu';
+import RemoveIcon from '@mui/icons-material/Remove';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { addRecipeToBook } from '@/app/lib/data/recipes';
 import clsx from "clsx";
@@ -23,6 +25,7 @@ interface Props {
 
 export default function RecipesGrid({ recipes, books }: Props) {
     const router = useRouter();
+    const [showMenu, setShowMenu] = useState(false);
     const [showBooks, setShowBooks] = useState(false);
     const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
     const [newBookInputVisible, setNewBookInputVisible] = useState(false);
@@ -68,7 +71,7 @@ export default function RecipesGrid({ recipes, books }: Props) {
                     className='p-4 bg-white border border-gray-100 rounded-xl shadow-md hover:cursor-pointer transition-shadow hover:shadow-lg'
                     onClick={() => router.push(`/recipe/${recipe.id}`)}
                 >
-                    <div className={clsx("flex w-full h-48 relative", showBooks && selectedRecipe === recipe.id ? "bg-gray-50 rounded-t-xl hover:cursor-default" : "items-center justify-center ")}>
+                    <div className={clsx("flex w-full h-48 relative rounded-t-xl", showBooks && selectedRecipe === recipe.id ? "bg-gray-50 hover:cursor-default" : "items-center justify-center bg-gray-50")}>
                         {showBooks && selectedRecipe === recipe.id ? (
                             <div className="flex flex-col min-w-full h-full">
                                 <div className=" px-4 py-2 border-b min-w-full">
@@ -151,24 +154,58 @@ export default function RecipesGrid({ recipes, books }: Props) {
                             ) : (
                                 <RestaurantIcon className="scale-[200%] text-gray-300 " />
                             ))}
-                        {session?.user?.username === recipe.username && (!showBooks || selectedRecipe !== recipe.id) && (<button
-                            className="absolute top-1 left-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/recipe/${recipe.id}/edit`);
-                            }}>
-                            <EditIcon className="text-text text-base group-hover:text-lg" />
-                        </button>)}
                         {(showBooks && selectedRecipe === recipe.id) || <button
-                            className="absolute top-1 right-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
+                            className="absolute top-1.5 right-1.5 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                showBooks ? setShowBooks(false) : setShowBooks(true);
-                                selectedRecipe === recipe.id ? setSelectedRecipe(null) : setSelectedRecipe(recipe.id);
-                                setErrorAddingRecipe(false);
+                                if (selectedRecipe === recipe.id) {
+                                    setSelectedRecipe(null)
+                                    setShowMenu(false)
+                                } else {
+                                    setSelectedRecipe(recipe.id)
+                                    setShowMenu(true)
+                                    setShowBooks(false)
+                                }
                             }}>
-                            <AddIcon className="text-text text-base group-hover:text-lg" />
+                            <MenuIcon className="text-text text-base group-hover:text-lg" />
                         </button>}
+                        {showMenu && selectedRecipe === recipe.id && (
+                            <div className="absolute top-0 right-0 flex flex-col gap-2 h-full bg-gray-100 rounded-tr-xl p-2">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowMenu(false);
+                                        setSelectedRecipe(null);
+                                    }}
+                                    className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group">
+                                    <span className="text-text text-xl group-hover:text-lg">
+                                        ✕
+                                    </span>
+                                </button>
+                                {session?.user?.username === recipe.username && (!showBooks || selectedRecipe !== recipe.id) && (<button
+                                    className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        router.push(`/recipe/${recipe.id}/edit`);
+                                    }}>
+                                    <EditIcon className="text-text text-base group-hover:text-lg" />
+                                </button>)}
+                                <button
+                                    className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowBooks(true);
+                                        setErrorAddingRecipe(false);
+                                        setShowMenu(false);
+                                    }}
+                                >
+                                    <AddIcon className="text-text text-base group-hover:text-lg" />
+                                </button>
+                                <button className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group">
+                                    <RemoveIcon className="text-text text-base group-hover:text-lg" />
+                                </button>
+                            </div>
+                        )}
                     </div>
                     <div className="pt-3 pb-2">
                         <h3 className="font-medium text-lg">{recipe.title}</h3>
