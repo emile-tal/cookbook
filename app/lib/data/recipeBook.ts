@@ -4,24 +4,6 @@ import { Book } from '../../types/definitions'
 import { getCurrentUser } from '../auth';
 import sql from '../db';
 
-export async function fetchAllBooks(searchQuery?: string) {
-    try {
-        const books = await sql<Book[]>`
-            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
-            FROM recipeBooks
-            JOIN users ON recipeBooks.user_id = users.id
-            ${searchQuery ? sql`WHERE (
-                recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
-                users.username ILIKE ${`%${searchQuery}%`}
-            )` : sql``}
-        `;
-        return books || [];
-    } catch (error) {
-        console.error(`Database error: ${error}`);
-        return [];
-    }
-}
-
 export async function fetchUserBooks(searchQuery?: string) {
     const user = await getCurrentUser();
     if (!user) {
@@ -65,7 +47,8 @@ export async function fetchBookByBookId(id: string) {
     }
 }
 
-export async function fetchRecipeCountByBookId() {
+//TODO: Need to optimize this function
+export async function fetchRecipeCountForAllBooks() {
     try {
         const recipeCounts = await sql<{ book_id: string, count: number }[]>`
             SELECT book_id, COUNT(recipe_id) as count
@@ -237,5 +220,24 @@ export async function deleteBook(id: string) {
     } catch (error) {
         console.error(`Database error: ${error}`);
         return { success: false };
+    }
+}
+
+export async function fetchAllPublicBooksByQuery(searchQuery?: string) {
+    try {
+        const books = await sql<Book[]>`
+            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
+            FROM recipeBooks
+            JOIN users ON recipeBooks.user_id = users.id
+            WHERE recipeBooks.is_public = true
+            ${searchQuery ? sql`AND (
+                recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
+                users.username ILIKE ${`%${searchQuery}%`}
+            )` : sql``}
+        `;
+        return books || [];
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return [];
     }
 }

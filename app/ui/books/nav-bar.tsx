@@ -64,11 +64,6 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
                             <ArrowBackIcon />
                         </IconButton>}
                     </div>
-
-                    <div className="flex-1 min-w-[300px] max-w-[500px] mx-2">
-                        <SearchBar placeholder="Search..." />
-                    </div>
-
                     <div className="flex items-center gap-2">
                         <ToggleButtonGroup
                             value={view}

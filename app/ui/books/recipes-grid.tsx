@@ -20,10 +20,10 @@ import { useSession } from "next-auth/react";
 
 interface Props {
     recipes: LiteRecipe[] | null,
-    books: Book[] | null
+    userBooks: Book[] | null
 }
 
-export default function RecipesGrid({ recipes, books }: Props) {
+export default function RecipesGrid({ recipes, userBooks }: Props) {
     const router = useRouter();
     const [showMenu, setShowMenu] = useState(false);
     const [showBooks, setShowBooks] = useState(false);

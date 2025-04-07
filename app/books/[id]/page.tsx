@@ -15,10 +15,12 @@ type Props = {
 export default async function Page({ params, searchParams }: Props) {
     const { id } = await params;
     const query = searchParams.q;
-    const book = await fetchBookByBookId(id);
-    const bookRecipes = await fetchRecipesByBookId(id);
-    const recipes = await fetchRecipesByBookIdAndQuery(id, query);
-    const books = await fetchUserBooks();
+    const [book, bookRecipes, recipes, books] = await Promise.all([
+        fetchBookByBookId(id),
+        fetchRecipesByBookId(id),
+        fetchRecipesByBookIdAndQuery(id, query),
+        fetchUserBooks()
+    ]);
 
     if (!book) {
         return <div>Book not found</div>;

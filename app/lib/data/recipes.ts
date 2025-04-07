@@ -5,54 +5,6 @@ import { LiteRecipe, Recipe } from '../../types/definitions'
 import { getCurrentUser } from '../auth';
 import sql from '../db';
 
-export async function fetchAllRecipes() {
-    try {
-        const recipes = await sql<Recipe[]>`
-            SELECT 
-                recipes.id, 
-                recipes.title, 
-                recipes.description, 
-                recipes.image_url, 
-                recipes.is_public,
-                recipes.category,
-                recipes.duration,
-                COALESCE(users.username, 'Unknown') as username
-            FROM recipes
-            LEFT JOIN users ON recipes.user_id = users.id
-            WHERE recipes.is_public = true
-        `;
-        return recipes || [];
-    } catch (error) {
-        console.error(`Database error: ${error}`);
-        return [];
-    }
-}
-
-export async function fetchUserRecipes(searchQuery?: string) {
-    const user = await getCurrentUser();
-    if (!user) {
-        return null;
-    }
-    try {
-        const userRecipes = await sql<Recipe[]>`
-        SELECT recipes.id, recipes.title, recipes.description, recipes.image_url, recipes.is_public, recipes.category, recipes.duration, COALESCE(users.username, 'Unknown') as username
-        FROM recipes
-        LEFT JOIN users ON recipes.user_id = users.id
-        WHERE recipes.user_id = ${user.id}
-        ${searchQuery ? sql`AND (
-            recipes.title ILIKE ${`%${searchQuery}%`} OR
-            recipes.description ILIKE ${`%${searchQuery}%`} OR
-            recipes.category ILIKE ${`%${searchQuery}%`} OR
-            COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR
-            recipes.duration::text ILIKE ${`%${searchQuery}%`}
-        )` : sql``}`
-        return userRecipes || null
-    } catch (error) {
-        console.error(`Database error: ${error}`)
-        return null
-    }
-}
-
 export async function fetchRecipeById(id: string) {
     try {
         const recipe = await sql<Recipe[]>`
@@ -268,5 +220,26 @@ export async function deleteRecipe(id: string) {
     } catch (error) {
         console.error(`Database error: ${error} `);
         return null;
+    }
+}
+
+export async function fetchAllPublicRecipesByQuery(searchQuery?: string) {
+    try {
+        const recipes = await sql<Recipe[]>`
+        SELECT recipes.id, recipes.title, recipes.description, recipes.image_url, recipes.is_public, recipes.category, recipes.duration, COALESCE(users.username, 'Unknown') as username
+        FROM recipes
+        LEFT JOIN users ON recipes.user_id = users.id
+        WHERE recipes.is_public = true
+        ${searchQuery ? sql`AND (
+            recipes.title ILIKE ${`%${searchQuery}%`} OR
+            recipes.description ILIKE ${`%${searchQuery}%`} OR
+            recipes.category ILIKE ${`%${searchQuery}%`} OR
+            COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR
+            recipes.duration::text ILIKE ${`%${searchQuery}%`}
+        )` : sql``}`
+        return recipes || null
+    } catch (error) {
+        console.error(`Database error: ${error}`)
+        return null
     }
 }
