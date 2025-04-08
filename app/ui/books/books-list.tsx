@@ -1,13 +1,15 @@
 'use client'
 
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+
 import { Book } from '@/app/types/definitions';
 import EditIcon from '@mui/icons-material/Edit';
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
 import { addSavedBook } from '@/app/lib/data/recipeBook';
 import { removeSavedBook } from '@/app/lib/data/recipeBook';
-import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+
 interface Props {
     books: Book[];
     recipeCountByBook?: Record<string, number>;
@@ -17,6 +19,10 @@ interface Props {
 export default function BooksList({ books, recipeCountByBook = {}, savedBooks = [] }: Props) {
     const router = useRouter();
     const { data: session, status } = useSession();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    const fullUrl = pathname + '?' + searchParams.toString();
 
     if (status === 'loading') {
         return <div>Loading...</div>
@@ -28,7 +34,7 @@ export default function BooksList({ books, recipeCountByBook = {}, savedBooks = 
                 <div key={book.id} className='py-3 grid grid-cols-12 w-full border-b border-gray-100 items-center'>
                     <div className="col-span-5 flex items-center gap-2">
                         <p
-                            onClick={() => router.push(`/books/${book.id}`)}
+                            onClick={() => router.push(`/books/${book.id}?from=${fullUrl}`)}
                             className="hover:cursor-pointer font-medium truncate"
                         >
                             {book.name}
@@ -40,7 +46,7 @@ export default function BooksList({ books, recipeCountByBook = {}, savedBooks = 
                         <span>{recipeCountByBook[book.id] || 0} recipes</span>
                     </div>
                     <div className="col-span-1 flex justify-end gap-2">
-                        {session?.user?.username === book.username && <EditIcon onClick={() => router.push(`/books/${book.id}/edit`)} className="hover:cursor-pointer" />}
+                        {session?.user?.username === book.username && <EditIcon onClick={() => router.push(`/books/${book.id}/edit?from=${fullUrl}`)} className="hover:cursor-pointer" />}
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();

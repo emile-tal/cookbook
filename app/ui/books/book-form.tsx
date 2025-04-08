@@ -3,6 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import { BackButton } from "../recipe/back-button";
 import { Book } from '@/app/types/definitions';
 import DeleteDialog from "@/app/components/DeleteDialog";
 import EditIcon from '@mui/icons-material/Edit';
@@ -62,9 +63,14 @@ export default function BookForm({ formAction, book }: Props) {
     }
 
     return (
-        <form action={action} className="flex flex-col gap-4">
-            <input type="hidden" name="name" value={name} />
-            <EditTitle title={name} onChange={setName} />
+        <form action={action} className="flex flex-col gap-4 relative">
+            <div className="flex gap-2 items-center">
+                <div className="md:absolute md:top-[6.25px] md:left-[-40px]">
+                    <BackButton />
+                </div>
+                <input type="hidden" name="name" value={name} />
+                <EditTitle title={name} onChange={setName} />
+            </div>
             {state?.message && (
                 <div className="text-red-500">{state.message}</div>
             )}

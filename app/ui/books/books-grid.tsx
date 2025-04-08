@@ -1,6 +1,7 @@
 'use client'
 
 import { addSavedBook, removeSavedBook } from "@/app/lib/data/recipeBook";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Book } from "@/app/types/definitions";
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,7 +9,6 @@ import Image from "next/image";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 interface Props {
@@ -20,6 +20,11 @@ interface Props {
 export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = [] }: Props) {
     const router = useRouter();
     const { data: session, status } = useSession();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    const fullUrl = pathname + '?' + searchParams.toString();
+
 
     if (status === 'loading') {
         return <div>Loading...</div>
@@ -33,7 +38,7 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                     <div
                         key={book.id}
                         className="p-4 bg-white border border-gray-100 rounded-xl shadow-md hover:cursor-pointer transition-shadow hover:shadow-lg"
-                        onClick={() => router.push(`/books/${book.id}`)}
+                        onClick={() => router.push(`/books/${book.id}?from=${fullUrl}`)}
                     >
                         <div className="flex items-center justify-center w-full h-48 relative">
                             {book.image_url ? (
@@ -50,7 +55,7 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                                 className="absolute top-1 left-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    router.push(`/books/${book.id}/edit`);
+                                    router.push(`/books/${book.id}/edit?from=${fullUrl}`);
                                 }}>
                                 <EditIcon className="text-text text-base group-hover:text-lg" />
                             </button>}

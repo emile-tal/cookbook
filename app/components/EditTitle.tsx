@@ -36,7 +36,7 @@ export default function EditTitle({ title, onChange, error }: EditTitleProps) {
                 onChange={handleTitleInput}
                 onInput={handleTitleInput}
                 placeholder="Recipe title"
-                className="text-2xl px-3 py-2 bg-background focus:outline-none focus:border-b-2 focus:border-secondary"
+                className="text-2xl pr-3 py-2 bg-background focus:outline-none focus:border-b-2 focus:border-secondary"
                 style={{ minWidth: '300px' }}
             />
             {error && (

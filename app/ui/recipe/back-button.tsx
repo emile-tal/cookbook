@@ -1,11 +1,14 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { IconButton } from '@mui/material';
-import { useRouter } from 'next/navigation';
 
 export function BackButton() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const from = searchParams.get('from') || '/';
 
     return (
         <IconButton
@@ -14,7 +17,7 @@ export function BackButton() {
             sx={{
                 color: 'var(--primary-color)',
             }}
-            onClick={() => router.back()}
+            onClick={() => router.push(from)}
         >
             <ArrowBackIcon />
         </IconButton>

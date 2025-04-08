@@ -16,7 +16,7 @@ export default async function EditBookPage({ params }: Props) {
     }
 
     return (
-        <div className="max-w-2xl mx-auto py-8">
+        <div className="max-w-2xl mx-auto">
             <BookForm book={book} formAction={updateBook} />
 
         </div>

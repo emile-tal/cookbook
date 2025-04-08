@@ -4,6 +4,7 @@ import { Book, LiteRecipe } from "@/app/types/definitions";
 import { addRecipeToBook, removeRecipeFromBook } from '@/app/lib/data/recipes';
 import { createBookWithRecipe, fetchBookIdsByRecipeId } from "@/app/lib/data/recipeBook";
 import { useEffect, useRef, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
@@ -15,7 +16,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import RemoveIcon from '@mui/icons-material/Remove';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 interface Props {
@@ -34,12 +34,16 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
     const [errorAddingRecipe, setErrorAddingRecipe] = useState(false);
     const [bookIdsWithRecipe, setBookIdsWithRecipe] = useState<string[]>([]);
     const { data: session, status } = useSession();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         if (newBookInputVisible && newBookInputRef.current) {
             newBookInputRef.current.focus();
         }
     }, [newBookInputVisible]);
+
+    const fullUrl = pathname + '?' + searchParams.toString();
 
     if (status === 'loading') {
         return <div>Loading...</div>
@@ -86,7 +90,7 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                 <div
                     key={recipe.id}
                     className='p-4 bg-white border border-gray-100 rounded-xl shadow-md hover:cursor-pointer transition-shadow hover:shadow-lg'
-                    onClick={() => router.push(`/recipe/${recipe.id}`)}
+                    onClick={() => router.push(`/recipe/${recipe.id}?from=${fullUrl}`)}
                 >
                     <div className={clsx("flex w-full h-48 relative rounded-t-xl", showBooks && selectedRecipe === recipe.id ? "bg-gray-50 hover:cursor-default" : "items-center justify-center bg-gray-50")}>
                         {showBooks && selectedRecipe === recipe.id ? (
@@ -210,7 +214,7 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                     className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        router.push(`/recipe/${recipe.id}/edit`);
+                                        router.push(`/recipe/${recipe.id}/edit?from=${fullUrl}`);
                                     }}>
                                     <EditIcon className="text-text text-base group-hover:text-lg" />
                                 </button>)}

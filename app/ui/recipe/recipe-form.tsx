@@ -5,6 +5,7 @@ import { useActionState, useEffect, useRef, useState } from "react"
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { BackButton } from "./back-button";
 import DeleteDialog from "@/app/components/DeleteDialog";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -103,17 +104,20 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
 
     return (
         <form action={dispatch}>
-            <div className="space-y-4">
+            <div className="space-y-4 relative">
                 {state?.message && (
                     <div className="text-red-500">{state.message}</div>
                 )}
-
-                <EditTitle
-                    title={title}
-                    onChange={setTitle}
-                    error={state?.errors?.title?.[0]}
-                />
-
+                <div className="flex gap-2 items-center">
+                    <div className="md:absolute md:top-[6.25px] md:left-[-40px]">
+                        <BackButton />
+                    </div>
+                    <EditTitle
+                        title={title}
+                        onChange={setTitle}
+                        error={state?.errors?.title?.[0]}
+                    />
+                </div>
                 <div className="w-full">
                     <label htmlFor="image" className="block text-sm font-medium mb-2">Recipe Image</label>
                     <div className="relative">
