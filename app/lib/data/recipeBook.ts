@@ -241,3 +241,17 @@ export async function fetchAllPublicBooksByQuery(searchQuery?: string) {
         return [];
     }
 }
+
+export async function fetchBookIdsByRecipeId(recipeId: string) {
+    try {
+        const bookIds = await sql<{ book_id: string }[]>`
+            SELECT book_id
+            FROM recipeBookRecipes
+            WHERE recipe_id = ${recipeId}
+        `;
+        return bookIds || [];
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return [];
+    }
+}

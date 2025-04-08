@@ -1,6 +1,8 @@
 'use client'
 
 import { Book, LiteRecipe } from "@/app/types/definitions";
+import { addRecipeToBook, removeRecipeFromBook } from '@/app/lib/data/recipes';
+import { createBookWithRecipe, fetchBookIdsByRecipeId } from "@/app/lib/data/recipeBook";
 import { useEffect, useRef, useState } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -12,9 +14,7 @@ import MenuBook from "@mui/icons-material/MenuBook";
 import MenuIcon from '@mui/icons-material/Menu';
 import RemoveIcon from '@mui/icons-material/Remove';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import { addRecipeToBook } from '@/app/lib/data/recipes';
 import clsx from "clsx";
-import { createBookWithRecipe } from "@/app/lib/data/recipeBook";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -32,6 +32,7 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
     const [newBook, setNewBook] = useState('');
     const newBookInputRef = useRef<HTMLInputElement>(null);
     const [errorAddingRecipe, setErrorAddingRecipe] = useState(false);
+    const [bookIdsWithRecipe, setBookIdsWithRecipe] = useState<string[]>([]);
     const { data: session, status } = useSession();
 
     useEffect(() => {
@@ -45,14 +46,13 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
     }
 
     const handleAddRecipeToBook = async (bookId: string, recipeId: string) => {
-        const result = await addRecipeToBook(bookId, recipeId);
-        if (result?.result === 'success') {
-            setShowBooks(false);
-            setSelectedRecipe(null);
-            setErrorAddingRecipe(false);
-        } else {
-            setErrorAddingRecipe(true);
-        }
+        await addRecipeToBook(bookId, recipeId);
+        handleCloseMenus();
+    }
+
+    const handleRemoveRecipeFromBook = async (bookId: string, recipeId: string) => {
+        await removeRecipeFromBook(bookId, recipeId);
+        handleCloseMenus();
     }
 
     const handleCreateBookWithRecipe = async (recipeId: string) => {
@@ -61,6 +61,23 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
         setNewBook('');
         setShowBooks(false);
         setSelectedRecipe(null);
+    }
+
+    const handleShowBooks = async (recipeId: string) => {
+        const bookIds = await fetchBookIdsByRecipeId(recipeId);
+        setShowBooks(true);
+        setSelectedRecipe(recipeId);
+        setShowMenu(false);
+        setBookIdsWithRecipe(bookIds.map((book) => book.book_id));
+    }
+
+    const handleCloseMenus = () => {
+        setShowBooks(false);
+        setSelectedRecipe(null);
+        setBookIdsWithRecipe([]);
+        setErrorAddingRecipe(false);
+        setNewBookInputVisible(false);
+        setNewBook('');
     }
 
     return (
@@ -80,8 +97,7 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                setShowBooks(false);
-                                                setSelectedRecipe(null);
+                                                handleCloseMenus();
                                             }}
                                             className="text-gray-500 hover:text-gray-700 p-1"
                                         >
@@ -128,18 +144,27 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                             <span className="text-gray-700 text-left">New Book</span>
                                         </button>
                                     )}
-                                    {books?.map((book) => (
-                                        <button
-                                            key={book.id}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleAddRecipeToBook(book.id, recipe.id);
-                                            }}
-                                            className="min-w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-100 transition-colors border-b last:border-b-0"
-                                        >
-                                            <MenuBook className="text-gray-500 flex-shrink-0" />
-                                            <span className="text-gray-700 truncate">{book.name}</span>
-                                        </button>
+                                    {userBooks?.map((book) => (
+                                        <div key={book.id} className="min-w-full flex items-center justify-between px-4 py-2 border-b last:border-b-0">
+                                            <span className={`text-gray-700 truncate ${bookIdsWithRecipe.includes(book.id) ? "font-bold" : ""}`}>{book.name}</span>
+                                            {bookIdsWithRecipe.includes(book.id) ? (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleRemoveRecipeFromBook(book.id, recipe.id);
+                                                    }}>
+                                                    <RemoveIcon className="text-gray-500 scale-75 hover:text-gray-700 hover:scale-100 transition-all" />
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleAddRecipeToBook(book.id, recipe.id);
+                                                    }}>
+                                                    <AddIcon className="text-gray-500 scale-75 hover:text-gray-700 hover:scale-100 transition-all" />
+                                                </button>
+                                            )}
+                                        </div>
                                     ))}
                                 </div>
                             </div>
@@ -174,8 +199,7 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setShowMenu(false);
-                                        setSelectedRecipe(null);
+                                        handleCloseMenus();
                                     }}
                                     className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group">
                                     <span className="text-text text-xl group-hover:text-lg">
@@ -194,15 +218,10 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                     className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setShowBooks(true);
-                                        setErrorAddingRecipe(false);
-                                        setShowMenu(false);
+                                        handleShowBooks(recipe.id);
                                     }}
                                 >
-                                    <AddIcon className="text-text text-base group-hover:text-lg" />
-                                </button>
-                                <button className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group">
-                                    <RemoveIcon className="text-text text-base group-hover:text-lg" />
+                                    <MenuBook className="text-text text-base group-hover:text-lg" />
                                 </button>
                             </div>
                         )}
