@@ -6,14 +6,12 @@ import { createBookWithRecipe, fetchBookIdsByRecipeId } from "@/app/lib/data/rec
 import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import ErrorIcon from '@mui/icons-material/Error';
 import Image from "next/image";
 import MenuBook from "@mui/icons-material/MenuBook";
 import MenuIcon from '@mui/icons-material/Menu';
-import RemoveIcon from '@mui/icons-material/Remove';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
@@ -92,7 +90,7 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                     className='p-4 bg-white border border-gray-100 rounded-xl shadow-md hover:cursor-pointer transition-shadow hover:shadow-lg'
                     onClick={() => router.push(`/recipe/${recipe.id}?from=${fullUrl}`)}
                 >
-                    <div className={clsx("flex w-full h-48 relative rounded-t-xl", showBooks && selectedRecipe === recipe.id ? "bg-gray-50 hover:cursor-default" : "items-center justify-center bg-gray-50")}>
+                    <div className={clsx("flex w-full h-48 relative rounded-t-xl bg-gray-50", showBooks && selectedRecipe === recipe.id ? "hover:cursor-default" : "items-center justify-center")}>
                         {showBooks && selectedRecipe === recipe.id ? (
                             <div className="flex flex-col min-w-full h-full">
                                 <div className=" px-4 py-2 border-b min-w-full">
@@ -238,7 +236,7 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                         {recipe.categories.map((category, index) => (
                                             <span
                                                 key={index}
-                                                className="text-xs px-2 py-0.5 rounded-md bg-secondary bg-opacity-10 text-secondary font-medium mr-1.5 inline-block"
+                                                className="text-xs px-2 py-0.5 rounded-md bg-secondary bg-opacity-10 text-text font-medium mr-1.5 inline-block"
                                             >
                                                 {category.charAt(0).toUpperCase() + category.slice(1)}
                                             </span>
@@ -250,7 +248,7 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                                 {recipe.categories.map((category, index) => (
                                                     <span
                                                         key={index}
-                                                        className="text-xs px-2 py-0.5 rounded-md bg-secondary bg-opacity-10 text-secondary font-medium"
+                                                        className="text-xs px-2 py-0.5 rounded-md bg-secondary bg-opacity-10 text-text font-medium"
                                                     >
                                                         {category.charAt(0).toUpperCase() + category.slice(1)}
                                                     </span>

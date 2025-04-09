@@ -11,11 +11,3 @@ export async function fetchCategories() {
         return [];
     }
 }
-
-export async function addCategory(category: string) {
-    try {
-        await sql`INSERT INTO categories (category) VALUES (${category})`;
-    } catch (error) {
-        console.error('Error adding category:', error);
-    }
-}

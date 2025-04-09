@@ -40,7 +40,7 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                         className="p-4 bg-white border border-gray-100 rounded-xl shadow-md hover:cursor-pointer transition-shadow hover:shadow-lg"
                         onClick={() => router.push(`/books/${book.id}?from=${fullUrl}`)}
                     >
-                        <div className="flex items-center justify-center w-full h-48 relative">
+                        <div className="flex items-center justify-center w-full h-48 relative bg-gray-50 rounded-t-xl">
                             {book.image_url ? (
                                 <Image
                                     src={book.image_url}
