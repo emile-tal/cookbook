@@ -5,13 +5,16 @@ import { useActionState, useEffect, useRef, useState } from "react"
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Autocomplete from "@mui/material/Autocomplete";
 import { BackButton } from "./back-button";
+import Chip from "@mui/material/Chip";
 import DeleteDialog from "@/app/components/DeleteDialog";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import EditTitle from '@/app/components/EditTitle'
 import Image from "next/image"
 import { RecipeFormState } from "@/app/actions/recipe"
+import TextField from "@mui/material/TextField";
 import { deleteRecipe } from "@/app/lib/data/recipes";
 import { uploadImage } from "@/app/lib/uploadImage"
 import { useRouter } from "next/navigation";
@@ -20,9 +23,10 @@ interface Props {
     formAction: (prevState: RecipeFormState, formData: FormData, id?: string) => Promise<RecipeFormState>
     recipe?: Recipe
     bookId?: string | null
+    categories: string[]
 }
 
-export default function RecipeForm({ formAction, recipe, bookId }: Props) {
+export default function RecipeForm({ formAction, recipe, bookId, categories }: Props) {
     const initialState: RecipeFormState = { message: null, errors: {} }
     const [state, dispatch] = useActionState(
         (prevState: RecipeFormState, formData: FormData) => {
@@ -38,6 +42,8 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
         recipe?.instructions || [{ position: 1, instruction: '' }]
     )
     const [title, setTitle] = useState(recipe?.title || '')
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(recipe?.categories || [])
+
     const [imageUrl, setImageUrl] = useState<string | null>(recipe?.image_url || null)
     const [isUploading, setIsUploading] = useState(false)
     const [isHovering, setIsHovering] = useState(false)
@@ -49,6 +55,9 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
         setTitle(recipe?.title || '')
     }, [recipe?.title])
 
+    const formatCategories = (categories: string[]) => {
+        return categories.map(category => (category.charAt(0).toUpperCase() + category.slice(1)))
+    }
 
     const addIngredient = () => {
         setIngredients([...ingredients, { amount: '', ingredient: '' }])
@@ -181,16 +190,39 @@ export default function RecipeForm({ formAction, recipe, bookId }: Props) {
                     )}
                 </div>
 
-
-
                 <div>
-                    <label htmlFor="category" className="block text-sm font-medium">Category</label>
+                    <label htmlFor="category" className="block text-sm font-medium mb-2">Categories</label>
+                    <Autocomplete
+                        multiple
+                        id="categories"
+                        options={formatCategories(categories)}
+                        value={selectedCategories}
+                        onChange={(_, newValue) => setSelectedCategories(newValue)}
+                        freeSolo
+                        renderTags={(value, getTagProps) =>
+                            value.map((option, index) => (
+                                <Chip
+                                    label={option}
+                                    {...getTagProps({ index })}
+                                    key={option}
+                                    className="bg-secondary bg-opacity-10 text-secondary"
+                                />
+                            ))
+                        }
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                placeholder="Add categories"
+                                variant="outlined"
+                                fullWidth
+                                size="small"
+                            />
+                        )}
+                    />
                     <input
-                        type="text"
-                        name="category"
-                        defaultValue={recipe?.category}
-                        placeholder="Recipe category"
-                        className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2"
+                        type="hidden"
+                        name="categories"
+                        value={JSON.stringify(selectedCategories)}
                     />
                 </div>
 

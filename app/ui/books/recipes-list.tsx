@@ -26,9 +26,8 @@ export default function RecipesList({ recipes }: Props) {
         <div className="flex flex-col">
             {recipes?.map((recipe) => (
                 <div key={recipe.id} className='py-2 grid grid-cols-12 w-full'>
-                    <p onClick={() => router.push(`/recipe/${recipe.id}?from=${fullUrl}`)} className="hover:cursor-pointer col-span-4">{recipe.title}</p>
-                    <p className="col-span-3">{recipe.username}</p>
-                    <p className="col-span-2">{recipe.category}</p>
+                    <p onClick={() => router.push(`/recipe/${recipe.id}?from=${fullUrl}`)} className="hover:cursor-pointer col-span-5">{recipe.title}</p>
+                    <p className="col-span-4">{recipe.username}</p>
                     <p className="col-span-2">{recipe.duration} minutes</p>
                     <div className="col-span-1 flex gap-2 justify-end">
                         {session?.user?.username === recipe.username && <EditIcon onClick={() => router.push(`/recipe/${recipe.id}/edit?from=${fullUrl}`)} className="hover:cursor-pointer" />}

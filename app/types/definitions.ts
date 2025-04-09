@@ -11,8 +11,8 @@ export type LiteRecipe = {
     title: string,
     image_url: string,
     username: string,
-    category: string,
-    duration: number
+    duration: number,
+    categories: string[]
 }
 
 export type Ingredient = {
@@ -29,7 +29,7 @@ export type Recipe = LiteRecipe & {
     description: string,
     is_public: boolean,
     ingredients: Ingredient[],
-    instructions: Instruction[]
+    instructions: Instruction[],
 }
 
 export type User = {

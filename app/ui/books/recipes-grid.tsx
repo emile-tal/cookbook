@@ -223,17 +223,28 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                             </div>
                         )}
                     </div>
-                    <div className="pt-3 pb-2">
+                    <div className="pt-3">
                         <h3 className="font-medium text-lg">{recipe.title}</h3>
                         <div className="flex justify-between items-center mt-1">
                             <p className="text-sm text-gray-600">By {recipe.username}</p>
-                            {recipe.category && (
-                                <span className="text-xs text-gray-500">{recipe.category}</span>
+                            {recipe.duration > 0 && (
+                                <p className="text-xs text-gray-500 mt-1">{recipe.duration} minutes</p>
                             )}
                         </div>
-                        {recipe.duration > 0 && (
-                            <p className="text-xs text-gray-500 mt-1">{recipe.duration} minutes</p>
-                        )}
+                        <div className="mt-2 flex flex-wrap gap-1.5 items-center min-h-6">
+                            {recipe.categories && recipe.categories.length > 0 ? (
+                                recipe.categories.map((category, index) => (
+                                    <span
+                                        key={index}
+                                        className="text-xs px-2 py-0.5 rounded-md bg-secondary bg-opacity-10 text-secondary font-medium"
+                                    >
+                                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                                    </span>
+                                ))
+                            ) : (
+                                <span className="text-xs text-gray-400">No categories</span>
+                            )}
+                        </div>
                     </div>
                 </div>
             ))}

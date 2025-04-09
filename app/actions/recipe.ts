@@ -30,7 +30,14 @@ const recipeSchema = z.object({
     id: z.string(),
     title: z.string().min(3, { message: "Title must be at least 3 characters long" }).trim(),
     description: z.string().default(''),
-    category: z.string().default(''),
+
+    categories: z.string().transform((str) => {
+        try {
+            return z.array(z.string()).parse(JSON.parse(str));
+        } catch (error) {
+            return [];
+        }
+    }).default('[]'),
     duration: z.coerce.number().optional().default(0),
     is_public: z.boolean(),
     image_url: z.string().optional(),
@@ -80,7 +87,9 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             is_public: formData.get('is_public') === 'on',
             duration: rawFormData.duration || 0,
             description: rawFormData.description || '',
-            category: rawFormData.category || '',
+            categories: JSON.stringify(
+                JSON.parse(rawFormData.categories as string).map((cat: string) => cat)
+            ),
             ingredients: JSON.stringify(
                 JSON.parse(rawFormData.ingredients as string).map((ing: RawIngredient) => ({
                     ...ing,
@@ -101,7 +110,7 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             };
         }
 
-        const { title, description, category, duration, is_public, ingredients, instructions, image_url } = validatedFields.data;
+        const { title, description, duration, is_public, ingredients, instructions, image_url, categories } = validatedFields.data;
 
         // Ensure we have at least one ingredient and one instruction
         if (ingredients.length === 0) {
@@ -124,16 +133,16 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
                 UPDATE recipes
                 SET title = ${title}, 
                     description = ${description || ''}, 
-                    category = ${category || ''}, 
                     duration = ${duration || 0}, 
                     is_public = ${is_public},
                     image_url = ${image_url || null}
                 WHERE id = ${id}
             `;
 
-            // Delete existing ingredients and instructions
+            // Delete existing ingredients, instructions and categories
             await sql`DELETE FROM ingredients WHERE recipe_id = ${id}`;
             await sql`DELETE FROM instructions WHERE recipe_id = ${id}`;
+            await sql`DELETE FROM recipecategories WHERE recipe_id = ${id}`;
 
             // Insert new ingredients
             if (ingredients.length > 0) {
@@ -155,12 +164,22 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
                 );
             }
 
+            // Insert new categories
+            if (categories.length > 0) {
+                await Promise.all(
+                    categories.map(category =>
+                        sql`INSERT INTO recipecategories (recipe_id, category)
+                                VALUES (${id}, ${category.toLowerCase()})`
+                    )
+                );
+            }
+
             revalidatePath(`/recipe/${id}`);
             return redirect(`/recipe/${id}`);
         } else {
             const [newRecipe] = await sql<[{ id: string }]>`
-                INSERT INTO recipes (title, description, category, duration, is_public, user_id, image_url)
-                VALUES (${title}, ${description || ''}, ${category || ''}, ${duration || 0}, ${is_public}, ${user.id}, ${image_url || null})
+                INSERT INTO recipes (title, description, duration, is_public, user_id, image_url)
+                VALUES (${title}, ${description || ''}, ${duration || 0}, ${is_public}, ${user.id}, ${image_url || null})
                 RETURNING id
             `;
 
@@ -184,6 +203,16 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
                 );
             }
 
+            // Insert categories
+            if (categories.length > 0) {
+                await Promise.all(
+                    categories.map(category =>
+                        sql`INSERT INTO recipecategories (recipe_id, category)
+                                VALUES (${newRecipe.id}, ${category.toLowerCase()})`
+                    )
+                );
+            }
+
             // Check if a book ID was provided to associate this recipe with
             const bookId = formData.get('bookId');
             if (bookId) {
@@ -193,10 +222,6 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
                     INSERT INTO recipeBookRecipes (book_id, recipe_id)
                     VALUES (${bookId.toString()}, ${newRecipe.id})
                 `;
-
-                // Redirect to the book page after adding the recipe
-                revalidatePath(`/books/${bookId}`);
-                return redirect(`/books/${bookId}`);
             }
 
             revalidatePath(`/recipe/${newRecipe.id}`);

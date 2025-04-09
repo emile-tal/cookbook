@@ -23,6 +23,7 @@ export default function RecipePage({ recipe, username }: Props) {
     // Ensure ingredients and instructions are arrays (avoid potential issues)
     const ingredients = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
     const instructions = Array.isArray(recipe.instructions) ? recipe.instructions : [];
+    const categories = Array.isArray(recipe.categories) ? recipe.categories : [];
 
     return (
         <div className="min-h-screen">
@@ -62,9 +63,20 @@ export default function RecipePage({ recipe, username }: Props) {
                         )}
                         <div className="flex gap-4 text-sm text-gray-500">
                             <span>By {recipe.username}</span>
-                            {recipe.category && <span>{recipe.category}</span>}
                             {recipe.duration > 0 && <span>{recipe.duration} minutes</span>}
                         </div>
+                        {categories.length > 0 && (
+                            <div className="mt-3 flex flex-wrap gap-2 justify-center">
+                                {categories.map((category, index) => (
+                                    <span
+                                        key={index}
+                                        className="text-sm px-2.5 py-1 rounded-md bg-secondary bg-opacity-10 text-secondary font-medium"
+                                    >
+                                        {typeof category === 'string' ? category.charAt(0).toUpperCase() + category.slice(1) : ''}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Recipe content */}

@@ -12,17 +12,12 @@ const tableHeaders = [
     {
         label: "Title",
         sort: "title",
-        column: 4
+        column: 5
     },
     {
         label: "Owner",
         sort: "owner",
-        column: 3
-    },
-    {
-        label: "Category",
-        sort: "category",
-        column: 2
+        column: 4
     },
     {
         label: "Duration",
@@ -59,8 +54,6 @@ export function RecipesDisplay({ recipes, userBooks }: Props) {
                 return sortDirection === "asc" ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title);
             } else if (sort === "owner") {
                 return sortDirection === "asc" ? a.username.localeCompare(b.username) : b.username.localeCompare(a.username);
-            } else if (sort === "category") {
-                return sortDirection === "asc" ? (a.category || '').localeCompare(b.category || '') : (b.category || '').localeCompare(a.category || '');
             }
             return 0;
         });
