@@ -51,12 +51,12 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
 
     const handleAddRecipeToBook = async (bookId: string, recipeId: string) => {
         await addRecipeToBook(bookId, recipeId);
-        handleCloseMenus();
+        setBookIdsWithRecipe([...bookIdsWithRecipe, bookId]);
     }
 
     const handleRemoveRecipeFromBook = async (bookId: string, recipeId: string) => {
         await removeRecipeFromBook(bookId, recipeId);
-        handleCloseMenus();
+        setBookIdsWithRecipe(bookIdsWithRecipe.filter((id) => id !== bookId));
     }
 
     const handleCreateBookWithRecipe = async (recipeId: string) => {
@@ -149,26 +149,19 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                         </button>
                                     )}
                                     {userBooks?.map((book) => (
-                                        <div key={book.id} className="min-w-full flex items-center justify-between px-4 py-2 border-b last:border-b-0">
+                                        <button
+                                            key={book.id}
+                                            className="min-w-full flex items-center justify-between px-4 py-2 border-b last:border-b-0 hover:cursor-pointer hover:bg-gray-100 transition-colors"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                bookIdsWithRecipe.includes(book.id) ? handleRemoveRecipeFromBook(book.id, recipe.id) : handleAddRecipeToBook(book.id, recipe.id);
+                                            }}
+                                        >
                                             <span className={`text-gray-700 truncate ${bookIdsWithRecipe.includes(book.id) ? "font-bold" : ""}`}>{book.name}</span>
-                                            {bookIdsWithRecipe.includes(book.id) ? (
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleRemoveRecipeFromBook(book.id, recipe.id);
-                                                    }}>
-                                                    <RemoveIcon className="text-gray-500 scale-75 hover:text-gray-700 hover:scale-100 transition-all" />
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleAddRecipeToBook(book.id, recipe.id);
-                                                    }}>
-                                                    <AddIcon className="text-gray-500 scale-75 hover:text-gray-700 hover:scale-100 transition-all" />
-                                                </button>
+                                            {bookIdsWithRecipe.includes(book.id) && (
+                                                <CheckIcon className="text-gray-500 scale-75 hover:text-gray-700" />
                                             )}
-                                        </div>
+                                        </button>
                                     ))}
                                 </div>
                             </div>

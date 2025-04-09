@@ -1,5 +1,5 @@
-import { fetchAllPublicBooksByQuery, fetchMostViewedBooks, fetchRecentlyViewedBooks, fetchRecipeCountForAllBooks, fetchSavedBooks, fetchUserBooks } from "./lib/data/recipeBook";
 import { fetchAllPublicRecipesByQuery, fetchMostViewedRecipes, fetchMostViewedRecipesByUser, fetchRecentlyViewedRecipesByUser } from "./lib/data/recipes";
+import { fetchMostViewedBooks, fetchRecentlyViewedBooks, fetchRecipeCountForAllBooks, fetchSavedBooks, fetchUserBooks } from "./lib/data/recipeBook";
 
 import BooksGrid from "./ui/books/books-grid";
 import RecipesGrid from "./ui/books/recipes-grid";
@@ -20,8 +20,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
 
   const allRecipes = await fetchAllPublicRecipesByQuery(q)
 
-  //TODO: Need to find a way for user to change from recipes to books
-  const allBooks = await fetchAllPublicBooksByQuery(q)
+  // TODO: Need to find a way for user to change from recipes to books
+  // const allBooks = await fetchAllPublicBooksByQuery(q)
 
   return (
     <main className="container-spacing">
