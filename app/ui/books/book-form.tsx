@@ -3,7 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import { BackButton } from "../recipe/back-button";
+import { BackButton } from "../back-button";
 import { Book } from '@/app/types/definitions';
 import DeleteDialog from "@/app/components/DeleteDialog";
 import EditIcon from '@mui/icons-material/Edit';

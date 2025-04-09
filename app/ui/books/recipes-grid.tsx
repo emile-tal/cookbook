@@ -175,17 +175,12 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                 <RestaurantIcon className="scale-[200%] text-gray-300 " />
                             ))}
                         {(showBooks && selectedRecipe === recipe.id) || <button
-                            className="absolute top-1.5 right-1.5 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
+                            className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                if (selectedRecipe === recipe.id) {
-                                    setSelectedRecipe(null)
-                                    setShowMenu(false)
-                                } else {
-                                    setSelectedRecipe(recipe.id)
-                                    setShowMenu(true)
-                                    setShowBooks(false)
-                                }
+                                setSelectedRecipe(recipe.id)
+                                setShowMenu(true)
+                                setShowBooks(false)
                             }}>
                             <MenuIcon className="text-text text-base group-hover:text-lg" />
                         </button>}

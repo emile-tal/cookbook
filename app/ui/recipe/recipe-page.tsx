@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { BackButton } from "./back-button";
+import { BackButton } from "../back-button";
 import EditIcon from '@mui/icons-material/Edit';
 import Image from "next/image";
 import { Recipe } from '@/app/types/definitions';

@@ -6,7 +6,7 @@ import { useActionState, useEffect, useRef, useState } from "react"
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Autocomplete from "@mui/material/Autocomplete";
-import { BackButton } from "./back-button";
+import { BackButton } from "../back-button";
 import Chip from "@mui/material/Chip";
 import DeleteDialog from "@/app/components/DeleteDialog";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';

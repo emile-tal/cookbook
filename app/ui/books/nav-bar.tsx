@@ -4,7 +4,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, ToggleBu
 import { usePathname, useRouter } from 'next/navigation';
 
 import AddIcon from '@mui/icons-material/Add';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BackButton } from '../back-button';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import { createBook } from '@/app/lib/data/recipeBook';
@@ -52,16 +52,7 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
             {showNavBar && (
                 <nav className="flex justify-between py-2 items-center">
                     <div className="min-w-[24px] sm:min-w-[34px] lg:min-w-[40px]">
-                        {showBackButton && <IconButton
-                            onClick={handleBack}
-                            aria-label="go back"
-                            size="small"
-                            sx={{
-                                color: 'var(--primary-color)',
-                            }}
-                        >
-                            <ArrowBackIcon />
-                        </IconButton>}
+                        {showBackButton && <BackButton />}
                     </div>
                     <div className="flex items-center gap-2">
                         <ToggleButtonGroup

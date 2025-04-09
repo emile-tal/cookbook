@@ -7,9 +7,11 @@ import { Book } from "@/app/types/definitions";
 import EditIcon from '@mui/icons-material/Edit';
 import Image from "next/image";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import MenuIcon from '@mui/icons-material/Menu';
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 interface Props {
     books: Book[];
@@ -22,7 +24,8 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
     const { data: session, status } = useSession();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-
+    const [selectedBook, setSelectedBook] = useState<string | null>(null);
+    const [showMenu, setShowMenu] = useState<boolean>(false);
     const fullUrl = pathname + '?' + searchParams.toString();
 
 
@@ -51,32 +54,55 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                             ) : (
                                 <MenuBookIcon className="w-full h-full text-gray-300 scale-[300%]" />
                             )}
-                            {(session?.user?.username === book.username) && <button
-                                className="absolute top-1 left-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    router.push(`/books/${book.id}/edit?from=${fullUrl}`);
-                                }}>
-                                <EditIcon className="text-text text-base group-hover:text-lg" />
-                            </button>}
                             <button
-                                className="absolute top-1 right-1 flex items-center justify-center bg-white rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-gray-100 group"
+                                className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white transition-all duration-200 group"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    if (saved) {
-                                        removeSavedBook(book.id);
-                                        router.refresh();
-                                    } else {
-                                        addSavedBook(book.id);
-                                        router.refresh();
-                                    }
+                                    setSelectedBook(book.id)
+                                    setShowMenu(true)
                                 }}>
-                                {saved ? (
-                                    <TurnedIn className="text-red-500 text-base group-hover:text-lg" />
-                                ) : (
-                                    <TurnedInNot className="text-text text-base group-hover:text-lg" />
-                                )}
+                                <MenuIcon className="text-text text-base group-hover:text-lg" />
                             </button>
+                            {showMenu && selectedBook === book.id && (
+                                <div className="absolute top-0 right-0 flex flex-col gap-2 h-full bg-gray-100 rounded-tr-xl p-2">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowMenu(false)
+                                        }}
+                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group">
+                                        <span className="text-text text-xl group-hover:text-lg">
+                                            ✕
+                                        </span>
+                                    </button>
+                                    {(session?.user?.username === book.username) && <button
+                                        className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            router.push(`/books/${book.id}/edit?from=${fullUrl}`);
+                                        }}>
+                                        <EditIcon className="text-text text-base group-hover:text-lg" />
+                                    </button>}
+                                    <button
+                                        className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (saved) {
+                                                removeSavedBook(book.id);
+                                                router.refresh();
+                                            } else {
+                                                addSavedBook(book.id);
+                                                router.refresh();
+                                            }
+                                        }}>
+                                        {saved ? (
+                                            <TurnedIn className="text-red-400 text-base group-hover:text-lg" />
+                                        ) : (
+                                            <TurnedInNot className="text-text text-base group-hover:text-lg" />
+                                        )}
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         <div className="pt-3 pb-2">
