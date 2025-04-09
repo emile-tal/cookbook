@@ -231,16 +231,34 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                 <p className="text-xs text-gray-500 mt-1">{recipe.duration} minutes</p>
                             )}
                         </div>
-                        <div className="mt-2 flex flex-wrap gap-1.5 items-center min-h-6">
+                        <div className="mt-2 relative">
                             {recipe.categories && recipe.categories.length > 0 ? (
-                                recipe.categories.map((category, index) => (
-                                    <span
-                                        key={index}
-                                        className="text-xs px-2 py-0.5 rounded-md bg-secondary bg-opacity-10 text-secondary font-medium"
-                                    >
-                                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                                    </span>
-                                ))
+                                <div className="group">
+                                    <div className="overflow-hidden text-ellipsis whitespace-nowrap">
+                                        {recipe.categories.map((category, index) => (
+                                            <span
+                                                key={index}
+                                                className="text-xs px-2 py-0.5 rounded-md bg-secondary bg-opacity-10 text-secondary font-medium mr-1.5 inline-block"
+                                            >
+                                                {category.charAt(0).toUpperCase() + category.slice(1)}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    {recipe.categories.length > 2 && (
+                                        <div className="absolute left-0 top-full mt-1 z-20 bg-gray-100 p-2 rounded-md shadow-lg hidden group-hover:block">
+                                            <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                                {recipe.categories.map((category, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className="text-xs px-2 py-0.5 rounded-md bg-secondary bg-opacity-10 text-secondary font-medium"
+                                                    >
+                                                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             ) : (
                                 <span className="text-xs text-gray-400">No categories</span>
                             )}

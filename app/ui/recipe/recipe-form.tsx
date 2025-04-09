@@ -199,15 +199,24 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                         value={selectedCategories}
                         onChange={(_, newValue) => setSelectedCategories(newValue)}
                         freeSolo
+                        className="bg-white"
+                        sx={{
+                            '& .MuiChip-root': {
+                                margin: '0 4px 4px 0',
+                            }
+                        }}
                         renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                                <Chip
-                                    label={option}
-                                    {...getTagProps({ index })}
-                                    key={option}
-                                    className="bg-secondary bg-opacity-10 text-secondary"
-                                />
-                            ))
+                            value.map((option, index) => {
+                                const capitalizedOption = option.charAt(0).toUpperCase() + option.slice(1);
+                                return (
+                                    <Chip
+                                        label={capitalizedOption}
+                                        {...getTagProps({ index })}
+                                        key={option}
+                                        className="bg-secondary bg-opacity-10 text-secondary"
+                                    />
+                                );
+                            })
                         }
                         renderInput={(params) => (
                             <TextField
