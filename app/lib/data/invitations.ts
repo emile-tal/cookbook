@@ -24,13 +24,43 @@ export async function sendInvitation(bookId: string, email: string, message: str
     }
 }
 
+export async function fetchUnreadInvitationsCountByUser() {
+    const user = await getCurrentUser()
+    if (!user) {
+        return 0
+    }
+    try {
+        const result = await sql`SELECT COUNT(*) FROM invitations WHERE recipient_email = ${user.email} AND status = 'false'`
+        return Number(result[0].count) || 0
+    } catch (error) {
+        console.error(error)
+        return 0
+    }
+}
+
 export async function fetchUnreadInvitationsByUser() {
     const user = await getCurrentUser()
     if (!user) {
         return null
     }
     try {
-        const invitations = await sql<Invitation[]>`SELECT * FROM invitations WHERE recipient_email = ${user.email} AND status = 'false'`
+        const invitations = await sql<Invitation[]>`
+            SELECT 
+                invitations.id,
+                invitations.book_id,
+                recipeBooks.name as book_name,
+                recipeBooks.image_url as book_image_url,
+                users.username as sender_username,
+                users.user_image_url as sender_image_url,
+                invitations.recipient_email,
+                invitations.message,
+                invitations.can_edit,
+                invitations.created_at
+            FROM invitations
+            JOIN recipeBooks ON invitations.book_id = recipeBooks.id
+            JOIN users ON invitations.sender_id = users.id
+            WHERE invitations.recipient_email = ${user.email} AND invitations.status = 'false'
+        `
         return invitations
     } catch (error) {
         console.error(error)

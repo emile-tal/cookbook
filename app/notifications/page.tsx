@@ -9,6 +9,7 @@ export default async function Notifications() {
     if (!user) {
         redirect('/login')
     }
+    console.log(invitations?.[0])
 
     return (
         <main className="container-spacing">
@@ -17,8 +18,13 @@ export default async function Notifications() {
                 <div>
                     {invitations.map((invitation) => (
                         <div key={invitation.id}>
-                            <p>{invitation.sender_id}</p>
-
+                            <p>{invitation.sender_username}</p>
+                            <p>{invitation.book_name}</p>
+                            <p>{invitation.book_image_url}</p>
+                            <p>{invitation.sender_image_url}</p>
+                            <p>{invitation.recipient_email}</p>
+                            <p>{invitation.message}</p>
+                            <p>{invitation.can_edit}</p>
                         </div>
                     ))}
                 </div>

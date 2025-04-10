@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/PersonOutline';
 import clsx from 'clsx';
-import { fetchUnreadInvitationsByUser } from '../lib/data/invitations';
+import { fetchUnreadInvitationsCountByUser } from '../lib/data/invitations';
 import { getUser } from '../lib/data/user';
 
 const links = [
@@ -30,7 +30,7 @@ export default function NavLinks() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
     const router = useRouter();
-    const [invitations, setInvitations] = useState<Invitation[] | null>(null);
+    const [invitationsCount, setInvitationsCount] = useState<number | null>(null);
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -50,9 +50,8 @@ export default function NavLinks() {
     }
 
     const fetchInvitations = async () => {
-        const invitations = await fetchUnreadInvitationsByUser();
-        console.log(invitations)
-        setInvitations(invitations);
+        const invitationsCount = await fetchUnreadInvitationsCountByUser();
+        setInvitationsCount(invitationsCount || 0);
     }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -96,7 +95,7 @@ export default function NavLinks() {
                         </div>
                     ) : (
                         <Person className='text-[rgb(30,30,30)]' />)}
-                    {invitations && invitations.length > 0 && (
+                    {invitationsCount && invitationsCount > 0 && (
                         <div className='absolute top-[5px] right-[5px] size-3 rounded-full bg-red-500 flex items-center justify-center'></div>
                     )}
                 </IconButton>
@@ -141,9 +140,9 @@ export default function NavLinks() {
                             <div className="flex items-center gap-2 w-full">
                                 <div className='flex items-center justify-center size-8 relative'>
                                     <NotificationsIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
-                                    {invitations && invitations.length > 0 && (
+                                    {invitationsCount && invitationsCount > 0 && (
                                         <div className='absolute top-0 right-0 size-4 rounded-full bg-red-500 flex items-center justify-center'>
-                                            <span className='text-white text-xs'>{invitations.length}</span>
+                                            <span className='text-white text-xs'>{invitationsCount}</span>
                                         </div>
                                     )}
                                 </div>
