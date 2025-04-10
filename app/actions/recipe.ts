@@ -35,6 +35,7 @@ const recipeSchema = z.object({
         try {
             return z.array(z.string()).parse(JSON.parse(str));
         } catch (error) {
+            console.error(error)
             return [];
         }
     }).default('[]'),

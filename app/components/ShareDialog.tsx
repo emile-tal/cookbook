@@ -14,7 +14,7 @@ interface ShareDialogProps {
 export default function ShareDialog({ open, onClose, onShare, bookName }: ShareDialogProps) {
     const [email, setEmail] = useState('')
     const [message, setMessage] = useState('')
-    const [permission, setPermission] = useState('editor')
+    const [permission, setPermission] = useState<'editor' | 'viewer'>('editor')
     const [error, setError] = useState<string[]>([])
 
     const validateShare = () => {
@@ -38,7 +38,7 @@ export default function ShareDialog({ open, onClose, onShare, bookName }: ShareD
                 }
             }}
         >
-            <DialogTitle className="text-primary">Share "{bookName}"</DialogTitle>
+            <DialogTitle className="text-primary">{`Share "${bookName}"`}</DialogTitle>
             <DialogContent>
                 <div className="flex flex-col gap-4 py-2">
                     <div className="flex justify-between min-w-full">
@@ -51,7 +51,10 @@ export default function ShareDialog({ open, onClose, onShare, bookName }: ShareD
                         />
                         <select className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                             value={permission}
-                            onChange={(e) => setPermission(e.target.value)}
+                            onChange={(e) => {
+                                setPermission(e.target.value as 'editor' | 'viewer')
+                                console.log(e.target.value)
+                            }}
                         >
                             <option value="editor">Editor</option>
                             <option value="viewer">Viewer</option>

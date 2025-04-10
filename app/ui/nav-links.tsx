@@ -6,11 +6,16 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import IconButton from '@mui/material/IconButton';
 import Image from 'next/image';
+import { Invitation } from '../types/definitions';
 import Link from 'next/link';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/PersonOutline';
 import clsx from 'clsx';
+import { fetchUnreadInvitationsByUser } from '../lib/data/invitations';
 import { getUser } from '../lib/data/user';
 
 const links = [
@@ -25,11 +30,13 @@ export default function NavLinks() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
     const router = useRouter();
+    const [invitations, setInvitations] = useState<Invitation[] | null>(null);
 
     useEffect(() => {
         if (status === 'authenticated') {
             setLoggedIn(true);
             fetchUserData()
+            fetchInvitations()
         } else {
             setLoggedIn(false);
         }
@@ -40,6 +47,12 @@ export default function NavLinks() {
             const user = await getUser(session?.user?.id);
             setProfilePhoto(user?.user_image_url || null);
         }
+    }
+
+    const fetchInvitations = async () => {
+        const invitations = await fetchUnreadInvitationsByUser();
+        console.log(invitations)
+        setInvitations(invitations);
     }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -75,13 +88,17 @@ export default function NavLinks() {
                     aria-controls={open ? 'account-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
+                    className='relative'
                 >
                     {profilePhoto ? (
                         <div className="w-8 h-8 rounded-full overflow-hidden">
                             <Image src={profilePhoto} alt="Profile Photo" width={32} height={32} />
                         </div>
                     ) : (
-                        <Person className='md:l text-[rgb(30,30,30)]' />)}
+                        <Person className='text-[rgb(30,30,30)]' />)}
+                    {invitations && invitations.length > 0 && (
+                        <div className='absolute top-[5px] right-[5px] size-3 rounded-full bg-red-500 flex items-center justify-center'></div>
+                    )}
                 </IconButton>
                 <Menu
                     anchorEl={anchorEl}
@@ -104,10 +121,38 @@ export default function NavLinks() {
                     }}
                 >
                     <MenuItem onClick={handleClose}>
-                        <Link href="/profile" className="w-full">
-                            Profile
-                        </Link>
+                        <div className="flex items-center gap-2 w-full">
+                            {profilePhoto ? (
+                                <div className="size-8 rounded-full overflow-hidden flex-shrink-0">
+                                    <Image src={profilePhoto} alt="Profile Photo" width={32} height={32} />
+                                </div>
+                            ) : (
+                                <div className='flex items-center justify-center size-8'>
+                                    <Person className='text-[rgb(30,30,30)] flex-shrink-0' />
+                                </div>
+                            )}
+                            <Link href="/profile" className="w-full">
+                                <span className="hidden sm:inline">Profile</span>
+                            </Link>
+                        </div>
                     </MenuItem>
+                    {loggedIn && (
+                        <MenuItem onClick={handleClose}>
+                            <div className="flex items-center gap-2 w-full">
+                                <div className='flex items-center justify-center size-8 relative'>
+                                    <NotificationsIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
+                                    {invitations && invitations.length > 0 && (
+                                        <div className='absolute top-0 right-0 size-4 rounded-full bg-red-500 flex items-center justify-center'>
+                                            <span className='text-white text-xs'>{invitations.length}</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <Link href="/notifications" className="w-full">
+                                    <span className="hidden sm:inline">Notifications</span>
+                                </Link>
+                            </div>
+                        </MenuItem>
+                    )}
                     <MenuItem
                         onClick={loggedIn ? handleSignOut : () => { router.push('/login') }}
                         sx={{
@@ -122,7 +167,15 @@ export default function NavLinks() {
                             }
                         }}
                     >
-                        {loggedIn ? 'Sign Out' : 'Sign In'}
+                        <div className="flex items-center gap-2 w-full">
+                            <div className='flex items-center justify-center size-8'>
+                                {loggedIn ?
+                                    <LogoutIcon className='text-[rgb(30,30,30)] flex-shrink-0' /> :
+                                    <LoginIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
+                                }
+                            </div>
+                            <span className="hidden sm:inline">{loggedIn ? 'Sign Out' : 'Sign In'}</span>
+                        </div>
                     </MenuItem>
                 </Menu>
             </div>

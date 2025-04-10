@@ -2,7 +2,8 @@ import Link from "next/link";
 import NavLinks from "./nav-links";
 import { SearchBar } from "../components/SearchBar";
 
-export default function Header() {
+export default async function Header() {
+
     return (
         <header className="bg-background text-text bg-opacity-85">
             <div className="py-8 md:py-12 flex items-center justify-between container-spacing text-l md:text-xl">

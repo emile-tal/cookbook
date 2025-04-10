@@ -45,3 +45,13 @@ export type UserCredentials = {
     password: string,
     email: string,
 }
+
+export type Invitation = {
+    id: string,
+    book_id: string,
+    sender_id: string,
+    recipient_email: string,
+    message: string,
+    can_edit: boolean,
+    created_at: string,
+}

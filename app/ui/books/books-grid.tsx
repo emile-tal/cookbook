@@ -12,6 +12,7 @@ import ShareDialog from "@/app/components/ShareDialog";
 import ShareIcon from '@mui/icons-material/Share';
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
+import { sendInvitation } from "@/app/lib/data/invitations";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -130,8 +131,10 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                 open={showShareDialog}
                 onClose={() => setShowShareDialog(false)}
                 onShare={(email, message, permission) => {
+                    if (selectedBook) {
+                        sendInvitation(selectedBook, email, message, permission)
+                    }
                     setShowShareDialog(false)
-                    console.log(email, message, permission)
                 }}
                 bookName={books.find((book) => book.id === selectedBook)?.name || ''}
             />
