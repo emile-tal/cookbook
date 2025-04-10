@@ -20,8 +20,6 @@ export default function ShareDialog({ open, onClose, onShare, bookName }: ShareD
     const validateShare = () => {
         if (email.length === 0) {
             setError([...error, 'email'])
-        } else if (message.length > 200) {
-            setError([...error, 'message'])
         } else {
             onShare(email, message, permission)
         }
