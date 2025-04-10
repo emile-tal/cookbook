@@ -8,6 +8,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import Image from "next/image";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MenuIcon from '@mui/icons-material/Menu';
+import ShareDialog from "@/app/components/ShareDialog";
+import ShareIcon from '@mui/icons-material/Share';
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
 import { useSession } from "next-auth/react";
@@ -26,6 +28,7 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
     const searchParams = useSearchParams();
     const [selectedBook, setSelectedBook] = useState<string | null>(null);
     const [showMenu, setShowMenu] = useState<boolean>(false);
+    const [showShareDialog, setShowShareDialog] = useState<boolean>(false);
     const fullUrl = pathname + '?' + searchParams.toString();
 
 
@@ -101,6 +104,14 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                                             <TurnedInNot className="text-text text-base group-hover:text-lg" />
                                         )}
                                     </button>
+                                    {(session?.user?.username === book.username) && <button
+                                        className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowShareDialog(true);
+                                        }}>
+                                        <ShareIcon className="text-text text-base group-hover:text-lg" />
+                                    </button>}
                                 </div>
                             )}
                         </div>
@@ -115,6 +126,15 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                     </div>
                 )
             })}
+            <ShareDialog
+                open={showShareDialog}
+                onClose={() => setShowShareDialog(false)}
+                onShare={(email, message, permission) => {
+                    setShowShareDialog(false)
+                    console.log(email, message, permission)
+                }}
+                bookName={books.find((book) => book.id === selectedBook)?.name || ''}
+            />
         </div>
     );
 } 
