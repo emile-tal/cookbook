@@ -1,8 +1,8 @@
 'use client'
 
 import { Book, LiteRecipe } from "@/app/types/definitions";
-import { addRecipeToBook, removeRecipeFromBook } from '@/app/lib/data/recipes';
-import { createBookWithRecipe, fetchBookIdsByRecipeId } from "@/app/lib/data/recipeBook";
+import { addRecipeToBook, removeRecipeFromBook } from '@/app/lib/data/recipes/recipes';
+import { createBookWithRecipe, fetchBookIdsByRecipeId } from "@/app/lib/data/recipebooks/recipeook";
 import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 

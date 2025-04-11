@@ -1,5 +1,5 @@
-import { fetchAllPublicRecipesByQuery, fetchMostViewedRecipes, fetchMostViewedRecipesByUser, fetchRecentlyViewedRecipesByUser } from "./lib/data/recipes";
-import { fetchMostViewedBooks, fetchRecentlyViewedBooks, fetchRecipeCountForAllBooks, fetchSavedBooks, fetchUserBooks } from "./lib/data/recipeBook";
+import { fetchAllRecipesByQuery, fetchMostViewedRecipes, fetchMostViewedRecipesByUser, fetchRecentlyViewedRecipesByUser } from "./lib/data/recipes/fetch";
+import { fetchMostViewedBooks, fetchRecentlyViewedBooks, fetchSavedBooks, fetchUserBooks } from "./lib/data/recipebooks/fetch";
 
 import BooksGrid from "./ui/books/books-grid";
 import RecipesGrid from "./ui/books/recipes-grid";
@@ -16,9 +16,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
     fetchSavedBooks(),
     fetchUserBooks()
   ]);
-  const recipeCountByBook = await fetchRecipeCountForAllBooks();
 
-  const allRecipes = await fetchAllPublicRecipesByQuery(q)
+  const allRecipes = await fetchAllRecipesByQuery(q)
 
   // TODO: Need to find a way for user to change from recipes to books
   // const allBooks = await fetchAllPublicBooksByQuery(q)
@@ -46,11 +45,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
           </div>}
           {recentlyViewedBooks && recentlyViewedBooks.length > 0 && <div className="flex flex-col gap-4 py-4">
             <h2 className="text-xl font-bold">Your Recently Viewed Books</h2>
-            <BooksGrid books={recentlyViewedBooks} recipeCountByBook={recipeCountByBook} savedBooks={savedBooks?.map((book) => book.id) || []} />
+            <BooksGrid books={recentlyViewedBooks} savedBooks={savedBooks?.map((book) => book.id) || []} />
           </div>}
           {mostViewedBooks && mostViewedBooks.length > 0 && <div className="flex flex-col gap-4 py-4">
             <h2 className="text-xl font-bold">Most Popular Books</h2>
-            <BooksGrid books={mostViewedBooks} recipeCountByBook={recipeCountByBook} savedBooks={savedBooks?.map((book) => book.id) || []} />
+            <BooksGrid books={mostViewedBooks} savedBooks={savedBooks?.map((book) => book.id) || []} />
           </div>}
         </>
       )}

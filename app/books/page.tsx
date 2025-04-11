@@ -1,4 +1,4 @@
-import { fetchRecipeCountForAllBooks, fetchSavedBooks, fetchSharedBooksByQuery, fetchUserBooks } from "@/app/lib/data/recipeBook"
+import { fetchRecipeCountForAllBooks, fetchSavedBooks, fetchSharedBooksByQuery, fetchUserBooks } from "@/app/lib/data/recipebooks/recipeook"
 
 import { BookDisplay } from "@/app/ui/books/book-display"
 import NoBooks from "@/app/ui/books/no-books"

@@ -1,7 +1,7 @@
 'use server'
 
 import BookForm from "@/app/ui/books/book-form";
-import { fetchBookByBookId } from "@/app/lib/data/recipeBook";
+import { fetchBookByBookId } from "@/app/lib/data/recipebooks/recipeook";
 import { updateBook } from "@/app/actions/recipebook";
 interface Props {
     params: Promise<{ id: string }>;

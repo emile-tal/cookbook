@@ -2,7 +2,7 @@
 
 import RecipeForm from "@/app/ui/recipe/recipe-form";
 import { fetchCategories } from "@/app/lib/data/categories";
-import { fetchRecipeById } from "@/app/lib/data/recipes";
+import { fetchRecipeById } from "@/app/lib/data/recipes/recipes";
 import { recipeAction } from "@/app/actions/recipe";
 interface Props {
     params: Promise<{ id: string }>;

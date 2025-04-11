@@ -3,7 +3,8 @@ export type Book = {
     name: string,
     username: string,
     image_url: string,
-    is_public: boolean
+    is_public: boolean,
+    recipe_count: number
 }
 
 export type LiteRecipe = {
