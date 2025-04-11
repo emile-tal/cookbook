@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import IconButton from '@mui/material/IconButton';
 import Image from 'next/image';
-import { Invitation } from '../types/definitions';
 import Link from 'next/link';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -95,7 +94,7 @@ export default function NavLinks() {
                         </div>
                     ) : (
                         <Person className='text-[rgb(30,30,30)]' />)}
-                    {invitationsCount && invitationsCount > 0 && (
+                    {invitationsCount !== null && invitationsCount > 0 && (
                         <div className='absolute top-[5px] right-[5px] size-3 rounded-full bg-red-500 flex items-center justify-center'></div>
                     )}
                 </IconButton>
@@ -140,7 +139,7 @@ export default function NavLinks() {
                             <div className="flex items-center gap-2 w-full">
                                 <div className='flex items-center justify-center size-8 relative'>
                                     <NotificationsIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
-                                    {invitationsCount && invitationsCount > 0 && (
+                                    {invitationsCount !== null && invitationsCount > 0 && (
                                         <div className='absolute top-0 right-0 size-4 rounded-full bg-red-500 flex items-center justify-center'>
                                             <span className='text-white text-xs'>{invitationsCount}</span>
                                         </div>
