@@ -7,6 +7,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import Image from "next/image";
 import { Recipe } from '@/app/types/definitions';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { scaleIngredient } from '@/app/lib/utils';
+import { useState } from 'react';
 
 interface Props {
     recipe: Recipe;
@@ -17,6 +19,7 @@ export default function RecipePage({ recipe, username }: Props) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
+    const [recipeYield, setRecipeYield] = useState(recipe.recipe_yield);
 
     const fullUrl = pathname + '?' + searchParams.toString();
 
@@ -24,6 +27,11 @@ export default function RecipePage({ recipe, username }: Props) {
     const ingredients = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
     const instructions = Array.isArray(recipe.instructions) ? recipe.instructions : [];
     const categories = Array.isArray(recipe.categories) ? recipe.categories : [];
+
+    const handleRecipeYieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Number(e.target.value);
+        setRecipeYield(value);
+    };
 
     return (
         <div className="min-h-screen">
@@ -79,8 +87,22 @@ export default function RecipePage({ recipe, username }: Props) {
                         )}
                     </div>
 
+                    {/* Recipe yield section */}
+                    {recipe.recipe_yield && recipe.recipe_yield > 0 && <div className="min-w-full mb-8">
+                        <div>
+                            <h2 className="text-xl font-bold pb-3">Yield</h2>
+                            <input
+                                type="number"
+                                value={recipeYield}
+                                onChange={(e) => handleRecipeYieldChange(e)}
+                                className="max-w-16 border border-gray-300 rounded-md p-1"
+                            />
+                            <span className="text-gray-500 italic"> servings</span>
+                        </div>
+                    </div>}
+
                     {/* Recipe content */}
-                    <div className="w-full grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    <div className="min-w-full grid grid-cols-1 lg:grid-cols-4 gap-8">
                         {/* Ingredients section */}
                         <aside className="lg:col-span-1">
                             <h2 className="text-xl font-bold pb-3 border-b border-gray-200 mb-4">Ingredients</h2>
@@ -88,7 +110,7 @@ export default function RecipePage({ recipe, username }: Props) {
                                 <div className="space-y-3">
                                     {ingredients.map((ingredient, index) => (
                                         <div key={index} className="grid grid-cols-3 gap-2">
-                                            <span className="col-span-1 text-gray-600">{ingredient.amount}</span>
+                                            <span className="col-span-1 text-gray-600">{scaleIngredient(ingredient.amount, recipe.recipe_yield, recipeYield)}</span>
                                             <span className="col-span-2">{ingredient.ingredient}</span>
                                         </div>
                                     ))}

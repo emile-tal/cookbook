@@ -50,6 +50,7 @@ const recipeSchema = z.object({
         return z.array(ingredientSchema).parse(
             parsed.filter((ing: RawIngredient) => ing.ingredient.trim() !== "").map((ing: RawIngredient) => ({
                 ...ing,
+                position: ing.position || 0,
                 amount: ing.amount || ''
             }))
         );
@@ -138,7 +139,7 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
                 SET title = ${title}, 
                     description = ${description || ''}, 
                     duration = ${duration || 0}, 
-                    yield = ${recipe_yield || 0},
+                    recipe_yield = ${recipe_yield || 0},
                     is_public = ${is_public},
                     image_url = ${image_url || null}
                 WHERE id = ${id}

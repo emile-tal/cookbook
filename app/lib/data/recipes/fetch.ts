@@ -17,6 +17,7 @@ export async function fetchRecipeById(id: string) {
                 recipes.image_url, 
                 recipes.is_public,
                 recipes.duration,
+                recipes.recipe_yield,
                 COALESCE(users.username, 'Unknown') as username
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
@@ -26,6 +27,7 @@ export async function fetchRecipeById(id: string) {
             SELECT 
                 recipe_id,
                 json_agg(json_build_object(
+                    'position', position,
                     'amount', amount,
                     'ingredient', ingredient
                 )) as ingredients
@@ -83,9 +85,10 @@ export async function fetchRecipesByBookId(id: string) {
             SELECT DISTINCT
                 recipes.id, 
                 recipes.title, 
-                recipes.image_url, 
+                recipes.image_url,
                 COALESCE(users.username, 'Unknown') as username, 
                 recipes.duration,
+                recipes.recipe_yield,
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories
             FROM recipeBookRecipes
             JOIN recipes ON recipeBookRecipes.recipe_id = recipes.id
@@ -123,6 +126,7 @@ export async function fetchRecipesByBookIdAndQuery(id: string, searchQuery?: str
                 recipes.image_url, 
                 COALESCE(users.username, 'Unknown') as username, 
                 recipes.duration,
+                recipes.recipe_yield,
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories
             FROM recipeBookRecipes
             JOIN recipes ON recipeBookRecipes.recipe_id = recipes.id
@@ -172,6 +176,7 @@ export async function fetchRecentlyViewedRecipesByUser() {
                 recipes.image_url,
                 recipes.is_public,
                 recipes.duration,
+                recipes.recipe_yield,
                 COALESCE(users.username, 'Unknown') as username,
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories,
                 recipelogs.opened_at
@@ -209,6 +214,7 @@ export async function fetchMostViewedRecipes() {
                 recipes.image_url,
                 recipes.is_public,
                 recipes.duration,
+                recipes.recipe_yield,
                 COALESCE(users.username, 'Unknown') as username,
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories,
                 COUNT(recipelogs.recipe_id) as view_count
@@ -218,7 +224,7 @@ export async function fetchMostViewedRecipes() {
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
             WHERE recipes.is_public = true
             GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url,
-                recipes.is_public, recipes.duration, users.username, rc.categories
+                recipes.is_public, recipes.duration, recipes.recipe_yield, users.username, rc.categories
             ORDER BY recipes.id, view_count DESC
             LIMIT 4
         `;
@@ -251,6 +257,7 @@ export async function fetchMostViewedRecipesByUser() {
                 recipes.image_url,
                 recipes.is_public,
                 recipes.duration,
+                recipes.recipe_yield,
                 COALESCE(users.username, 'Unknown') as username,
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories,
                 COUNT(recipelogs.recipe_id) as view_count
@@ -260,7 +267,7 @@ export async function fetchMostViewedRecipesByUser() {
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
             WHERE recipelogs.user_id = ${user.id} AND (recipes.user_id = ${user.id} OR recipes.is_public = true)
             GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url,
-                recipes.is_public, recipes.duration, users.username, rc.categories
+                recipes.is_public, recipes.duration, recipes.recipe_yield, users.username, rc.categories
             ORDER BY recipes.id, view_count DESC
             LIMIT 4
         `;
@@ -290,6 +297,7 @@ export async function fetchAllRecipesByQuery(searchQuery?: string) {
                 recipes.image_url, 
                 recipes.is_public, 
                 recipes.duration, 
+                recipes.recipe_yield,
                 COALESCE(users.username, 'Unknown') as username,
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories
             FROM recipes

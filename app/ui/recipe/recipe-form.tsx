@@ -266,8 +266,8 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                         defaultValue={recipe?.recipe_yield}
                         className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2"
                     />
-                    {state?.errors?.yield && (
-                        <div className="text-red-500 text-sm">{state.errors.yield}</div>
+                    {state?.errors?.recipe_yield && (
+                        <div className="text-red-500 text-sm">{state.errors.recipe_yield}</div>
                     )}
                 </div>
 
