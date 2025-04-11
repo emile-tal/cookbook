@@ -49,7 +49,9 @@ export type UserCredentials = {
 export type Invitation = {
     id: string,
     book_id: string,
-    sender_id: string,
+    book_name: string,
+    book_image_url: string,
+    sender_username: string,
     recipient_email: string,
     message: string,
     can_edit: boolean,

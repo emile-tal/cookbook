@@ -1,28 +1,49 @@
+'use client'
+
 import Image from "next/image"
 import { Invitation } from "@/app/types/definitions"
 import MenuBookIcon from '@mui/icons-material/MenuBook'
+import { addUserToPermissions } from "@/app/lib/data/permissions"
+import { rejectInvitation } from "@/app/lib/data/invitations"
+import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 export default function UnreadFeed({ invitations }: { invitations: Invitation[] }) {
+    const router = useRouter()
+    const { data: session, status } = useSession()
+
+    if (status === 'loading') {
+        return <div>Loading...</div>
+    }
+
+    if (!session?.user.id) {
+        router.push('/login')
+        return
+    }
+
+    async function acceptInvitation(invitationId: string, bookId: string, canEdit: boolean) {
+        if (!session?.user.id) {
+            router.push('/login')
+            return
+        }
+        await addUserToPermissions(invitationId, bookId, canEdit, session?.user.id)
+        router.refresh()
+    }
+
+    async function declineInvitation(invitationId: string) {
+        if (!session?.user.id) {
+            router.push('/login')
+            return
+        }
+        await rejectInvitation(invitationId)
+        router.refresh()
+    }
+
     return (
         <div className="flex flex-col gap-4">
             {invitations.map((invitation) => (
                 <div key={invitation.id} className="bg-white p-5 rounded-xl shadow-md border border-gray-100">
                     <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0 w-12 h-12 relative rounded-full overflow-hidden bg-gray-100">
-                            {invitation.sender_image_url ? (
-                                <Image
-                                    src={invitation.sender_image_url}
-                                    alt={invitation.sender_username}
-                                    fill
-                                    className="object-cover"
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary">
-                                    {invitation.sender_username?.[0]?.toUpperCase() || '?'}
-                                </div>
-                            )}
-                        </div>
-
                         <div className="flex-1">
                             <div className="flex justify-between">
                                 <h3 className="font-medium">
@@ -34,9 +55,11 @@ export default function UnreadFeed({ invitations }: { invitations: Invitation[] 
                                 </span>
                             </div>
                             <div className="mt-2 flex gap-4">
-                                <div className="flex gap-4 flex-col">
-                                    <h4 className="text-lg font-semibold text-primary">{invitation.book_name}</h4>
-                                    <div className="min-w-20 min-h-20 relative bg-gray-50 rounded-lg flex-shrink-0">
+                                <button className="flex gap-2 flex-col" onClick={() => {
+                                    router.push(`/books/${invitation.book_id}`)
+                                }}>
+                                    <h4 className="text-lg font-semibold text-text">{invitation.book_name}</h4>
+                                    <div className="min-w-20 min-h-20 bg-gray-50 rounded-lg">
                                         {invitation.book_image_url ? (
                                             <Image
                                                 src={invitation.book_image_url}
@@ -50,19 +73,24 @@ export default function UnreadFeed({ invitations }: { invitations: Invitation[] 
                                             </div>
                                         )}
                                     </div>
-                                </div>
+                                </button>
                                 {invitation.message && (
-                                    <p className="text-sm text-gray-600 italic bg-gray-50 p-2 rounded-md flex-1 flex items-center">
-                                        "{invitation.message}"
+                                    <p className="text-sm text-gray-600 italic bg-gray-50 px-8 py-4 rounded-md flex-1 flex items-center">
+                                        {`"${invitation.message}"`}
                                     </p>
                                 )}
                             </div>
 
                             <div className="mt-4 flex gap-3 justify-end">
-                                <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+                                <button
+                                    onClick={() => { declineInvitation(invitation.id) }}
+                                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
                                     Decline
                                 </button>
-                                <button className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors">
+                                <button
+                                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors"
+                                    onClick={() => { acceptInvitation(invitation.id, invitation.book_id, invitation.can_edit,) }}
+                                >
                                     Accept
                                 </button>
                             </div>

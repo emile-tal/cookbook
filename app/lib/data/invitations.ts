@@ -38,7 +38,7 @@ export async function fetchUnreadInvitationsCountByUser() {
     }
 }
 
-export async function fetchUnreadInvitationsByUser() {
+export async function fetchPendingInvitationsByUser() {
     const user = await getCurrentUser()
     if (!user) {
         return null
@@ -51,7 +51,6 @@ export async function fetchUnreadInvitationsByUser() {
                 recipeBooks.name as book_name,
                 recipeBooks.image_url as book_image_url,
                 users.username as sender_username,
-                users.user_image_url as sender_image_url,
                 invitations.recipient_email,
                 invitations.message,
                 invitations.can_edit,
@@ -65,5 +64,18 @@ export async function fetchUnreadInvitationsByUser() {
     } catch (error) {
         console.error(error)
         return null
+    }
+}
+
+export async function rejectInvitation(invitationId: string) {
+    const user = await getCurrentUser()
+    if (!user) {
+        throw new Error('User not found')
+    }
+    try {
+        await sql`UPDATE invitations SET status = false WHERE id = ${invitationId}`
+    } catch (error) {
+        console.error(error)
+        throw new Error('Failed to reject invitation')
     }
 }
