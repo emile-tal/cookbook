@@ -1,5 +1,5 @@
-import { fetchBookByBookId, fetchUserBooks } from "@/app/lib/data/recipebooks/recipeook";
-import { fetchRecipesByBookId, fetchRecipesByBookIdAndQuery } from "@/app/lib/data/recipes/recipes";
+import { fetchBookByBookId, fetchUserBooks } from "@/app/lib/data/recipebooks/fetch";
+import { fetchRecipesByBookId, fetchRecipesByBookIdAndQuery } from "@/app/lib/data/recipes/fetch";
 
 import BookLogger from "@/app/components/BookLogger";
 import EmptyBook from "@/app/ui/books/empty-book";

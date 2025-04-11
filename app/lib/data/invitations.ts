@@ -1,7 +1,7 @@
 'use server'
 
 import { Invitation } from "@/app/types/definitions"
-import { fetchBookByBookId } from "./recipebooks/recipebook"
+import { fetchBookByBookId } from "./recipebooks/fetch"
 import { getCurrentUser } from "../auth"
 import sql from '../db'
 

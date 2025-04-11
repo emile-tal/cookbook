@@ -1,6 +1,6 @@
 'use client'
 
-import { addSavedBook, removeSavedBook } from "@/app/lib/data/recipebooks/recipeook";
+import { addSavedBook, removeSavedBook } from "@/app/lib/data/recipebooks/recipebook";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Book } from "@/app/types/definitions";
@@ -18,11 +18,10 @@ import { useState } from "react";
 
 interface Props {
     books: Book[];
-    recipeCountByBook?: Record<string, number>;
     savedBooks: string[];
 }
 
-export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = [] }: Props) {
+export default function BooksGrid({ books, savedBooks = [] }: Props) {
     const router = useRouter();
     const { data: session, status } = useSession();
     const pathname = usePathname();
@@ -121,7 +120,7 @@ export default function BooksGrid({ books, recipeCountByBook = {}, savedBooks = 
                             <h3 className="font-medium text-lg">{book.name}</h3>
                             <div className="flex justify-between items-center mt-1">
                                 <p className="text-sm text-gray-600">By {book.username}</p>
-                                <span className="text-xs text-gray-500">{recipeCountByBook[book.id] || 0} recipes</span>
+                                <span className="text-xs text-gray-500">{book.recipe_count} recipes</span>
                             </div>
                         </div>
                     </div>

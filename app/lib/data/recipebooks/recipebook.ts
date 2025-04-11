@@ -4,28 +4,6 @@ import { Book } from '../../../types/definitions'
 import { getCurrentUser } from '../../auth';
 import sql from '../../db';
 
-//TODO: Need to optimize this function
-export async function fetchRecipeCountForAllBooks() {
-    try {
-        const recipeCounts = await sql<{ book_id: string, count: number }[]>`
-            SELECT book_id, COUNT(recipe_id) as count
-            FROM recipeBookRecipes
-            GROUP BY book_id
-        `;
-
-        // Convert array to a map of book_id -> count
-        const countMap: Record<string, number> = {};
-        recipeCounts.forEach(item => {
-            countMap[item.book_id] = Number(item.count);
-        });
-
-        return countMap;
-    } catch (error) {
-        console.error(`Database error: ${error}`);
-        return {};
-    }
-}
-
 export async function addSavedBook(bookId: string) {
     const user = await getCurrentUser();
     if (!user) {

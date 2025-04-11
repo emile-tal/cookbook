@@ -1,6 +1,4 @@
-import Image from "next/image"
 import Link from "next/link"
-import MenuBookIcon from '@mui/icons-material/MenuBook'
 import UnreadFeed from "../ui/notifications/unread-feed"
 import { fetchPendingInvitationsByUser } from "../lib/data/invitations"
 import { getCurrentUser } from "../lib/auth"

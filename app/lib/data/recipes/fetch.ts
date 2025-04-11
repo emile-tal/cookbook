@@ -104,7 +104,9 @@ export async function fetchRecipesByBookId(id: string) {
     }
 }
 
+// Fetches recipes by book id and query (for when opening a book) - checks if the book is public or the user is the owner or has permission to view
 export async function fetchRecipesByBookIdAndQuery(id: string, searchQuery?: string) {
+    const user = await getCurrentUser();
     try {
         const recipes = await sql<LiteRecipe[]>`
             WITH recipe_categories AS (
@@ -125,7 +127,9 @@ export async function fetchRecipesByBookIdAndQuery(id: string, searchQuery?: str
             JOIN recipes ON recipeBookRecipes.recipe_id = recipes.id
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
-            WHERE recipeBookRecipes.book_id = ${id}
+            WHERE recipeBookRecipes.book_id = ${id} AND recipeBooks.is_public = true ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
+                SELECT book_id FROM permissions WHERE user_id = ${user.id}
+            )` : sql``}
             ${searchQuery ? sql`AND (
                 recipes.title ILIKE ${`%${searchQuery}%`} OR
                 COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR

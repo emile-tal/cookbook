@@ -35,7 +35,9 @@ export async function fetchUserBooks(searchQuery?: string) {
     }
 }
 
+// Fetches a book by id - checks if the book is public or the user is the owner or has permission to view
 export async function fetchBookByBookId(id: string) {
+    const user = await getCurrentUser();
     try {
         const book = await sql<Book[]>`
         SELECT 
@@ -48,7 +50,9 @@ export async function fetchBookByBookId(id: string) {
         FROM recipeBooks
         JOIN users ON recipeBooks.user_id = users.id
         LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
-        WHERE recipeBooks.id = ${id}
+        WHERE recipeBooks.id = ${id} AND recipeBooks.is_public = true ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
+            SELECT book_id FROM permissions WHERE user_id = ${user.id}
+        )` : sql``}
         GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
       `;
         return book[0] || null;
@@ -118,6 +122,7 @@ export async function fetchMostViewedBooks() {
     }
 }
 
+// Fetches saved books - checks if the book is public or the user is the owner or has permission to view
 export async function fetchSavedBooks(searchQuery?: string) {
     const user = await getCurrentUser();
     if (!user) {
@@ -136,7 +141,9 @@ export async function fetchSavedBooks(searchQuery?: string) {
             JOIN savedrecipebooks ON recipeBooks.id = savedrecipebooks.book_id
             JOIN users ON recipeBooks.user_id = users.id
             LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
-            WHERE savedrecipebooks.user_id = ${user.id}
+            WHERE savedrecipebooks.user_id = ${user.id} AND (recipeBooks.is_public = true OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
+                SELECT book_id FROM permissions WHERE user_id = ${user.id}
+            ))
             ${searchQuery ? sql`AND (
                 recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
                 users.username ILIKE ${`%${searchQuery}%`}

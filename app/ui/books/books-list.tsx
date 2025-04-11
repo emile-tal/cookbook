@@ -6,17 +6,16 @@ import { Book } from '@/app/types/definitions';
 import EditIcon from '@mui/icons-material/Edit';
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
-import { addSavedBook } from '@/app/lib/data/recipebooks/recipeook';
-import { removeSavedBook } from '@/app/lib/data/recipebooks/recipeook';
+import { addSavedBook } from '@/app/lib/data/recipebooks/recipebook';
+import { removeSavedBook } from '@/app/lib/data/recipebooks/recipebook';
 import { useSession } from 'next-auth/react';
 
 interface Props {
     books: Book[];
-    recipeCountByBook?: Record<string, number>;
     savedBooks: string[];
 }
 
-export default function BooksList({ books, recipeCountByBook = {}, savedBooks = [] }: Props) {
+export default function BooksList({ books, savedBooks = [] }: Props) {
     const router = useRouter();
     const { data: session, status } = useSession();
     const pathname = usePathname();
@@ -43,7 +42,7 @@ export default function BooksList({ books, recipeCountByBook = {}, savedBooks = 
                     </div>
                     <p className="col-span-4 truncate">{book.username}</p>
                     <div className="col-span-2 items-center">
-                        <span>{recipeCountByBook[book.id] || 0} recipes</span>
+                        <span>{book.recipe_count} recipes</span>
                     </div>
                     <div className="col-span-1 flex justify-end gap-2">
                         {session?.user?.username === book.username && <EditIcon onClick={() => router.push(`/books/${book.id}/edit?from=${fullUrl}`)} className="hover:cursor-pointer" />}
