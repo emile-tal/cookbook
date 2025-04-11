@@ -1,4 +1,4 @@
-import { fetchRecipeCountForAllBooks, fetchSavedBooks, fetchUserBooks } from "@/app/lib/data/recipeBook"
+import { fetchRecipeCountForAllBooks, fetchSavedBooks, fetchSharedBooksByQuery, fetchUserBooks } from "@/app/lib/data/recipeBook"
 
 import { BookDisplay } from "@/app/ui/books/book-display"
 
@@ -7,6 +7,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
     const myBooks = await fetchUserBooks(q)
     const recipeCountByBook = await fetchRecipeCountForAllBooks()
     const savedBooks = await fetchSavedBooks(q)
+    const sharedBooks = await fetchSharedBooksByQuery(q)
 
     return (
         <main className="py-4">
@@ -16,6 +17,14 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
                     <BookDisplay books={myBooks} recipeCountByBook={recipeCountByBook} savedBooks={savedBooks?.map(book => book.id) || []} />
                 ) : (
                     <p className="text-gray-500">No books found</p>
+                )}
+            </div>
+            <div>
+                <h2 className="text-2xl font-bold mb-4">Shared Books</h2>
+                {sharedBooks ? (
+                    <BookDisplay books={sharedBooks} recipeCountByBook={recipeCountByBook} savedBooks={sharedBooks.map(book => book.id)} />
+                ) : (
+                    <p className="text-gray-500">No shared books yet</p>
                 )}
             </div>
             <div>

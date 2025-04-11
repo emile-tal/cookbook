@@ -255,3 +255,27 @@ export async function fetchBookIdsByRecipeId(recipeId: string) {
         return [];
     }
 }
+
+export async function fetchSharedBooksByQuery(searchQuery?: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        const sharedBooks = await sql<Book[]>`
+            SELECT recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
+            FROM recipeBooks
+            JOIN users ON recipeBooks.user_id = users.id
+            JOIN permissions ON recipeBooks.id = permissions.book_id
+            WHERE permissions.user_id = ${user.id}
+            ${searchQuery ? sql`AND (
+                recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
+                users.username ILIKE ${`%${searchQuery}%`}
+            )` : sql``}
+        `;
+        return sharedBooks || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}
