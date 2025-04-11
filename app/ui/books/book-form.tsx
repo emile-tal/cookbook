@@ -62,6 +62,12 @@ export default function BookForm({ formAction, book }: Props) {
         fileInputRef.current?.click();
     }
 
+    const handleDelete = async (bookId: string) => {
+        await deleteBook(bookId)
+        router.push('/books')
+        router.refresh()
+    }
+
     return (
         <form action={action} className="flex flex-col gap-4 relative">
             <div className="flex gap-2 items-center">
@@ -145,8 +151,7 @@ export default function BookForm({ formAction, book }: Props) {
                 open={openDeleteDialog}
                 onClose={() => setOpenDeleteDialog(false)}
                 onDelete={() => {
-                    router.back()
-                    deleteBook(book.id)
+                    handleDelete(book.id)
                 }}
                 itemName="Book"
             />

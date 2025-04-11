@@ -37,7 +37,7 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
         },
         initialState
     )
-    const [ingredients, setIngredients] = useState<Ingredient[]>(recipe?.ingredients || [{ amount: '', ingredient: '' }])
+    const [ingredients, setIngredients] = useState<Ingredient[]>(recipe?.ingredients || [{ position: 1, amount: '', ingredient: '' }])
     const [instructions, setInstructions] = useState<Instruction[]>(
         recipe?.instructions || [{ position: 1, instruction: '' }]
     )
@@ -60,11 +60,14 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
     }
 
     const addIngredient = () => {
-        setIngredients([...ingredients, { amount: '', ingredient: '' }])
+        setIngredients([...ingredients, { position: ingredients.length + 1, amount: '', ingredient: '' }])
     }
 
-    const removeIngredient = (index: number) => {
-        setIngredients(ingredients.filter((_, i) => i !== index))
+    const removeIngredient = (position: number) => {
+        const updatedIngredients = ingredients
+            .filter(ing => ing.position !== position)
+            .map((ing, idx) => ({ ...ing, position: idx + 1 }))
+        setIngredients(updatedIngredients)
     }
 
     const addInstruction = () => {
@@ -79,15 +82,16 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
         setInstructions(updatedInstructions)
     }
 
-    const updateIngredient = (index: number, field: keyof Ingredient, value: string) => {
-        const updatedIngredients = [...ingredients]
-        updatedIngredients[index] = { ...updatedIngredients[index], [field]: value }
+    const updateIngredient = (position: number, ingredient: string, amount: string) => {
+        const updatedIngredients = ingredients.map((ing) =>
+            ing.position === position ? { ...ing, ingredient, amount } : ing
+        )
         setIngredients(updatedIngredients)
     }
 
-    const updateInstruction = (position: number, value: string) => {
+    const updateInstruction = (position: number, instruction: string) => {
         const updatedInstructions = instructions.map(inst =>
-            inst.position === position ? { ...inst, instruction: value } : inst
+            inst.position === position ? { ...inst, instruction } : inst
         )
         setInstructions(updatedInstructions)
     }
@@ -109,6 +113,12 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
 
     const handleImageClick = () => {
         fileInputRef.current?.click()
+    }
+
+    const handleDelete = async (recipeId: string) => {
+        await deleteRecipe(recipeId)
+        router.back()
+        router.refresh()
     }
 
     return (
@@ -249,26 +259,39 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                 </div>
 
                 <div>
+                    <label htmlFor="recipe_yield" className="block text-sm font-medium">Yield (servings)</label>
+                    <input
+                        type="number"
+                        name="recipe_yield"
+                        defaultValue={recipe?.recipe_yield}
+                        className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2"
+                    />
+                    {state?.errors?.yield && (
+                        <div className="text-red-500 text-sm">{state.errors.yield}</div>
+                    )}
+                </div>
+
+                <div>
                     <label htmlFor="ingredients" className="hidden">Ingredients</label>
                     <div className="grid grid-cols-12 gap-2 mb-2">
                         <span className="col-span-2 text-sm">Quantity</span>
                         <span className="col-span-9 text-sm">Ingredient</span>
                         <span className="col-span-1"></span>
                     </div>
-                    {ingredients.map((ingredient, index) => (
+                    {ingredients.sort((a, b) => a.position - b.position).map((ingredient, index) => (
                         <div key={index} className="grid grid-cols-12 gap-2 items-center mb-2">
                             <input
                                 type="text"
                                 name={`ingredient_amount_${index}`}
                                 value={ingredient.amount}
-                                onChange={(e) => updateIngredient(index, 'amount', e.target.value)}
+                                onChange={(e) => updateIngredient(ingredient.position, ingredient.ingredient, e.target.value)}
                                 className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-2"
                             />
                             <input
                                 type="text"
                                 name={`ingredient_name_${index}`}
                                 value={ingredient.ingredient}
-                                onChange={(e) => updateIngredient(index, 'ingredient', e.target.value)}
+                                onChange={(e) => updateIngredient(ingredient.position, e.target.value, ingredient.amount)}
                                 className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-9"
                             />
                             <button
@@ -367,9 +390,10 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                 open={openDeleteDialog}
                 onClose={() => setOpenDeleteDialog(false)}
                 onDelete={() => {
-                    router.back()
                     if (recipe?.id) {
-                        deleteRecipe(recipe.id)
+                        handleDelete(recipe.id)
+                    } else {
+                        router.back()
                     }
                 }}
                 itemName="Recipe"

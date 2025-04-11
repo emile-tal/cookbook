@@ -9,16 +9,16 @@ import { Suspense } from "react";
 
 type Props = {
     params: Promise<{ id: string }>;
-    searchParams: { q?: string, from?: string };
+    searchParams: Promise<{ q?: string, from?: string }>;
 };
 
 export default async function Page({ params, searchParams }: Props) {
     const { id } = await params;
-    const query = searchParams.q;
+    const { q } = await searchParams;
     const [book, bookRecipes, recipes, userBooks] = await Promise.all([
         fetchBookByBookId(id),
         fetchRecipesByBookId(id),
-        fetchRecipesByBookIdAndQuery(id, query),
+        fetchRecipesByBookIdAndQuery(id, q),
         fetchUserBooks()
     ]);
 

@@ -7,6 +7,7 @@ import sql from '../lib/db';
 import { z } from "zod";
 
 type RawIngredient = {
+    position: number;
     amount: string | null;
     ingredient: string;
 };
@@ -17,6 +18,7 @@ type RawInstruction = {
 };
 
 const ingredientSchema = z.object({
+    position: z.number(),
     amount: z.string().nullable().transform(val => val || ''),
     ingredient: z.string()
 });
@@ -40,6 +42,7 @@ const recipeSchema = z.object({
         }
     }).default('[]'),
     duration: z.coerce.number().optional().default(0),
+    recipe_yield: z.coerce.number().optional().default(0),
     is_public: z.boolean(),
     image_url: z.string().optional(),
     ingredients: z.string().transform((str) => {
@@ -111,7 +114,7 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             };
         }
 
-        const { title, description, duration, is_public, ingredients, instructions, image_url, categories } = validatedFields.data;
+        const { title, description, duration, is_public, ingredients, instructions, image_url, categories, recipe_yield } = validatedFields.data;
 
         // Ensure we have at least one ingredient and one instruction
         if (ingredients.length === 0) {
@@ -135,6 +138,7 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
                 SET title = ${title}, 
                     description = ${description || ''}, 
                     duration = ${duration || 0}, 
+                    yield = ${recipe_yield || 0},
                     is_public = ${is_public},
                     image_url = ${image_url || null}
                 WHERE id = ${id}
@@ -149,8 +153,8 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             if (ingredients.length > 0) {
                 await Promise.all(
                     ingredients.map(ingredient =>
-                        sql`INSERT INTO ingredients (recipe_id, amount, ingredient)
-                                VALUES (${id}, ${ingredient.amount || ''}, ${ingredient.ingredient})`
+                        sql`INSERT INTO ingredients (recipe_id, position, amount, ingredient)
+                                VALUES (${id}, ${ingredient.position}, ${ingredient.amount || ''}, ${ingredient.ingredient})`
                     )
                 );
             }
@@ -179,8 +183,8 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             return redirect(`/recipe/${id}`);
         } else {
             const [newRecipe] = await sql<[{ id: string }]>`
-                INSERT INTO recipes (title, description, duration, is_public, user_id, image_url)
-                VALUES (${title}, ${description || ''}, ${duration || 0}, ${is_public}, ${user.id}, ${image_url || null})
+                INSERT INTO recipes (title, description, duration, recipe_yield, is_public, user_id, image_url)
+                VALUES (${title}, ${description || ''}, ${duration || 0}, ${recipe_yield || 0}, ${is_public}, ${user.id}, ${image_url || null})
                 RETURNING id
             `;
 
@@ -188,8 +192,8 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             if (ingredients.length > 0) {
                 await Promise.all(
                     ingredients.map(ingredient =>
-                        sql`INSERT INTO ingredients (recipe_id, amount, ingredient)
-                                VALUES (${newRecipe.id}, ${ingredient.amount || ''}, ${ingredient.ingredient})`
+                        sql`INSERT INTO ingredients (recipe_id, position, amount, ingredient)
+                                VALUES (${newRecipe.id}, ${ingredient.position}, ${ingredient.amount || ''}, ${ingredient.ingredient})`
                     )
                 );
             }

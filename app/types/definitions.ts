@@ -17,6 +17,7 @@ export type LiteRecipe = {
 }
 
 export type Ingredient = {
+    position: number,
     amount: string,
     ingredient: string
 }
@@ -27,6 +28,7 @@ export type Instruction = {
 }
 
 export type Recipe = LiteRecipe & {
+    recipe_yield: number,
     description: string,
     is_public: boolean,
     ingredients: Ingredient[],

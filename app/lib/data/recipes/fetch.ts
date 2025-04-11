@@ -80,7 +80,7 @@ export async function fetchRecipesByBookId(id: string) {
                 FROM recipecategories
                 GROUP BY recipe_id
             )
-            SELECT 
+            SELECT DISTINCT
                 recipes.id, 
                 recipes.title, 
                 recipes.image_url, 
@@ -89,6 +89,7 @@ export async function fetchRecipesByBookId(id: string) {
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories
             FROM recipeBookRecipes
             JOIN recipes ON recipeBookRecipes.recipe_id = recipes.id
+            JOIN recipebooks ON recipeBookRecipes.book_id = recipebooks.id
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
             WHERE recipeBookRecipes.book_id = ${id} 
@@ -125,9 +126,10 @@ export async function fetchRecipesByBookIdAndQuery(id: string, searchQuery?: str
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories
             FROM recipeBookRecipes
             JOIN recipes ON recipeBookRecipes.recipe_id = recipes.id
+            JOIN recipebooks ON recipeBookRecipes.book_id = recipebooks.id
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
-            WHERE recipeBookRecipes.book_id = ${id} AND recipeBooks.is_public = true ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
+            WHERE recipeBookRecipes.book_id = ${id} AND recipebooks.is_public = true ${user ? sql`OR recipebooks.user_id = ${user.id} OR recipebooks.id IN (
                 SELECT book_id FROM permissions WHERE user_id = ${user.id}
             )` : sql``}
             ${searchQuery ? sql`AND (
