@@ -1,6 +1,7 @@
 import { fetchRecipeCountForAllBooks, fetchSavedBooks, fetchSharedBooksByQuery, fetchUserBooks } from "@/app/lib/data/recipeBook"
 
 import { BookDisplay } from "@/app/ui/books/book-display"
+import NoBooks from "@/app/ui/books/no-books"
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
     const { q } = await searchParams;
@@ -13,26 +14,26 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
         <main className="py-4">
             <div className="mb-8">
                 <h2 className="text-2xl font-bold mb-4">My Books</h2>
-                {myBooks ? (
+                {myBooks && myBooks.length > 0 ? (
                     <BookDisplay books={myBooks} recipeCountByBook={recipeCountByBook} savedBooks={savedBooks?.map(book => book.id) || []} />
                 ) : (
-                    <p className="text-gray-500">No books found</p>
+                    <NoBooks message="You haven't created any recipe books yet." />
                 )}
             </div>
-            <div>
+            <div className="mb-8">
                 <h2 className="text-2xl font-bold mb-4">Shared Books</h2>
-                {sharedBooks ? (
-                    <BookDisplay books={sharedBooks} recipeCountByBook={recipeCountByBook} savedBooks={sharedBooks.map(book => book.id)} />
+                {sharedBooks && sharedBooks.length > 0 ? (
+                    <BookDisplay books={sharedBooks} recipeCountByBook={recipeCountByBook} savedBooks={(savedBooks || []).map(book => book.id)} />
                 ) : (
-                    <p className="text-gray-500">No shared books yet</p>
+                    <NoBooks message="No shared books available yet." />
                 )}
             </div>
             <div>
                 <h2 className="text-2xl font-bold mb-4">Saved Books</h2>
-                {savedBooks ? (
+                {savedBooks && savedBooks.length > 0 ? (
                     <BookDisplay books={savedBooks} recipeCountByBook={recipeCountByBook} savedBooks={savedBooks.map(book => book.id)} />
                 ) : (
-                    <p className="text-gray-500">No saved books yet</p>
+                    <NoBooks message="You haven't saved any books yet." />
                 )}
             </div>
         </main>
