@@ -1,3 +1,5 @@
+'use server'
+
 import { fetchBookByBookId, fetchUserBooks } from "@/app/lib/data/recipebooks/fetch";
 import { fetchRecipesByBookId, fetchRecipesByBookIdAndQuery } from "@/app/lib/data/recipes/fetch";
 
@@ -6,6 +8,8 @@ import EmptyBook from "@/app/ui/books/empty-book";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { RecipesDisplay } from "@/app/ui/books/recipes-display";
 import { Suspense } from "react";
+import { getCurrentUser } from "@/app/lib/auth";
+import { userCanEditBook } from "@/app/lib/data/permissions";
 
 type Props = {
     params: Promise<{ id: string }>;
@@ -15,11 +19,14 @@ type Props = {
 export default async function Page({ params, searchParams }: Props) {
     const { id } = await params;
     const { q } = await searchParams;
+    const user = await getCurrentUser();
+    const canEdit = user && id ? await userCanEditBook(id, user.id) : false;
+
     const [book, bookRecipes, recipes, userBooks] = await Promise.all([
         fetchBookByBookId(id),
         fetchRecipesByBookId(id),
         fetchRecipesByBookIdAndQuery(id, q),
-        fetchUserBooks()
+        fetchUserBooks(),
     ]);
 
     if (!book) {
@@ -28,7 +35,10 @@ export default async function Page({ params, searchParams }: Props) {
 
     if (!bookRecipes || bookRecipes.length === 0) {
         return (
-            <EmptyBook />
+            <>
+                <BookLogger bookId={id} />
+                <EmptyBook canEdit={canEdit} />
+            </>
         );
     }
 

@@ -7,9 +7,10 @@ import { ViewContext } from "@/app/context/view-context";
 
 interface BooksLayoutProps {
     children: React.ReactNode;
+    canEdit: boolean;
 }
 
-export default function BooksClientLayout({ children }: BooksLayoutProps) {
+export default function BooksClientLayout({ children, canEdit }: BooksLayoutProps) {
     const [view, setView] = useState<"list" | "grid">("grid");
 
     // Load saved preference from localStorage
@@ -34,6 +35,7 @@ export default function BooksClientLayout({ children }: BooksLayoutProps) {
                 <BookNavBar
                     view={view}
                     handleViewChange={handleViewChange}
+                    canEdit={canEdit}
                 />
                 <div>
                     {children}

@@ -79,7 +79,7 @@ export async function fetchRecentlyViewedBooks() {
                 recipebooklogs.opened_at
             FROM recipebooklogs
             JOIN recipeBooks ON recipebooklogs.book_id = recipeBooks.id
-            JOIN users ON recipebooklogs.user_id = users.id
+            JOIN users ON recipeBooks.user_id = users.id
             LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
             WHERE recipebooklogs.user_id = ${user.id} AND (recipeBooks.user_id = ${user.id} OR recipeBooks.is_public = true OR recipeBooks.id IN (
                 SELECT book_id FROM permissions WHERE user_id = ${user.id}
