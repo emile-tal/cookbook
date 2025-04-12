@@ -13,13 +13,16 @@ import { createBook } from '@/app/lib/data/recipebooks/recipebook';
 interface BookNavBarProps {
     view: "grid" | "list";
     handleViewChange: (event: React.MouseEvent<HTMLElement>, newView: "grid" | "list" | null) => void;
+    canEdit: boolean;
 }
 
-export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
+export function BookNavBar({ view, handleViewChange, canEdit }: BookNavBarProps) {
     const router = useRouter();
     const pathname = usePathname();
     const [openDialog, setOpenDialog] = useState(false);
     const [recipeBookName, setRecipeBookName] = useState('');
+
+
 
     const handleAdd = () => {
         const bookId = pathname.match(/\/books\/([^\/]+)$/)?.[1];
@@ -71,7 +74,7 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
                             </ToggleButton>
                         </ToggleButtonGroup>
 
-                        <IconButton
+                        {canEdit && <IconButton
                             onClick={handleAdd}
                             aria-label="add recipe"
                             size="small"
@@ -80,7 +83,7 @@ export function BookNavBar({ view, handleViewChange }: BookNavBarProps) {
                             }}
                         >
                             <AddIcon />
-                        </IconButton>
+                        </IconButton>}
                     </div>
                 </nav>
             )}

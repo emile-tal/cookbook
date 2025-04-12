@@ -4,14 +4,15 @@ import React, { useEffect, useState } from "react";
 
 import { BookNavBar } from "@/app/ui/books/nav-bar";
 import { ViewContext } from "@/app/context/view-context";
+import { usePathname } from "next/navigation";
 
 interface BooksLayoutProps {
     children: React.ReactNode;
-    canEdit: boolean;
 }
 
-export default function BooksClientLayout({ children, canEdit }: BooksLayoutProps) {
+export default function BooksClientLayout({ children }: BooksLayoutProps) {
     const [view, setView] = useState<"list" | "grid">("grid");
+    const pathname = usePathname();
 
     // Load saved preference from localStorage
     useEffect(() => {
@@ -29,14 +30,16 @@ export default function BooksClientLayout({ children, canEdit }: BooksLayoutProp
         }
     };
 
+    const showNavBar = pathname.match(/books$/);
+
     return (
         <ViewContext.Provider value={{ view, setView }}>
             <div className="container-spacing mb-8">
-                <BookNavBar
+                {showNavBar && <BookNavBar
                     view={view}
                     handleViewChange={handleViewChange}
-                    canEdit={canEdit}
-                />
+                    canEdit
+                />}
                 <div>
                     {children}
                 </div>
