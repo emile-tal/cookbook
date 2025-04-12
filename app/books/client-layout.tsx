@@ -30,7 +30,7 @@ export default function BooksClientLayout({ children }: BooksLayoutProps) {
 
     return (
         <ViewContext.Provider value={{ view, setView }}>
-            <div className="container-spacing">
+            <div className="container-spacing mb-8">
                 <BookNavBar
                     view={view}
                     handleViewChange={handleViewChange}

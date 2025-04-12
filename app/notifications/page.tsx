@@ -13,7 +13,7 @@ export default async function Notifications() {
     }
 
     return (
-        <main className="container-spacing">
+        <main className="container-spacing mb-8">
             <div className="max-w-3xl mx-auto">
                 <h2 className="text-2xl font-bold mb-6">Pending Invitations</h2>
                 {pendingInvitations && pendingInvitations.length > 0 ? (

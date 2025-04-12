@@ -17,7 +17,7 @@ export default async function Page() {
     }
 
     return (
-        <main className="container-spacing">
+        <main className="container-spacing mb-8">
             <div className="flex gap-8 items-center">
                 <ProfilePhoto userData={userData} />
                 <EditUsername username={user.username} />

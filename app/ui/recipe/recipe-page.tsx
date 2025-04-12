@@ -35,7 +35,7 @@ export default function RecipePage({ recipe, username }: Props) {
 
     return (
         <div className="min-h-screen">
-            <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-5xl">
+            <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-5xl mb-8">
                 {/* Back arrow positioned outside the centered content */}
                 <div className="w-full flex justify-start mb-4">
                     <BackButton />

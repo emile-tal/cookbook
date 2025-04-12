@@ -23,7 +23,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
   // const allBooks = await fetchAllPublicBooksByQuery(q)
 
   return (
-    <main className="container-spacing">
+    <main className="container-spacing mb-8">
       {q ? (
         <div className="flex flex-col gap-4 py-4">
           <h2 className="text-xl font-bold">Search Results</h2>

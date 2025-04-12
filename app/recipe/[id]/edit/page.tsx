@@ -18,7 +18,7 @@ export default async function EditRecipePage({ params }: Props) {
     }
 
     return (
-        <main className="container-spacing">
+        <main className="container-spacing mb-8">
             <div className="max-w-2xl mx-auto">
                 <RecipeForm formAction={recipeAction} recipe={recipe} categories={categories} />
             </div>
