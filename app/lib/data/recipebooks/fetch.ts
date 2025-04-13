@@ -35,6 +35,31 @@ export async function fetchUserBooks(searchQuery?: string) {
     }
 }
 
+export async function fetchEditableBooks() {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    const editableBooks = await sql<Book[]>`
+       SELECT 
+                recipeBooks.id, 
+                recipeBooks.name, 
+                recipeBooks.image_url, 
+                recipeBooks.is_public, 
+                users.username,
+                COUNT(recipeBookRecipes.recipe_id) as recipe_count
+            FROM recipeBooks
+            JOIN users ON recipeBooks.user_id = users.id
+            LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
+            WHERE recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
+                SELECT book_id FROM permissions WHERE user_id = ${user.id} AND can_edit = true
+            )
+            GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
+    `;
+    return editableBooks || null;
+}
+
+
 // Fetches a book by id - checks if the book is public or the user is the owner or has permission to view
 export async function fetchBookByBookId(id: string) {
     const user = await getCurrentUser();

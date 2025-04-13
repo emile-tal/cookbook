@@ -19,10 +19,10 @@ import { useSession } from "next-auth/react";
 
 interface Props {
     recipes: LiteRecipe[] | null,
-    userBooks: Book[] | null
+    editableBooks: Book[] | null
 }
 
-export default function RecipesGrid({ recipes, userBooks }: Props) {
+export default function RecipesGrid({ recipes, editableBooks }: Props) {
     const router = useRouter();
     const [showMenu, setShowMenu] = useState(false);
     const [showBooks, setShowBooks] = useState(false);
@@ -147,7 +147,7 @@ export default function RecipesGrid({ recipes, userBooks }: Props) {
                                             <span className="text-gray-700 text-left">New Book</span>
                                         </button>
                                     )}
-                                    {userBooks?.map((book) => (
+                                    {editableBooks?.map((book) => (
                                         <button
                                             key={book.id}
                                             className="min-w-full flex items-center justify-between px-4 py-2 border-b last:border-b-0 hover:cursor-pointer hover:bg-gray-100 transition-colors"

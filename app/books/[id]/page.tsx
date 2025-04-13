@@ -1,6 +1,6 @@
 'use server'
 
-import { fetchBookByBookId, fetchUserBooks } from "@/app/lib/data/recipebooks/fetch";
+import { fetchBookByBookId, fetchEditableBooks, fetchUserBooks } from "@/app/lib/data/recipebooks/fetch";
 import { fetchRecipesByBookId, fetchRecipesByBookIdAndQuery } from "@/app/lib/data/recipes/fetch";
 
 import BookLogger from "@/app/components/BookLogger";
@@ -22,11 +22,11 @@ export default async function Page({ params, searchParams }: Props) {
     const user = await getCurrentUser();
     const canEdit = user && id ? await userCanEditBook(id, user.id) : false;
 
-    const [book, bookRecipes, recipes, userBooks] = await Promise.all([
+    const [book, bookRecipes, recipes, editableBooks] = await Promise.all([
         fetchBookByBookId(id),
         fetchRecipesByBookId(id),
         fetchRecipesByBookIdAndQuery(id, q),
-        fetchUserBooks(),
+        fetchEditableBooks(),
     ]);
 
     if (!book) {
@@ -48,7 +48,7 @@ export default async function Page({ params, searchParams }: Props) {
             <h1 className="text-2xl font-bold my-4">{book.name}</h1>
             {(recipes && recipes.length > 0) ? (
                 <Suspense fallback={<div>Loading recipes...</div>}>
-                    <RecipesDisplay recipes={recipes} userBooks={userBooks} />
+                    <RecipesDisplay recipes={recipes} editableBooks={editableBooks} />
                 </Suspense>
             ) : (
                 <div className="flex flex-col items-center justify-center py-12 px-4 text-center bg-white rounded-xl border border-gray-100 shadow-sm">
