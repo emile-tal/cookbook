@@ -1,5 +1,6 @@
 import AddRating from '@/app/components/AddRating'
-import CommentsList from './comments-list'
+import CommentForm from '@/app/ui/recipe/comment-form'
+import CommentsList from '@/app/ui/recipe/comments-list'
 import { Suspense } from 'react'
 import { fetchComments } from '@/app/lib/data/comment'
 import { fetchUserRating } from '@/app/lib/data/rating'
@@ -24,6 +25,7 @@ export default async function CommentSection({ recipeId }: { recipeId: string })
             )}
             <div className={`${user ? 'col-span-3' : 'col-span-4'}`}>
                 <h2 className="text-2xl font-bold mb-4">Comments</h2>
+                {user && <CommentForm recipeId={recipeId} />}
                 <Suspense fallback={<div className="text-gray-500">Loading comments...</div>}>
                     <Comments recipeId={recipeId} />
                 </Suspense>

@@ -23,3 +23,15 @@ export async function fetchComments(recipeId: string) {
         return [];
     }
 }
+
+export async function createComment({ recipe_id, user_id, comment }: { recipe_id: string, user_id: string, comment: string }) {
+    try {
+        await sql`
+            INSERT INTO comments (recipe_id, user_id, comment)
+            VALUES (${recipe_id}, ${user_id}, ${comment})
+        `;
+    } catch (error) {
+        console.error('Error creating comment:', error);
+        throw error;
+    }
+}

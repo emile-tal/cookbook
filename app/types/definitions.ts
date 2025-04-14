@@ -34,7 +34,7 @@ export type AverageRating = {
 
 export type Comment = {
     id: string,
-    content: string,
+    comment: string,
     created_at: string,
     username: string,
     user_image_url: string
