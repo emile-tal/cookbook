@@ -58,7 +58,7 @@ export async function fetchRecipeById(id: string) {
             SELECT 
                 recipe_id,
                 json_build_object(
-                    'rating', avg(rating),
+                    'average_rating', avg(rating),
                     'num_ratings', count(rating)
                 ) as average_rating
             FROM ratings
@@ -70,7 +70,7 @@ export async function fetchRecipeById(id: string) {
             COALESCE(ri.ingredients, '[]'::json) as ingredients,
             COALESCE(rins.instructions, '[]'::json) as instructions,
             COALESCE(rc.categories, ARRAY[]::text[]) as categories,
-            COALESCE(ar.average_rating, '{"rating": 0, "num_ratings": 0}'::json) as average_rating
+            COALESCE(ar.average_rating, '{"average_rating": 0, "num_ratings": 0}'::json) as average_rating
         FROM recipe_base rb
         LEFT JOIN recipe_ingredients ri ON rb.id = ri.recipe_id
         LEFT JOIN recipe_instructions rins ON rb.id = rins.recipe_id

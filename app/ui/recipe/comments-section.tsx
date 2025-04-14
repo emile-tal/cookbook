@@ -19,7 +19,7 @@ export default async function CommentSection({ recipeId }: { recipeId: string })
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-5xl mb-8 grid grid-cols-4">
             {user && (
                 <div className="col-span-1">
-                    <h2 className="text-2xl font-bold mb-4">Rating</h2>
+                    <h2 className="text-2xl font-bold mb-4">My Rating</h2>
                     <AddRating recipeId={recipeId} userRating={userRating} />
                 </div>
             )}

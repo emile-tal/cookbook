@@ -15,7 +15,7 @@ interface Props {
     username: string | null;
 }
 
-export default function RecipePage({ recipe, username }: Props) {
+export default function RecipeDetails({ recipe, username }: Props) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -72,7 +72,7 @@ export default function RecipePage({ recipe, username }: Props) {
                         <span>By {recipe.username}</span>
                         {recipe.duration > 0 && <span>{recipe.duration} minutes</span>}
                         {recipe.average_rating.num_ratings > 0 && (
-                            <span>{`${Math.round(recipe.average_rating.average_rating * 10) / 10}/5 (${recipe.average_rating.num_ratings})`}</span>
+                            <span>{`${recipe.average_rating.average_rating.toFixed(1)} / 5 (${recipe.average_rating.num_ratings})`}</span>
                         )}
                     </div>
 
