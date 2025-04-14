@@ -5,6 +5,8 @@ import { useActionState, useEffect, useRef, useState } from "react"
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import Autocomplete from "@mui/material/Autocomplete";
 import { BackButton } from "../back-button";
 import Chip from "@mui/material/Chip";
@@ -69,6 +71,27 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
             .map((ing, idx) => ({ ...ing, position: idx + 1 }))
         setIngredients(updatedIngredients)
     }
+
+    const increasePosition = (position: number) => {
+        if (position !== ingredients.length) {
+            const updatedIngredients = ingredients.map((ing) =>
+                ing.position === position + 1 ? { ...ing, position: ing.position - 1 } :
+                    ing.position === position ? { ...ing, position: ing.position + 1 } : ing
+            )
+            setIngredients(updatedIngredients)
+        }
+    }
+
+    const decreasePosition = (position: number) => {
+        if (position !== 1) {
+            const updatedIngredients = ingredients.map((ing) =>
+                ing.position === position - 1 ? { ...ing, position: ing.position + 1 } :
+                    ing.position === position ? { ...ing, position: ing.position - 1 } : ing
+            )
+            setIngredients(updatedIngredients)
+        }
+    }
+
 
     const addInstruction = () => {
         const nextPosition = instructions.length + 1
@@ -279,7 +302,25 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                         <span className="col-span-1"></span>
                     </div>
                     {ingredients.sort((a, b) => a.position - b.position).map((ingredient, index) => (
-                        <div key={index} className="grid grid-cols-12 gap-2 items-center mb-2">
+                        <div key={index} className="grid grid-cols-12 gap-2 items-center mb-2 relative">
+
+                            <button
+                                type="button"
+                                onClick={() => decreasePosition(ingredient.position)}
+                                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-1 transition-colors duration-200 flex justify-center items-center absolute top-1/2 -translate-y-1/2 left-[-5rem]"
+                                aria-label="Move ingredient up"
+                            >
+                                <ArrowDropUpIcon fontSize="large" />
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => increasePosition(ingredient.position)}
+                                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-1 transition-colors duration-200 flex justify-center items-center absolute top-1/2 -translate-y-1/2 left-[-3rem]"
+                                aria-label="Move ingredient down"
+                            >
+                                <ArrowDropDownIcon fontSize="large" />
+                            </button>
+
                             <input
                                 type="text"
                                 name={`ingredient_amount_${index}`}
@@ -294,13 +335,15 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                                 onChange={(e) => updateIngredient(ingredient.position, e.target.value, ingredient.amount)}
                                 className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-9"
                             />
-                            <button
-                                type="button"
-                                onClick={() => removeIngredient(index)}
-                                className="col-span-1 text-rose-300 hover:text-rose-500 flex justify-center items-center"
-                            >
-                                <DeleteOutlineIcon />
-                            </button>
+                            <div className="col-span-1 flex justify-center items-center">
+                                <button
+                                    type="button"
+                                    onClick={() => removeIngredient(index)}
+                                    className="text-rose-300 hover:text-rose-500 flex justify-center items-center"
+                                >
+                                    <DeleteOutlineIcon />
+                                </button>
+                            </div>
                         </div>
                     ))}
                     <div className="grid grid-cols-12 gap-2">
