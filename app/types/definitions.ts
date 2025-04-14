@@ -27,10 +27,24 @@ export type Instruction = {
     instruction: string
 }
 
+export type AverageRating = {
+    average_rating: number,
+    num_ratings: number
+}
+
+export type Comment = {
+    id: string,
+    content: string,
+    created_at: string,
+    username: string,
+    user_image_url: string
+}
+
 export type Recipe = LiteRecipe & {
     recipe_yield: number,
     description: string,
     is_public: boolean,
+    average_rating: AverageRating,
     ingredients: Ingredient[],
     instructions: Instruction[],
 }

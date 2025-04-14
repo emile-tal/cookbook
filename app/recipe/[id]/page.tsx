@@ -1,3 +1,4 @@
+import CommentSection from "@/app/ui/recipe/comments-section";
 import RecipeLogger from "@/app/components/RecipeLogger";
 import RecipePage from '@/app/ui/recipe/recipe-page';
 import { fetchRecipeById } from "@/app/lib/data/recipes/fetch";
@@ -20,6 +21,7 @@ export default async function Page({ params }: Props) {
         <>
             <RecipeLogger recipeId={id} />
             <RecipePage recipe={recipe} username={user?.username ?? null} />
+            <CommentSection recipeId={id} />
         </>
     )
 }
