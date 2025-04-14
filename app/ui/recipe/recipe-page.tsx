@@ -108,7 +108,7 @@ export default function RecipePage({ recipe, username }: Props) {
                             <h2 className="text-xl font-bold pb-3 border-b border-gray-200 mb-4">Ingredients</h2>
                             {ingredients.length > 0 ? (
                                 <div className="space-y-3">
-                                    {ingredients.map((ingredient, index) => (
+                                    {ingredients.sort((a, b) => a.position - b.position).map((ingredient, index) => (
                                         <div key={index} className="grid grid-cols-3 gap-2">
                                             <span className="col-span-1 text-gray-600">{scaleIngredient(ingredient.amount, recipe.recipe_yield, recipeYield)}</span>
                                             <span className="col-span-2">{ingredient.ingredient}</span>
