@@ -1,6 +1,7 @@
 'use client'
 
 import { Comment } from '@/app/types/definitions'
+import PersonIcon from '@mui/icons-material/Person'
 
 export default function CommentsList({ comments }: { comments: Comment[] }) {
     if (comments.length === 0) {
@@ -16,11 +17,15 @@ export default function CommentsList({ comments }: { comments: Comment[] }) {
             {comments.map((comment) => (
                 <div key={comment.id} className="border-b border-gray-200 pb-4">
                     <div className="flex items-center gap-2 mb-2">
-                        <img
-                            src={comment.user_image_url || '/default-avatar.png'}
-                            alt={comment.username}
-                            className="w-8 h-8 rounded-full"
-                        />
+                        {comment.user_image_url ? (
+                            <img
+                                src={comment.user_image_url}
+                                alt={comment.username}
+                                className="w-8 h-8 rounded-full"
+                            />
+                        ) : (
+                            <PersonIcon className="w-8 h-8" />
+                        )}
                         <span className="font-medium">{comment.username}</span>
                     </div>
                     <p className="text-gray-700">{comment.content}</p>
