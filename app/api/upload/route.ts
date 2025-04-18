@@ -5,7 +5,6 @@ import cloudinary from '../../lib/cloudinary';
 
 interface CloudinaryUploadResult {
     secure_url: string;
-    [key: string]: any;
 }
 
 export async function POST(request: NextRequest) {
@@ -37,9 +36,10 @@ export async function POST(request: NextRequest) {
         });
 
         return NextResponse.json({ url: uploadResult.secure_url });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
         return NextResponse.json(
-            { error: error.message },
+            { error: errorMessage },
             { status: 500 }
         );
     }

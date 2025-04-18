@@ -1,7 +1,6 @@
 'use client'
 
 import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -9,6 +8,7 @@ import { BackButton } from '../back-button';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import { createBook } from '@/app/lib/data/recipebooks/recipebook';
+import { useState } from 'react';
 
 interface BookNavBarProps {
     view: "grid" | "list";

@@ -17,7 +17,7 @@ export default function EmptyBook({ canEdit }: { canEdit: boolean }) {
             <MenuBookIcon className="text-gray-300 scale-[200%] min-h-16 w-16" />
             {canEdit ? (
                 <>
-                    <p className="text-gray-600 text-lg mb-4 pt-4">You don't have any recipes in this book yet.</p>
+                    <p className="text-gray-600 text-lg mb-4 pt-4">{`You don't have any recipes in this book yet.`}</p>
                     <div className="flex gap-4">
                         <button
                             onClick={() => router.push(`/recipe/add?from=${fullUrl}`)}

@@ -40,6 +40,7 @@ export default function LoginPage() {
             router.push("/")
             router.refresh()
         } catch (error) {
+            console.error(error)
             setError("Invalid credentials");
         }
     }

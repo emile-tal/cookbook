@@ -1,9 +1,11 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import NextAuth from "next-auth";
 import bcryptjs from "bcryptjs";
-import { getServerSession } from "next-auth";
+import { config } from "./auth/config";
+
+const { auth } = NextAuth(config);
 
 export async function getCurrentUser() {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) {
         return null;
     }

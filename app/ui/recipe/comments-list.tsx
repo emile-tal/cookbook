@@ -1,6 +1,7 @@
 'use client'
 
 import { Comment } from '@/app/types/definitions'
+import Image from 'next/image'
 import PersonIcon from '@mui/icons-material/Person'
 
 export default function CommentsList({ comments }: { comments: Comment[] }) {
@@ -17,7 +18,7 @@ export default function CommentsList({ comments }: { comments: Comment[] }) {
                 <div key={comment.id} className="border-b border-gray-200 pb-4">
                     <div className="flex items-center gap-2 mb-2">
                         {comment.user_image_url ? (
-                            <img
+                            <Image
                                 src={comment.user_image_url}
                                 alt={comment.username}
                                 className="w-8 h-8 rounded-full"

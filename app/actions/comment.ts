@@ -54,9 +54,10 @@ export async function addComment(prevState: CommentState, formData: FormData): P
             errors: {},
         }
     } catch (error) {
+        console.error(error)
         return {
             message: 'Failed to add comment',
-            errors: {},
+            errors: {}
         }
     }
 }

@@ -23,7 +23,7 @@ export default async function Notifications() {
                         <div className="flex flex-col items-center gap-4">
                             <h3 className="text-lg font-medium text-gray-700">No invitations</h3>
                             <p className="text-gray-500 max-w-md">
-                                You don't have any pending invitations. When someone invites you to collaborate on a cookbook, it will appear here.
+                                {"You don't have any pending invitations. When someone invites you to collaborate on a cookbook, it will appear here."}
                             </p>
                             <Link href="/" className="mt-2 text-primary hover:underline">
                                 Return to home

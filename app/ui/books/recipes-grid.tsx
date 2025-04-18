@@ -12,6 +12,7 @@ import Image from "next/image";
 import MenuBook from "@mui/icons-material/MenuBook";
 import MenuIcon from '@mui/icons-material/Menu';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { Session } from "next-auth";
 import clsx from "clsx";
 import { createBookWithRecipe } from "@/app/lib/data/recipebooks/recipebook";
 import { fetchBookIdsByRecipeId } from "@/app/lib/data/recipebooks/fetch";
@@ -32,7 +33,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
     const newBookInputRef = useRef<HTMLInputElement>(null);
     const [errorAddingRecipe, setErrorAddingRecipe] = useState(false);
     const [bookIdsWithRecipe, setBookIdsWithRecipe] = useState<string[]>([]);
-    const { data: session, status } = useSession();
+    const { data: session, status } = useSession() as { data: Session | null, status: string }
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
@@ -153,7 +154,11 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                             className="min-w-full flex items-center justify-between px-4 py-2 border-b last:border-b-0 hover:cursor-pointer hover:bg-gray-100 transition-colors"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                bookIdsWithRecipe.includes(book.id) ? handleRemoveRecipeFromBook(book.id, recipe.id) : handleAddRecipeToBook(book.id, recipe.id);
+                                                if (bookIdsWithRecipe.includes(book.id)) {
+                                                    handleRemoveRecipeFromBook(book.id, recipe.id);
+                                                } else {
+                                                    handleAddRecipeToBook(book.id, recipe.id);
+                                                }
                                             }}
                                         >
                                             <span className={`text-gray-700 truncate ${bookIdsWithRecipe.includes(book.id) ? "font-bold" : ""}`}>{book.name}</span>
@@ -174,7 +179,8 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                 />
                             ) : (
                                 <RestaurantIcon className="scale-[200%] text-gray-300 " />
-                            ))}
+                            )
+                        )}
                         {(showBooks && selectedRecipe === recipe.id) || <button
                             className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
                             onClick={(e) => {

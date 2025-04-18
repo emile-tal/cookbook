@@ -7,15 +7,6 @@ export type Book = {
     recipe_count: number
 }
 
-export type LiteRecipe = {
-    id: string,
-    title: string,
-    image_url: string,
-    username: string,
-    duration: number,
-    categories: string[]
-}
-
 export type Ingredient = {
     position: number,
     amount: string,
@@ -38,6 +29,15 @@ export type Comment = {
     created_at: string,
     username: string,
     user_image_url: string
+}
+
+export type LiteRecipe = {
+    id: string,
+    title: string,
+    image_url: string,
+    username: string,
+    duration: number,
+    categories: string[]
 }
 
 export type Recipe = LiteRecipe & {

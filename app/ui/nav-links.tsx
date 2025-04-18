@@ -1,7 +1,7 @@
 'use client'
 
 import { signOut, useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import IconButton from '@mui/material/IconButton';
@@ -13,6 +13,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/PersonOutline';
+import { Session } from 'next-auth';
 import clsx from 'clsx';
 import { fetchUnreadInvitationsCountByUser } from '../lib/data/invitations';
 import { getUser } from '../lib/data/user';
@@ -22,7 +23,7 @@ const links = [
 ];
 
 export default function NavLinks() {
-    const { data: session, status } = useSession()
+    const { data: session, status } = useSession() as { data: Session | null, status: string }
     const pathname = usePathname();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -31,27 +32,27 @@ export default function NavLinks() {
     const router = useRouter();
     const [invitationsCount, setInvitationsCount] = useState<number | null>(null);
 
+    const fetchUserData = useCallback(async () => {
+        if (session?.user?.id) {
+            const user = await getUser(session.user.id);
+            setProfilePhoto(user?.user_image_url || null);
+        }
+    }, [session?.user?.id]);
+
+    const fetchInvitations = useCallback(async () => {
+        const invitationsCount = await fetchUnreadInvitationsCountByUser();
+        setInvitationsCount(invitationsCount || 0);
+    }, []);
+
     useEffect(() => {
         if (status === 'authenticated') {
             setLoggedIn(true);
-            fetchUserData()
-            fetchInvitations()
+            fetchUserData();
+            fetchInvitations();
         } else {
             setLoggedIn(false);
         }
-    }, [status]);
-
-    const fetchUserData = async () => {
-        if (session?.user?.id) {
-            const user = await getUser(session?.user?.id);
-            setProfilePhoto(user?.user_image_url || null);
-        }
-    }
-
-    const fetchInvitations = async () => {
-        const invitationsCount = await fetchUnreadInvitationsCountByUser();
-        setInvitationsCount(invitationsCount || 0);
-    }
+    }, [status, fetchUserData, fetchInvitations]);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);

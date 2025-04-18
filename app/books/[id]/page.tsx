@@ -1,6 +1,6 @@
 'use server'
 
-import { fetchBookByBookId, fetchEditableBooks, fetchUserBooks } from "@/app/lib/data/recipebooks/fetch";
+import { fetchBookByBookId, fetchEditableBooks } from "@/app/lib/data/recipebooks/fetch";
 import { fetchRecipesByBookId, fetchRecipesByBookIdAndQuery } from "@/app/lib/data/recipes/fetch";
 
 import BookLogger from "@/app/components/BookLogger";
