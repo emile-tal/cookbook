@@ -3,8 +3,8 @@ import { fetchCategories } from "@/app/lib/data/categories";
 import { recipeAction } from "@/app/actions/recipe";
 
 // Server component using searchParams prop
-export default async function AddRecipePage({ searchParams }: { searchParams: { bookId?: string } }) {
-    const bookId = searchParams.bookId || null;
+export default async function AddRecipePage({ searchParams }: { searchParams: Promise<{ bookId?: string }> }) {
+    const { bookId } = await searchParams;
     const categories = await fetchCategories();
 
     return (

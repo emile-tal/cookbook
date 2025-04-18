@@ -12,7 +12,7 @@ export default async function Page() {
 
     const userData = await getUser(user?.id)
 
-    if (!userData) {
+    if (!userData || !user.username) {
         return <div>User not found</div>
     }
 

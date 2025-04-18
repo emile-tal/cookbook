@@ -1,5 +1,5 @@
 import Credentials from "next-auth/providers/credentials";
-// lib/auth/config.ts
+import { JWT } from "next-auth/jwt";
 import type { NextAuthConfig } from "next-auth";
 import { Session } from "next-auth";
 import bcrypt from "bcryptjs";
@@ -33,7 +33,7 @@ export const config: NextAuthConfig = {
         }),
     ],
     callbacks: {
-        async session({ session, token }: { session: Session; token: any }) {
+        async session({ session, token }: { session: Session; token: JWT }) {
             if (token?.sub) session.user.id = token.sub;
             return session;
         },

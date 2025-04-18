@@ -26,11 +26,11 @@ export async function sendInvitation(bookId: string, email: string, message: str
 
 export async function fetchUnreadInvitationsCountByUser() {
     const user = await getCurrentUser()
-    if (!user) {
+    if (!user || !user.email) {
         return 0
     }
     try {
-        const result = await sql`SELECT COUNT(*) FROM invitations WHERE recipient_email = ${user.email} AND status = 'false'`
+        const result = await sql<{ count: string }[]>`SELECT COUNT(*) FROM invitations WHERE recipient_email = ${user.email} AND status = 'false'`
         return Number(result[0].count) || 0
     } catch (error) {
         console.error(error)
@@ -40,7 +40,7 @@ export async function fetchUnreadInvitationsCountByUser() {
 
 export async function fetchPendingInvitationsByUser() {
     const user = await getCurrentUser()
-    if (!user) {
+    if (!user || !user.email) {
         return null
     }
     try {
