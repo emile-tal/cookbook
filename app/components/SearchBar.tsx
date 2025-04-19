@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Input } from '@/app/ui/input';
 import { Search } from 'lucide-react';
@@ -14,6 +14,7 @@ interface SearchBarProps {
 export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const pathname = usePathname();
     const currentQuery = searchParams.get('q') || '';
     const isSubmitting = useRef(false);
 
@@ -26,7 +27,11 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
         } else {
             params.delete('q');
         }
-        router.push(`?${params.toString()}`);
+        if (pathname === '/') {
+            router.push(`/search?${params.toString()}`);
+        } else {
+            router.push(`${pathname}?${params.toString()}`);
+        }
     }, 300);
 
     const handleSearch = (formData: FormData) => {
@@ -36,7 +41,7 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
         if (query) {
             params.set('q', query);
         }
-        router.push(`/?${params.toString()}`);
+        router.push(`/search?${params.toString()}`);
         // Reset the flag after navigation
         setTimeout(() => {
             isSubmitting.current = false;
