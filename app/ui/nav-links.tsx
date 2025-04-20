@@ -17,9 +17,10 @@ import { Session } from 'next-auth';
 import clsx from 'clsx';
 import { fetchUnreadInvitationsCountByUser } from '../lib/data/invitations';
 import { getUser } from '../lib/data/user';
+import { poppins } from './fonts';
 
 const links = [
-    { name: 'My Books', href: '/books' },
+    { name: 'Books', href: '/books' },
 ];
 
 export default function NavLinks() {
@@ -74,7 +75,7 @@ export default function NavLinks() {
                     return (
                         <div key={link.name} className={clsx('flex items-center', { 'glow': pathname === link.href })}>
                             <Link href={link.href}>
-                                <p className="md:block">{link.name}</p>
+                                <p className={`md:block ${poppins.className}`}>{link.name}</p>
                             </Link>
                         </div>
                     );
@@ -130,8 +131,8 @@ export default function NavLinks() {
                                     <Person className='text-[rgb(30,30,30)] flex-shrink-0' />
                                 </div>
                             )}
-                            <Link href="/profile" className="w-full">
-                                <span className="hidden sm:inline">Profile</span>
+                            <Link href="/profile" className={`w-full ${poppins.className}`}>
+                                <span className={`hidden sm:inline ${poppins.className}`}>Profile</span>
                             </Link>
                         </div>
                     </MenuItem>
@@ -146,8 +147,8 @@ export default function NavLinks() {
                                         </div>
                                     )}
                                 </div>
-                                <Link href="/notifications" className="w-full">
-                                    <span className="hidden sm:inline">Notifications</span>
+                                <Link href="/notifications" className={`w-full ${poppins.className}`}>
+                                    <span className={`hidden sm:inline ${poppins.className}`}>Notifications</span>
                                 </Link>
                             </div>
                         </MenuItem>
@@ -173,7 +174,7 @@ export default function NavLinks() {
                                     <LoginIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
                                 }
                             </div>
-                            <span className="hidden sm:inline">{loggedIn ? 'Sign Out' : 'Sign In'}</span>
+                            <span className={`hidden sm:inline ${poppins.className}`}>{loggedIn ? 'Sign Out' : 'Sign In'}</span>
                         </div>
                     </MenuItem>
                 </Menu>
