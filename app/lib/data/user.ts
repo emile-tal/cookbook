@@ -52,7 +52,7 @@ export async function updateUsername(id: string, username: string) {
 
 export async function getUser(id: string) {
     try {
-        const user = await sql<User[]>`SELECT * FROM users WHERE id = ${id}`;
+        const user = await sql<User[]>`SELECT id, email, username, user_image_url FROM users WHERE id = ${id}`;
         return user[0] || null;
     } catch (error) {
         console.error('Error getting user:', error);
