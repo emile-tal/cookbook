@@ -1,8 +1,6 @@
 'use client'
 
 import { Comment } from '@/app/types/definitions'
-import Image from 'next/image'
-import PersonIcon from '@mui/icons-material/Person'
 
 export default function CommentsList({ comments }: { comments: Comment[] }) {
     if (comments.length === 0) {
@@ -15,23 +13,14 @@ export default function CommentsList({ comments }: { comments: Comment[] }) {
     return (
         <div className="space-y-4">
             {comments.map((comment) => (
-                <div key={comment.id} className="border-b border-gray-200 pb-4">
-                    <div className="flex items-center gap-2 mb-2">
-                        {comment.user_image_url ? (
-                            <Image
-                                src={comment.user_image_url}
-                                alt={comment.username}
-                                className="w-8 h-8 rounded-full"
-                            />
-                        ) : (
-                            <PersonIcon className="w-8 h-8" />
-                        )}
-                        <span className="font-medium">{comment.username}</span>
+                <div key={comment.id} className="border-t border-gray-200 pt-4">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold">{comment.username}</span>
+                        <p className="text-sm text-gray-500">
+                            {new Date(comment.created_at).toLocaleDateString()}
+                        </p>
                     </div>
                     <p className="text-gray-700">{comment.comment}</p>
-                    <p className="text-sm text-gray-500 mt-2">
-                        {new Date(comment.created_at).toLocaleDateString()}
-                    </p>
                 </div>
             ))}
         </div>

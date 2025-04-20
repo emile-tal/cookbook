@@ -1,3 +1,4 @@
+import Loading from "../ui/loading";
 import SearchResultsContent from "../ui/search-results-content"
 import { Suspense } from "react"
 
@@ -6,7 +7,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
     return (
         <div>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<div className="container-spacing">
+                <Loading size={24} />
+            </div>}>
                 <SearchResultsContent q={q} />
             </Suspense>
         </div>

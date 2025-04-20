@@ -5,6 +5,7 @@ import { fetchRecipesByBookId, fetchRecipesByBookIdAndQuery } from "@/app/lib/da
 
 import BookLogger from "@/app/components/BookLogger";
 import EmptyBook from "@/app/ui/books/empty-book";
+import Loading from "@/app/ui/loading";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { RecipesDisplay } from "@/app/ui/books/recipes-display";
 import { Suspense } from "react";
@@ -47,7 +48,9 @@ export default async function Page({ params, searchParams }: Props) {
             <BookLogger bookId={id} />
             <h1 className="text-2xl font-bold my-4">{book.name}</h1>
             {(recipes && recipes.length > 0) ? (
-                <Suspense fallback={<div>Loading recipes...</div>}>
+                <Suspense fallback={<div className="container-spacing">
+                    <Loading size={24} />
+                </div>}>
                     <RecipesDisplay recipes={recipes} editableBooks={editableBooks} />
                 </Suspense>
             ) : (
