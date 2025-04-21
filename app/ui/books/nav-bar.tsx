@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { BackButton } from '../back-button';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewListIcon from '@mui/icons-material/ViewList';
-import { createBook } from '@/app/lib/data/recipebooks/recipebook';
+import { createBook } from '@/app/lib/data/recipebooks';
 import { useState } from 'react';
 
 interface BookNavBarProps {

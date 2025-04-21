@@ -6,8 +6,8 @@ import { Book } from '@/app/types/definitions';
 import EditIcon from '@mui/icons-material/Edit';
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
-import { addSavedBook } from '@/app/lib/data/recipebooks/recipebook';
-import { removeSavedBook } from '@/app/lib/data/recipebooks/recipebook';
+import { addSavedBook } from '@/app/lib/data/recipebooks';
+import { removeSavedBook } from '@/app/lib/data/recipebooks';
 import { useSession } from 'next-auth/react';
 
 interface Props {

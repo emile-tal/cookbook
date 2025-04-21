@@ -9,7 +9,7 @@ import DeleteDialog from "@/app/components/DeleteDialog";
 import EditIcon from '@mui/icons-material/Edit';
 import EditTitle from "@/app/components/EditTitle";
 import Image from "next/image";
-import { deleteBook } from "@/app/lib/data/recipebooks/recipebook";
+import { deleteBook } from "@/app/lib/data/recipebooks";
 import { uploadImage } from "@/app/lib/uploadImage";
 import { useRouter } from "next/navigation";
 

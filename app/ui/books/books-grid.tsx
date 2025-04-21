@@ -1,6 +1,6 @@
 'use client'
 
-import { addSavedBook, removeSavedBook } from "@/app/lib/data/recipebooks/recipebook";
+import { addSavedBook, removeSavedBook } from "@/app/lib/data/recipebooks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Book } from "@/app/types/definitions";

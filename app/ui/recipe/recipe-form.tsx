@@ -17,7 +17,7 @@ import EditTitle from '@/app/components/EditTitle'
 import Image from "next/image"
 import { RecipeFormState } from "@/app/actions/recipe"
 import TextField from "@mui/material/TextField";
-import { deleteRecipe } from "@/app/lib/data/recipes/recipes";
+import { deleteRecipe } from "@/app/lib/data/recipes";
 import { uploadImage } from "@/app/lib/uploadImage"
 import { useRouter } from "next/navigation";
 
