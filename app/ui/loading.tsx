@@ -5,7 +5,7 @@ type LoadingProps = {
 export default function Loading({ size }: LoadingProps) {
 
     return (
-        <div className="flex flex-col items-center justify-center gap-4">
+        <div className={`flex flex-col items-center justify-center gap-4 mt-${size}`}>
             <div className={`min-h-${size} min-w-${size} animate-spin rounded-full border-8 border-gray-300 border-t-gray-700`} />
             <div className="flex gap-1 text-lg font-medium text-gray-600">
                 {"Loading...".split("").map((letter, index) => (

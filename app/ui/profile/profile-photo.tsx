@@ -48,7 +48,7 @@ export default function ProfilePhoto({ userData }: { userData: User }) {
                 className="hidden"
             />
             <div
-                className="min-w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center relative hover:cursor-pointer"
+                className="min-w-48 h-48 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center relative hover:cursor-pointer"
                 onClick={handleImageClick}
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}

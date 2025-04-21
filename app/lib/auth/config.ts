@@ -1,7 +1,5 @@
 import Credentials from "next-auth/providers/credentials";
-import { JWT } from "next-auth/jwt";
 import type { NextAuthConfig } from "next-auth";
-import { Session } from "next-auth";
 import bcrypt from "bcryptjs";
 import postgres from "postgres";
 
@@ -33,8 +31,16 @@ export const config: NextAuthConfig = {
         }),
     ],
     callbacks: {
-        async session({ session, token }: { session: Session; token: JWT }) {
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id;
+                token.username = user.username;
+            }
+            return token;
+        },
+        async session({ session, token }) {
             if (token?.sub) session.user.id = token.sub;
+            if (token?.username) session.user.username = token.username as string;
             return session;
         },
     },
