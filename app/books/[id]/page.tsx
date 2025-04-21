@@ -38,7 +38,7 @@ export default async function Page({ params, searchParams }: Props) {
         return (
             <>
                 <BookLogger bookId={id} />
-                <EmptyBook canEdit={canEdit} />
+                <EmptyBook bookName={book.name} canEdit={canEdit} />
             </>
         );
     }

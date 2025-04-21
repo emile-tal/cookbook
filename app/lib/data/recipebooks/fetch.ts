@@ -75,9 +75,12 @@ export async function fetchBookByBookId(id: string) {
         FROM recipeBooks
         JOIN users ON recipeBooks.user_id = users.id
         LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
-        WHERE recipeBooks.id = ${id} AND recipeBooks.is_public = true ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
-            SELECT book_id FROM permissions WHERE user_id = ${user.id}
-        )` : sql``}
+        WHERE recipeBooks.id = ${id} AND (
+            recipeBooks.is_public = true 
+            ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
+                SELECT book_id FROM permissions WHERE user_id = ${user.id}
+            )` : sql``}
+        )
         GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
       `;
         return book[0] || null;
@@ -197,9 +200,12 @@ export async function fetchAllBooksByQuery(searchQuery?: string) {
             FROM recipeBooks
             JOIN users ON recipeBooks.user_id = users.id
             LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
-            WHERE recipeBooks.is_public = true ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
-                SELECT book_id FROM permissions WHERE user_id = ${user.id}
-            )` : sql``}
+            WHERE (
+                recipeBooks.is_public = true 
+                ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
+                    SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                )` : sql``}
+            )
             ${searchQuery ? sql`AND (
                 recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
                 users.username ILIKE ${`%${searchQuery}%`}
