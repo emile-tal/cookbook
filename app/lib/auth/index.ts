@@ -30,3 +30,13 @@ export async function validatePassword(userId: string, password: string) {
         return false;
     }
 }
+
+export async function updatePassword(userId: string, password: string) {
+    try {
+        await sql`UPDATE users SET password = ${password} WHERE id = ${userId}`;
+        return { success: true };
+    } catch (error) {
+        console.error('Error updating password:', error);
+        return { success: false };
+    }
+}

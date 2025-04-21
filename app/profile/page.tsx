@@ -1,4 +1,5 @@
 import EditUsername from "../ui/profile/username";
+import Link from "next/link";
 import NotLoggedIn from "../ui/profile/not-logged-in";
 import ProfilePhoto from "../ui/profile/profile-photo";
 import { getCurrentUser } from "../lib/auth";
@@ -30,6 +31,7 @@ export default async function Page() {
             <div className="flex gap-8 flex-col items-center min-w-full mt-8">
                 <ProfilePhoto userData={userData} />
                 <EditUsername username={userData.username} />
+                <Link href="/profile/password">Change Password</Link>
             </div>
         </main>
     )
