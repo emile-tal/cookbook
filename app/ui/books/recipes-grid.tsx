@@ -85,38 +85,36 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                     className='p-4 bg-white border border-gray-100 rounded-xl shadow-md hover:cursor-pointer transition-shadow hover:shadow-lg'
                     onClick={() => router.push(`/recipe/${recipe.id}?from=${fullUrl}`)}
                 >
-                    <div className={clsx("flex w-full h-48 relative rounded-t-xl bg-gray-50", showBooks && selectedRecipe === recipe.id ? "hover:cursor-default" : "items-center justify-center")}>
+                    <div className={clsx("flex w-full h-48 relative rounded-t-xl bg-white", showBooks && selectedRecipe === recipe.id ? "hover:cursor-default" : "items-center justify-center")}>
                         {showBooks && selectedRecipe === recipe.id ? (
                             <div className="flex flex-col min-w-full h-full">
-                                <div className=" px-4 py-2 border-b min-w-full">
-                                    <div className="flex justify-between items-center">
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setOpenNewBookDialog(true);
-                                                }}
-                                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
-                                            >
-                                                New Book
-                                            </button>
-                                        </div>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleCloseMenus();
-                                            }}
-                                            className="text-gray-500 hover:text-gray-700 pr-1"
-                                        >
-                                            ✕
-                                        </button>
+                                <button className="flex justify-between items-center bg-gray-50 hover:bg-gray-100 min-w-full px-4 py-4 rounded-xl mb-2"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setOpenNewBookDialog(true);
+                                    }}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <MenuBook className="scale-75 text-gray-500" />
+                                        <span className="text-gray-700 text-xl">New Book</span>
                                     </div>
-                                </div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleCloseMenus();
+                                        }}
+                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group">
+                                        <span className="text-text text-xl group-hover:text-lg">
+                                            ✕
+                                        </span>
+                                    </button>
+                                </button>
+
                                 <div className="flex-1 overflow-y-auto">
                                     {editableBooks?.map((book) => (
                                         <button
                                             key={book.id}
-                                            className="min-w-full flex items-center justify-between px-4 py-2 border-b last:border-b-0 hover:cursor-pointer hover:bg-gray-100 transition-colors"
+                                            className="min-w-full flex items-center justify-between px-4 py-2 border-b last:border-b-0 bg-gray-50 hover:cursor-pointer hover:bg-gray-100 transition-colors"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleToggleRecipeInBook(book.id);
