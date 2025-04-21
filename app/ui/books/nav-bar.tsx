@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import AddIcon from '@mui/icons-material/Add';
 import { BackButton } from '../back-button';
 import GridViewIcon from '@mui/icons-material/GridView';
+import NewBookDialog from '@/app/components/NewBookDialog';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import { createBook } from '@/app/lib/data/recipebooks';
 import { useState } from 'react';
@@ -20,7 +21,6 @@ export function BookNavBar({ view, handleViewChange, canEdit }: BookNavBarProps)
     const router = useRouter();
     const pathname = usePathname();
     const [openDialog, setOpenDialog] = useState(false);
-    const [recipeBookName, setRecipeBookName] = useState('');
 
 
 
@@ -37,7 +37,8 @@ export function BookNavBar({ view, handleViewChange, canEdit }: BookNavBarProps)
         setOpenDialog(false);
     };
 
-    const handleCreateRecipeBook = async () => {
+
+    const handleCreateRecipeBook = async (recipeBookName: string) => {
         await createBook(recipeBookName);
         router.refresh();
         handleCloseDialog();
@@ -89,41 +90,11 @@ export function BookNavBar({ view, handleViewChange, canEdit }: BookNavBarProps)
                     </div>
                 </nav>
             )}
-
-            <Dialog
+            <NewBookDialog
                 open={openDialog}
                 onClose={handleCloseDialog}
-                slotProps={{
-                    paper: {
-                        className: "rounded-xl p-2 bg-gray-50 w-[400px]"
-                    }
-                }}
-            >
-                <DialogTitle className="text-primary">Create New Recipe Book</DialogTitle>
-                <DialogContent>
-                    <input
-                        type="text"
-                        placeholder="Recipe Name"
-                        className="min-w-full p-2 rounded-md border border-gray-300"
-                        value={recipeBookName}
-                        onChange={(e) => setRecipeBookName(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <button
-                        onClick={handleCloseDialog}
-                        className="px-4 py-2 text-primary hover:bg-primary/5 rounded-md transition-colors"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={handleCreateRecipeBook}
-                        className="px-4 py-2 bg-primary text-white hover:bg-primary/80 rounded-md transition-colors"
-                    >
-                        Create Book
-                    </button>
-                </DialogActions>
-            </Dialog>
+                createRecipeBook={handleCreateRecipeBook}
+            />
         </>
     );
 }

@@ -9,6 +9,7 @@ import DeleteDialog from "@/app/components/DeleteDialog";
 import EditIcon from '@mui/icons-material/Edit';
 import EditTitle from "@/app/components/EditTitle";
 import Image from "next/image";
+import { Switch } from "@mui/material";
 import { deleteBook } from "@/app/lib/data/recipebooks";
 import { uploadImage } from "@/app/lib/uploadImage";
 import { useRouter } from "next/navigation";
@@ -130,15 +131,16 @@ export default function BookForm({ formAction, book }: Props) {
                 <input type="hidden" name="image_url" value={imageUrl || ''} />
             </div>
             <div>
-                <label className="block text-sm font-medium">
-                    <input
-                        type="checkbox"
+                <div className="flex items-center">
+                    <Switch
                         name="is_public"
-                        defaultChecked={book.is_public ?? false}
-                        className="mr-2"
+                        defaultChecked={book?.is_public ?? true}
+                        color="primary"
                     />
-                    Make book public
-                </label>
+                    <label className="text-sm font-medium ml-2">
+                        Make book public
+                    </label>
+                </div>
             </div>
             <div className="flex justify-between">
                 <button type="button" className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90" onClick={() => setOpenDeleteDialog(true)}>Delete</button>

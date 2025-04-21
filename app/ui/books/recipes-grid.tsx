@@ -2,15 +2,14 @@
 
 import { Book, LiteRecipe } from "@/app/types/definitions";
 import { addRecipeToBook, removeRecipeFromBook } from '@/app/lib/data/recipes';
-import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
-import ErrorIcon from '@mui/icons-material/Error';
 import Image from "next/image";
 import MenuBook from "@mui/icons-material/MenuBook";
 import MenuIcon from '@mui/icons-material/Menu';
+import NewBookDialog from "@/app/components/NewBookDialog";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { Session } from "next-auth";
 import Tooltip from "@mui/material/Tooltip";
@@ -18,6 +17,7 @@ import clsx from "clsx";
 import { createBookWithRecipe } from "@/app/lib/data/recipebooks";
 import { fetchBookIdsByRecipeId } from "@/app/lib/data/recipebooks/fetch";
 import { useSession } from "next-auth/react";
+import { useState } from 'react';
 
 interface Props {
     recipes: LiteRecipe[] | null,
@@ -29,20 +29,11 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
     const [showMenu, setShowMenu] = useState(false);
     const [showBooks, setShowBooks] = useState(false);
     const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
-    const [newBookInputVisible, setNewBookInputVisible] = useState(false);
-    const [newBook, setNewBook] = useState('');
-    const newBookInputRef = useRef<HTMLInputElement>(null);
-    const [errorAddingRecipe, setErrorAddingRecipe] = useState(false);
     const [bookIdsWithRecipe, setBookIdsWithRecipe] = useState<string[]>([]);
+    const [openNewBookDialog, setOpenNewBookDialog] = useState(false);
     const { data: session, status } = useSession() as { data: Session | null, status: string }
     const pathname = usePathname();
     const searchParams = useSearchParams();
-
-    useEffect(() => {
-        if (newBookInputVisible && newBookInputRef.current) {
-            newBookInputRef.current.focus();
-        }
-    }, [newBookInputVisible]);
 
     const fullUrl = pathname + '?' + searchParams.toString();
 
@@ -50,20 +41,24 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
         return <div>Loading...</div>
     }
 
-    const handleAddRecipeToBook = async (bookId: string, recipeId: string) => {
-        await addRecipeToBook(bookId, recipeId);
-        setBookIdsWithRecipe([...bookIdsWithRecipe, bookId]);
+
+    const handleToggleRecipeInBook = async (bookId: string) => {
+        if (!selectedRecipe) {
+            return;
+        }
+        if (bookIdsWithRecipe.includes(bookId)) {
+            await removeRecipeFromBook(bookId, selectedRecipe);
+        } else {
+            await addRecipeToBook(bookId, selectedRecipe);
+        }
+        setBookIdsWithRecipe(bookIdsWithRecipe.includes(bookId) ? bookIdsWithRecipe.filter((id) => id !== bookId) : [...bookIdsWithRecipe, bookId]);
     }
 
-    const handleRemoveRecipeFromBook = async (bookId: string, recipeId: string) => {
-        await removeRecipeFromBook(bookId, recipeId);
-        setBookIdsWithRecipe(bookIdsWithRecipe.filter((id) => id !== bookId));
-    }
-
-    const handleCreateBookWithRecipe = async (recipeId: string) => {
-        await createBookWithRecipe(newBook, recipeId);
-        setNewBookInputVisible(false);
-        setNewBook('');
+    const handleCreateBook = async (recipeBookName: string) => {
+        if (selectedRecipe) {
+            await createBookWithRecipe(recipeBookName, selectedRecipe);
+        }
+        setOpenNewBookDialog(false);
         setShowBooks(false);
         setSelectedRecipe(null);
     }
@@ -80,9 +75,6 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
         setShowBooks(false);
         setSelectedRecipe(null);
         setBookIdsWithRecipe([]);
-        setErrorAddingRecipe(false);
-        setNewBookInputVisible(false);
-        setNewBook('');
     }
 
     return (
@@ -98,71 +90,42 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                             <div className="flex flex-col min-w-full h-full">
                                 <div className=" px-4 py-2 border-b min-w-full">
                                     <div className="flex justify-between items-center">
-                                        <h3 className="text-lg font-semibold text-gray-800">Add to Book</h3>
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setOpenNewBookDialog(true);
+                                                }}
+                                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+                                            >
+                                                New Book
+                                            </button>
+                                        </div>
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleCloseMenus();
                                             }}
-                                            className="text-gray-500 hover:text-gray-700 p-1"
+                                            className="text-gray-500 hover:text-gray-700 pr-1"
                                         >
                                             ✕
                                         </button>
                                     </div>
-                                    {errorAddingRecipe && (
-                                        <div className="flex items-center gap-2  mt-2">
-                                            <ErrorIcon className="text-red-500 scale-75" />
-                                            <p className="text-red-500 text-sm">Recipe already in book</p>
-                                        </div>
-                                    )}
                                 </div>
                                 <div className="flex-1 overflow-y-auto">
-                                    {newBookInputVisible ? (
-                                        <div className="flex gap-2">
-                                            <input
-                                                ref={newBookInputRef}
-                                                value={newBook}
-                                                onChange={(e) => setNewBook(e.target.value)}
-                                                className="w-full px-4 py-2 border-b last:border-b-0"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                }}
-                                            />
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleCreateBookWithRecipe(recipe.id);
-                                                    setNewBookInputVisible(false);
-                                                }}
-                                            >
-                                                <CheckIcon className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setNewBookInputVisible(true)
-                                            }}
-                                            className="min-w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-100 transition-colors border-b last:border-b-0"
-                                        >
-                                            <span className="text-gray-700 text-left">New Book</span>
-                                        </button>
-                                    )}
                                     {editableBooks?.map((book) => (
                                         <button
                                             key={book.id}
                                             className="min-w-full flex items-center justify-between px-4 py-2 border-b last:border-b-0 hover:cursor-pointer hover:bg-gray-100 transition-colors"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                if (bookIdsWithRecipe.includes(book.id)) {
-                                                    handleRemoveRecipeFromBook(book.id, recipe.id);
-                                                } else {
-                                                    handleAddRecipeToBook(book.id, recipe.id);
-                                                }
+                                                handleToggleRecipeInBook(book.id);
                                             }}
                                         >
-                                            <span className={`text-gray-700 truncate ${bookIdsWithRecipe.includes(book.id) ? "font-bold" : ""}`}>{book.name}</span>
+                                            <div className="flex items-center gap-2">
+                                                <MenuBook className={`scale-75 text-gray-500`} />
+                                                <span className={`text-gray-700 truncate`}>{book.name}</span>
+                                            </div>
                                             {bookIdsWithRecipe.includes(book.id) && (
                                                 <CheckIcon className="text-gray-500 scale-75 hover:text-gray-700" />
                                             )}
@@ -274,6 +237,11 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                     </div>
                 </div>
             ))}
+            <NewBookDialog
+                open={openNewBookDialog}
+                onClose={() => setOpenNewBookDialog(false)}
+                createRecipeBook={handleCreateBook}
+            />
         </div>
     )
 }
