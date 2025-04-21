@@ -10,7 +10,7 @@ export async function addRating(recipeId: string, rating: number) {
     }
     try {
         const existingRating = await fetchUserRating(recipeId)
-        if (existingRating) {
+        if (existingRating !== null) {
             await sql`UPDATE ratings SET rating = ${rating} WHERE recipe_id = ${recipeId} AND user_id = ${user.id}`
         } else {
             await sql`INSERT INTO ratings (recipe_id, user_id, rating) VALUES (${recipeId}, ${user.id}, ${rating})`

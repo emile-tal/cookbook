@@ -13,6 +13,7 @@ import MenuBook from "@mui/icons-material/MenuBook";
 import MenuIcon from '@mui/icons-material/Menu';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { Session } from "next-auth";
+import Tooltip from "@mui/material/Tooltip";
 import clsx from "clsx";
 import { createBookWithRecipe } from "@/app/lib/data/recipebooks";
 import { fetchBookIdsByRecipeId } from "@/app/lib/data/recipebooks/fetch";
@@ -181,7 +182,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                 <RestaurantIcon className="scale-[200%] text-gray-300 " />
                             )
                         )}
-                        {(showBooks && selectedRecipe === recipe.id) || <button
+                        {session?.user && ((showBooks && selectedRecipe === recipe.id) || <button
                             className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -190,7 +191,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                 setShowBooks(false)
                             }}>
                             <MenuIcon className="text-text text-base group-hover:text-lg" />
-                        </button>}
+                        </button>)}
                         {showMenu && selectedRecipe === recipe.id && (
                             <div className="absolute top-0 right-0 flex flex-col gap-2 h-full bg-gray-100 rounded-tr-xl p-2">
                                 <button
@@ -203,23 +204,30 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                         ✕
                                     </span>
                                 </button>
-                                {session?.user?.username === recipe.username && (!showBooks || selectedRecipe !== recipe.id) && (<button
-                                    className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        router.push(`/recipe/${recipe.id}/edit?from=${fullUrl}`);
-                                    }}>
-                                    <EditIcon className="text-text text-base group-hover:text-lg" />
-                                </button>)}
-                                <button
-                                    className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleShowBooks(recipe.id);
-                                    }}
-                                >
-                                    <MenuBook className="text-text text-base group-hover:text-lg" />
-                                </button>
+                                {session?.user?.username === recipe.username && (!showBooks || selectedRecipe !== recipe.id) && (
+                                    <Tooltip title="Edit Recipe" placement="right">
+                                        <button
+                                            className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                router.push(`/recipe/${recipe.id}/edit?from=${fullUrl}`);
+                                            }}>
+
+                                            <EditIcon className="text-text text-base group-hover:text-lg" />
+
+                                        </button>
+                                    </Tooltip>)}
+                                <Tooltip title="Add to Book" placement="right">
+                                    <button
+                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleShowBooks(recipe.id);
+                                        }}
+                                    >
+                                        <MenuBook className="text-text text-base group-hover:text-lg" />
+                                    </button>
+                                </Tooltip>
                             </div>
                         )}
                     </div>

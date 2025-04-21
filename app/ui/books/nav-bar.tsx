@@ -1,6 +1,6 @@
 'use client'
 
-import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -74,16 +74,18 @@ export function BookNavBar({ view, handleViewChange, canEdit }: BookNavBarProps)
                             </ToggleButton>
                         </ToggleButtonGroup>
 
-                        {canEdit && <IconButton
-                            onClick={handleAdd}
-                            aria-label="add recipe"
-                            size="small"
-                            sx={{
-                                color: 'var(--primary-color)',
-                            }}
-                        >
-                            <AddIcon />
-                        </IconButton>}
+                        {canEdit && <Tooltip title={pathname.match(/\/books\/[^\/]+$/) ? "New Recipe" : "New Book"}>
+                            <IconButton
+                                onClick={handleAdd}
+                                aria-label={pathname.match(/\/books\/[^\/]+$/) ? "New Recipe" : "New Book"}
+                                size="small"
+                                sx={{
+                                    color: 'var(--primary-color)',
+                                }}
+                            >
+                                <AddIcon />
+                            </IconButton>
+                        </Tooltip>}
                     </div>
                 </nav>
             )}

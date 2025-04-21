@@ -10,6 +10,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShareDialog from "@/app/components/ShareDialog";
 import ShareIcon from '@mui/icons-material/Share';
+import Tooltip from "@mui/material/Tooltip";
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
 import { sendInvitation } from "@/app/lib/data/invitations";
@@ -58,7 +59,7 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                             ) : (
                                 <MenuBookIcon className="w-full h-full text-gray-300 scale-[300%]" />
                             )}
-                            <button
+                            {session?.user && (<button
                                 className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white transition-all duration-200 group"
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -66,7 +67,7 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                                     setShowMenu(true)
                                 }}>
                                 <MenuIcon className="text-text text-base group-hover:text-lg" />
-                            </button>
+                            </button>)}
                             {showMenu && selectedBook === book.id && (
                                 <div className="absolute top-0 right-0 flex flex-col gap-2 h-full bg-gray-100 rounded-tr-xl p-2">
                                     <button
@@ -79,40 +80,48 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                                             ✕
                                         </span>
                                     </button>
-                                    {(session?.user?.username === book.username) && <button
-                                        className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            router.push(`/books/${book.id}/edit?from=${fullUrl}`);
-                                        }}>
-                                        <EditIcon className="text-text text-base group-hover:text-lg" />
-                                    </button>}
-                                    <button
-                                        className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (saved) {
-                                                removeSavedBook(book.id);
-                                                router.refresh();
-                                            } else {
-                                                addSavedBook(book.id);
-                                                router.refresh();
-                                            }
-                                        }}>
-                                        {saved ? (
-                                            <TurnedIn className="text-red-400 text-base group-hover:text-lg" />
-                                        ) : (
-                                            <TurnedInNot className="text-text text-base group-hover:text-lg" />
-                                        )}
-                                    </button>
-                                    {(session?.user?.username === book.username) && <button
-                                        className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setShowShareDialog(true);
-                                        }}>
-                                        <ShareIcon className="text-text text-base group-hover:text-lg" />
-                                    </button>}
+                                    {(session?.user?.username === book.username) &&
+                                        <Tooltip title="Edit Book" placement="right">
+                                            <button
+                                                className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    router.push(`/books/${book.id}/edit?from=${fullUrl}`);
+                                                }}>
+                                                <EditIcon className="text-text text-base group-hover:text-lg" />
+                                            </button>
+                                        </Tooltip>}
+                                    <Tooltip title={saved ? "Unsave Book" : "Save Book"} placement="right">
+                                        <button
+                                            className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (saved) {
+                                                    removeSavedBook(book.id);
+                                                    router.refresh();
+                                                } else {
+                                                    addSavedBook(book.id);
+                                                    router.refresh();
+                                                }
+                                            }}>
+                                            {saved ? (
+                                                <TurnedIn className="text-red-400 text-base group-hover:text-lg" />
+                                            ) : (
+                                                <TurnedInNot className="text-text text-base group-hover:text-lg" />
+                                            )}
+                                        </button>
+                                    </Tooltip>
+                                    {(session?.user?.username === book.username) &&
+                                        <Tooltip title="Share Book" placement="right">
+                                            <button
+                                                className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setShowShareDialog(true);
+                                                }}>
+                                                <ShareIcon className="text-text text-base group-hover:text-lg" />
+                                            </button>
+                                        </Tooltip>}
                                 </div>
                             )}
                         </div>

@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import bcrypt from "bcryptjs";
-import bcryptjs from "bcryptjs";
 import { config } from "./config";
 import sql from "../db";
 

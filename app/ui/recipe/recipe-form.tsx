@@ -16,8 +16,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import EditTitle from '@/app/components/EditTitle'
 import Image from "next/image"
 import { RecipeFormState } from "@/app/actions/recipe"
+import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import { deleteRecipe } from "@/app/lib/data/recipes";
+import { poppins } from "../fonts";
 import { uploadImage } from "@/app/lib/uploadImage"
 import { useRouter } from "next/navigation";
 
@@ -246,7 +248,7 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                                         label={capitalizedOption}
                                         {...getTagProps({ index })}
                                         key={option}
-                                        className="bg-secondary bg-opacity-10 text-secondary"
+                                        className={`bg-secondary bg-opacity-10 text-secondary ${poppins.className}`}
                                     />
                                 );
                             })
@@ -391,18 +393,17 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                             <AddCircleOutlineIcon />
                         </button>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium">
-                            <input
-                                type="checkbox"
-                                name="is_public"
-                                defaultChecked={recipe?.is_public ?? true}
-                                className="mr-2"
-                            />
+                    <input type="hidden" name="instructions" value={JSON.stringify(instructions)} />
+                    <div className="flex items-center">
+                        <Switch
+                            name="is_public"
+                            defaultChecked={recipe?.is_public ?? true}
+                            color="primary"
+                        />
+                        <label className="text-sm font-medium ml-2">
                             Make recipe public
                         </label>
                     </div>
-                    <input type="hidden" name="instructions" value={JSON.stringify(instructions)} />
                 </div>
                 <div className="flex justify-between">
                     <button
