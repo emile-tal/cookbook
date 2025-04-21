@@ -45,7 +45,7 @@ export default function ShareDialog({ open, onClose, onShare, bookName }: ShareD
                         <input
                             type="text"
                             placeholder="Enter email address"
-                            className={`w-[250px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 ${error.includes('email') ? 'border-red-500' : ''}`}
+                            className={`w-[240px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 ${error.includes('email') ? 'border-red-500' : ''}`}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
@@ -53,7 +53,6 @@ export default function ShareDialog({ open, onClose, onShare, bookName }: ShareD
                             value={permission}
                             onChange={(e) => {
                                 setPermission(e.target.value as 'editor' | 'viewer')
-                                console.log(e.target.value)
                             }}
                         >
                             <option value="editor">Editor</option>

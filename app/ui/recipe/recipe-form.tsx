@@ -218,7 +218,7 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                         name="description"
                         defaultValue={recipe?.description}
                         placeholder="Recipe description"
-                        className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2"
+                        className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none"
                     />
                     {state?.errors?.description && (
                         <div className="text-red-500 text-sm">{state.errors.description}</div>
@@ -238,7 +238,16 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                         sx={{
                             '& .MuiChip-root': {
                                 margin: '0 4px 4px 0',
-                            }
+                            },
+                            '& .MuiOutlinedInput-root': {
+                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                                },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: '#D72638',
+                                    borderWidth: '1px',
+                                }
+                            },
                         }}
                         renderTags={(value, getTagProps) =>
                             value.map((option, index) => {
@@ -276,7 +285,7 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                         type="number"
                         name="duration"
                         defaultValue={recipe?.duration}
-                        className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2"
+                        className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none"
                     />
                     {state?.errors?.duration && (
                         <div className="text-red-500 text-sm">{state.errors.duration}</div>
@@ -289,7 +298,7 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                         type="number"
                         name="recipe_yield"
                         defaultValue={recipe?.recipe_yield}
-                        className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2"
+                        className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none"
                     />
                     {state?.errors?.recipe_yield && (
                         <div className="text-red-500 text-sm">{state.errors.recipe_yield}</div>
@@ -328,14 +337,14 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                                 name={`ingredient_amount_${index}`}
                                 value={ingredient.amount}
                                 onChange={(e) => updateIngredient(ingredient.position, ingredient.ingredient, e.target.value)}
-                                className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-2"
+                                className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none"
                             />
                             <input
                                 type="text"
                                 name={`ingredient_name_${index}`}
                                 value={ingredient.ingredient}
                                 onChange={(e) => updateIngredient(ingredient.position, e.target.value, ingredient.amount)}
-                                className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-9"
+                                className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-9 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none"
                             />
                             <div className="col-span-1 flex justify-center items-center">
                                 <button
@@ -372,7 +381,7 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                                 name={`instruction_${instruction.position}`}
                                 value={instruction.instruction}
                                 onChange={(e) => updateInstruction(instruction.position, e.target.value)}
-                                className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-10"
+                                className="block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-10 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none"
                             />
                             <button
                                 type="button"

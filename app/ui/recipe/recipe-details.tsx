@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Image from "next/image";
 import { Recipe } from '@/app/types/definitions';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { Tooltip } from '@mui/material';
 import { scaleIngredient } from '@/app/lib/utils';
 import { useState } from 'react';
 
@@ -59,11 +60,13 @@ export default function RecipeDetails({ recipe, username }: Props) {
                     <div className="flex items-center gap-2 mb-3">
                         <h1 className="text-3xl font-bold text-center">{recipe.title}</h1>
                         {username === recipe.username &&
-                            (<button
-                                onClick={() => router.push(`/recipe/${recipe.id}/edit?from=${fullUrl}`)}
-                                className="flex items-center justify-center bg-white rounded-full p-1 hover:bg-gray-100">
-                                <EditIcon className="text-gray-600 hover:text-gray-900" fontSize="small" />
-                            </button>)}
+                            (<Tooltip title="Edit Recipe" placement="right">
+                                <button
+                                    onClick={() => router.push(`/recipe/${recipe.id}/edit?from=${fullUrl}`)}
+                                    className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group">
+                                    <EditIcon className="text-text text-base group-hover:text-lg" />
+                                </button>
+                            </Tooltip>)}
                     </div>
                     {recipe.description && (
                         <p className="text-center text-gray-600 max-w-2xl mb-2">{recipe.description}</p>
