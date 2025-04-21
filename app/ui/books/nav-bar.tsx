@@ -1,6 +1,6 @@
 'use client'
 
-import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
+import { IconButton, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -21,8 +21,6 @@ export function BookNavBar({ view, handleViewChange, canEdit }: BookNavBarProps)
     const router = useRouter();
     const pathname = usePathname();
     const [openDialog, setOpenDialog] = useState(false);
-
-
 
     const handleAdd = () => {
         const bookId = pathname.match(/\/books\/([^\/]+)$/)?.[1];

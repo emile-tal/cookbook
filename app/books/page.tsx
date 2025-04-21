@@ -19,20 +19,20 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
                     <NoBooks message="You haven't created any recipe books yet." />
                 )}
             </div>
-            <div className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Shared Books</h2>
-                {sharedBooks && sharedBooks.length > 0 ? (
-                    <BookDisplay books={sharedBooks} savedBooks={(savedBooks || []).map(book => book.id)} />
-                ) : (
-                    <NoBooks message="No shared books available yet." />
-                )}
-            </div>
             <div>
                 <h2 className="text-2xl font-bold mb-4">Saved Books</h2>
                 {savedBooks && savedBooks.length > 0 ? (
                     <BookDisplay books={savedBooks} savedBooks={savedBooks.map(book => book.id)} />
                 ) : (
                     <NoBooks message="You haven't saved any books yet." />
+                )}
+            </div>
+            <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">Shared Books</h2>
+                {sharedBooks && sharedBooks.length > 0 ? (
+                    <BookDisplay books={sharedBooks} savedBooks={(savedBooks || []).map(book => book.id)} />
+                ) : (
+                    <NoBooks message="No shared books available yet." />
                 )}
             </div>
         </main>
