@@ -60,7 +60,7 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                                 <MenuBookIcon className="w-full h-full text-gray-300 scale-[300%]" />
                             )}
                             {session?.user && (<button
-                                className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white transition-all duration-200 group"
+                                className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedBook(book.id)
@@ -75,7 +75,7 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                                             e.stopPropagation();
                                             setShowMenu(false)
                                         }}
-                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group">
+                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group">
                                         <span className="text-text text-xl group-hover:text-lg">
                                             ✕
                                         </span>
@@ -83,7 +83,7 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                                     {(session?.user?.username === book.username) &&
                                         <Tooltip title="Edit Book" placement="right">
                                             <button
-                                                className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                                className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     router.push(`/books/${book.id}/edit?from=${fullUrl}`);
@@ -93,7 +93,7 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                                         </Tooltip>}
                                     <Tooltip title={saved ? "Unsave Book" : "Save Book"} placement="right">
                                         <button
-                                            className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                            className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 if (saved) {
@@ -114,7 +114,7 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                                     {(session?.user?.username === book.username) &&
                                         <Tooltip title="Share Book" placement="right">
                                             <button
-                                                className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                                className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     setShowShareDialog(true);

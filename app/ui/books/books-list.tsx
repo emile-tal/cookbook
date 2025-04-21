@@ -53,7 +53,7 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                         {session?.user?.username === book.username &&
                             <button
                                 onClick={() => router.push(`/books/${book.id}/edit?from=${fullUrl}`)}
-                                className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
                             >
                                 <EditIcon className="text-text text-base group-hover:text-lg" />
                             </button>
@@ -63,7 +63,7 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                                 setSelectedBook(book.id);
                                 setShowShareDialog(true);
                             }}
-                            className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                            className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
                         >
                             <ShareIcon className="text-text text-base group-hover:text-lg" />
                         </button>}
@@ -78,7 +78,7 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                                     router.refresh();
                                 }
                             }}
-                            className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                            className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
                         >
                             {savedBooks.includes(book.id) ? (
                                 <TurnedIn className="text-red-500 text-base group-hover:text-lg" />

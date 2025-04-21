@@ -103,7 +103,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                             e.stopPropagation();
                                             handleCloseMenus();
                                         }}
-                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group">
+                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group">
                                         <span className="text-text text-xl group-hover:text-lg">
                                             ✕
                                         </span>
@@ -125,7 +125,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                                 <span className={`text-gray-700 truncate`}>{book.name}</span>
                                             </div>
                                             {bookIdsWithRecipe.includes(book.id) && (
-                                                <CheckIcon className="text-gray-500 scale-75 hover:text-gray-700" />
+                                                <CheckIcon className="text-gray-500 scale-75" />
                                             )}
                                         </button>
                                     ))}
@@ -140,11 +140,13 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                     className="object-cover rounded-t-xl max-w-full"
                                 />
                             ) : (
-                                <RestaurantIcon className="scale-[200%] text-gray-300 " />
+                                <div className="flex items-center justify-center min-h-full min-w-full bg-gray-50">
+                                    <RestaurantIcon className="scale-[200%] text-gray-300" />
+                                </div>
                             )
                         )}
                         {session?.user && ((showBooks && selectedRecipe === recipe.id) || <button
-                            className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                            className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setSelectedRecipe(recipe.id)
@@ -160,7 +162,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                         e.stopPropagation();
                                         handleCloseMenus();
                                     }}
-                                    className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group">
+                                    className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group">
                                     <span className="text-text text-xl group-hover:text-lg">
                                         ✕
                                     </span>
@@ -168,7 +170,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                 {session?.user?.username === recipe.username && (!showBooks || selectedRecipe !== recipe.id) && (
                                     <Tooltip title="Edit Recipe" placement="right">
                                         <button
-                                            className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                            className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 router.push(`/recipe/${recipe.id}/edit?from=${fullUrl}`);
@@ -180,7 +182,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                     </Tooltip>)}
                                 <Tooltip title="Add to Book" placement="right">
                                     <button
-                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white group"
+                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleShowBooks(recipe.id);

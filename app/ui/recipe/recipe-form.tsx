@@ -394,18 +394,18 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                         </button>
                     </div>
                     <input type="hidden" name="instructions" value={JSON.stringify(instructions)} />
-                    <div className="flex items-center">
-                        <Switch
-                            name="is_public"
-                            defaultChecked={recipe?.is_public ?? true}
-                            color="primary"
-                        />
-                        <label className="text-sm font-medium ml-2">
-                            Make recipe public
-                        </label>
-                    </div>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex items-center">
+                    <Switch
+                        name="is_public"
+                        defaultChecked={recipe?.is_public ?? true}
+                        color="primary"
+                    />
+                    <label className="text-sm font-medium ml-2">
+                        Make recipe public
+                    </label>
+                </div>
+                <div className="flex justify-between pt-8">
                     <button
                         type="button"
                         className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90"
