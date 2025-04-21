@@ -84,7 +84,7 @@ export async function fetchRecipeById(id: string) {
 }
 
 // Fetches recipes by book id - checks if the book is public or the user is the owner
-export async function fetchRecipesByBookId(id: string) {
+export async function fetchRecipesByBookId(bookId: string) {
     const user = await getCurrentUser();
     try {
         const recipes = await sql<LiteRecipe[]>`
@@ -108,12 +108,12 @@ export async function fetchRecipesByBookId(id: string) {
             JOIN recipebooks ON recipeBookRecipes.book_id = recipebooks.id
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
-            WHERE recipeBookRecipes.book_id = ${id} 
-            ${user ?
-                sql`AND (recipebooks.user_id = ${user.id} OR recipebooks.is_public = true) OR recipebooks.id IN (
-                SELECT book_id FROM permissions WHERE user_id = ${user.id}
-            )` : sql`AND recipebooks.is_public = true`}
-        `;
+            WHERE recipeBookRecipes.book_id = ${bookId} AND (
+                recipebooks.is_public = true 
+                ${user ? sql`OR recipebooks.user_id = ${user.id} OR recipebooks.id IN (
+                    SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                )` : sql``}
+            )`;
         return recipes || null;
     } catch (error) {
         console.error(`Database error: ${error} `);
@@ -146,9 +146,12 @@ export async function fetchRecipesByBookIdAndQuery(id: string, searchQuery?: str
             JOIN recipebooks ON recipeBookRecipes.book_id = recipebooks.id
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
-            WHERE recipeBookRecipes.book_id = ${id} AND recipebooks.is_public = true ${user ? sql`OR recipebooks.user_id = ${user.id} OR recipebooks.id IN (
-                SELECT book_id FROM permissions WHERE user_id = ${user.id}
-            )` : sql``}
+            WHERE recipeBookRecipes.book_id = ${id} AND (
+                recipebooks.is_public = true 
+                ${user ? sql`OR recipebooks.user_id = ${user.id} OR recipebooks.id IN (
+                    SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                )` : sql``}
+            )
             ${searchQuery ? sql`AND (
                 recipes.title ILIKE ${`%${searchQuery}%`} OR
                 COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR
@@ -158,8 +161,7 @@ export async function fetchRecipesByBookIdAndQuery(id: string, searchQuery?: str
                     WHERE rc2.recipe_id = recipes.id 
                     AND rc2.category ILIKE ${`%${searchQuery}%`}
                 )
-            )` : sql``}
-        `;
+            )` : sql``}`;
         return recipes || null;
     } catch (error) {
         console.error(`Database error: ${error} `);
