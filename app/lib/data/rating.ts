@@ -37,7 +37,7 @@ export async function removeRating(recipeId: string) {
 export async function fetchUserRating(recipeId: string) {
     const user = await getCurrentUser()
     if (!user) {
-        throw new Error('User not found')
+        return null
     }
     try {
         const rating = await sql`SELECT rating FROM ratings WHERE recipe_id = ${recipeId} AND user_id = ${user.id}`

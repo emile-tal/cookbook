@@ -21,7 +21,18 @@ export async function fetchRecipeById(id: string) {
                 COALESCE(users.username, 'Unknown') as username
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
-            WHERE recipes.id = ${id} ${user ? sql`AND (recipes.user_id = ${user.id} OR recipes.is_public = true)` : sql`recipes.is_public = true`}
+            WHERE recipes.id = ${id} ${user ? sql`AND (
+                recipes.user_id = ${user.id} 
+                OR recipes.is_public = true 
+                OR recipes.id IN (
+                    SELECT recipe_id 
+                    FROM recipeBookRecipes rbr
+                    JOIN recipebooks rb ON rbr.book_id = rb.id
+                    WHERE rb.is_public = true 
+                    OR rb.user_id = ${user.id}
+                    OR rb.id IN (SELECT book_id FROM permissions WHERE user_id = ${user.id})
+                )
+            )` : sql`AND recipes.is_public = true`}
         ),
         recipe_ingredients AS (
             SELECT 
