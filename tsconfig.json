@@ -37,6 +37,7 @@
     "types"
   ],
   "exclude": [
+    "postcss.config.mjs",
     "node_modules"
   ]
 }
