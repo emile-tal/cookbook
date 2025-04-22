@@ -43,3 +43,7 @@ next-env.d.ts
 # cursor
 .cursor/*
 .cursor/
+
+# seed
+/app/seed/*
+/app/seed
