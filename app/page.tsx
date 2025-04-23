@@ -2,7 +2,6 @@ import { fetchEditableBooks, fetchMostViewedBooks, fetchRecentlyViewedBooks, fet
 import { fetchMostViewedRecipes, fetchMostViewedRecipesByUser, fetchRecentlyViewedRecipesByUser } from "./lib/data/recipes/fetch";
 
 import BooksGrid from "./ui/books/books-grid";
-import CloudinaryTestImage from "./components/CloudinaryTest";
 import RecipesGrid from "./ui/books/recipes-grid";
 
 export default async function Page() {
@@ -18,7 +17,6 @@ export default async function Page() {
 
   return (
     <main className="container-spacing mb-8">
-      <CloudinaryTestImage />
       {mostViewedRecipes && mostViewedRecipes.length > 0 && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Most Popular Recipes</h2>
         <RecipesGrid recipes={mostViewedRecipes} editableBooks={editableBooks} />
