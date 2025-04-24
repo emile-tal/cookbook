@@ -19,7 +19,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
                     <NoBooks message="You haven't created any recipe books yet." />
                 )}
             </div>
-            <div>
+            <div className="mb-8">
                 <h2 className="text-2xl font-bold mb-4">Saved Books</h2>
                 {savedBooks && savedBooks.length > 0 ? (
                     <BookDisplay books={savedBooks} savedBooks={savedBooks.map(book => book.id)} />

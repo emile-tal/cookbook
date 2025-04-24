@@ -140,7 +140,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                     className="object-cover rounded-t-xl max-w-full"
                                 />
                             ) : (
-                                <div className="flex items-center justify-center min-h-full min-w-full bg-gray-50">
+                                <div className="flex items-center justify-center min-h-full min-w-full bg-gray-50 rounded-t-xl">
                                     <RestaurantIcon className="scale-[200%] text-gray-300" />
                                 </div>
                             )
