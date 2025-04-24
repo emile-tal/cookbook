@@ -103,6 +103,11 @@ export async function fetchRecipeById(id: string) {
 export async function fetchRecipesByBookId(bookId: string) {
     const user = await getCurrentUser();
     try {
+        if (user) {
+            const claims = JSON.stringify({ sub: user.id });
+            await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+        }
+
         const recipes = await sql<LiteRecipe[]>`
             WITH recipe_categories AS (
                 SELECT 
@@ -141,6 +146,11 @@ export async function fetchRecipesByBookId(bookId: string) {
 export async function fetchRecipesByBookIdAndQuery(id: string, searchQuery?: string) {
     const user = await getCurrentUser();
     try {
+        if (user) {
+            const claims = JSON.stringify({ sub: user.id });
+            await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+        }
+
         const recipes = await sql<LiteRecipe[]>`
             WITH recipe_categories AS (
                 SELECT 
@@ -192,6 +202,9 @@ export async function fetchRecentlyViewedRecipesByUser() {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+
         const recentlyViewedRecipes = await sql<Recipe[]>`
             WITH recipe_categories AS (
                 SELECT 
@@ -273,6 +286,9 @@ export async function fetchMostViewedRecipesByUser() {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+
         const mostViewedRecipesByUser = await sql<Recipe[]>`
             WITH recipe_categories AS (
                 SELECT 
@@ -313,6 +329,11 @@ export async function fetchMostViewedRecipesByUser() {
 export async function fetchAllRecipesByQuery(searchQuery?: string) {
     const user = await getCurrentUser();
     try {
+        if (user) {
+            const claims = JSON.stringify({ sub: user.id });
+            await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+        }
+
         const recipes = await sql<Recipe[]>`
             WITH recipe_categories AS (
                 SELECT 

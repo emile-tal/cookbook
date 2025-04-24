@@ -8,6 +8,9 @@ import { poppins } from "./ui/fonts";
 export const metadata: Metadata = {
   title: "CookBook",
   description: "All-in-one marketplace for cookbooks and recipes.",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
