@@ -34,7 +34,6 @@ export const config: NextAuthConfig = {
     session: {
         strategy: "jwt",
     },
-    debug: true,
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
         async jwt({ token, user }) {
