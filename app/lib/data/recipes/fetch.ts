@@ -9,6 +9,11 @@ import sql from '../../db';
 export async function fetchRecipeById(id: string) {
     const user = await getCurrentUser();
     try {
+        if (user) {
+            const claims = JSON.stringify({ sub: user.id });
+            await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+        }
+
         const recipe = await sql<Recipe[]>`
         WITH recipe_base AS (
             SELECT 
