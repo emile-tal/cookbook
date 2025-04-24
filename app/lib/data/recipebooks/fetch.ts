@@ -10,6 +10,9 @@ export async function fetchUserBooks(searchQuery?: string) {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+
         const userBooks = await sql<Book[]>`
             SELECT 
                 recipeBooks.id, 
@@ -40,8 +43,12 @@ export async function fetchEditableBooks() {
     if (!user) {
         return null;
     }
-    const editableBooks = await sql<Book[]>`
-       SELECT 
+    try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+
+        const editableBooks = await sql<Book[]>`
+            SELECT 
                 recipeBooks.id, 
                 recipeBooks.name, 
                 recipeBooks.image_url, 
@@ -55,8 +62,12 @@ export async function fetchEditableBooks() {
                 SELECT book_id FROM permissions WHERE user_id = ${user.id} AND can_edit = true
             )
             GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
-    `;
-    return editableBooks || null;
+        `;
+        return editableBooks || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
 }
 
 
@@ -64,6 +75,11 @@ export async function fetchEditableBooks() {
 export async function fetchBookByBookId(id: string) {
     const user = await getCurrentUser();
     try {
+        if (user) {
+            const claims = JSON.stringify({ sub: user.id });
+            await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+        }
+
         const book = await sql<Book[]>`
         SELECT 
           recipeBooks.id, 
@@ -97,6 +113,9 @@ export async function fetchRecentlyViewedBooks() {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+
         const recentlyViewedBooks = await sql<Book[]>`
             SELECT DISTINCT ON (recipeBooks.id) 
                 recipeBooks.id, 
@@ -157,6 +176,9 @@ export async function fetchSavedBooks(searchQuery?: string) {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+
         const savedBooks = await sql<Book[]>`
             SELECT 
                 recipeBooks.id, 
@@ -189,6 +211,10 @@ export async function fetchSavedBooks(searchQuery?: string) {
 export async function fetchAllBooksByQuery(searchQuery?: string) {
     const user = await getCurrentUser();
     try {
+        if (user) {
+            const claims = JSON.stringify({ sub: user.id });
+            await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+        }
         const books = await sql<Book[]>`
             SELECT 
                 recipeBooks.id, 
@@ -239,6 +265,9 @@ export async function fetchSharedBooksByQuery(searchQuery?: string) {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+
         const sharedBooks = await sql<Book[]>`
             SELECT 
                 recipeBooks.id, 

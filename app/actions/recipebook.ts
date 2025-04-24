@@ -41,6 +41,9 @@ export async function updateBook(formData: FormData) {
 
     const { id, name, image_url, is_public } = validatedFields.data;
 
+    const claims = JSON.stringify({ sub: user.id });
+    await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+
     await sql`
         UPDATE recipebooks
         SET name = ${name}, image_url = ${image_url || null}, is_public = ${is_public}

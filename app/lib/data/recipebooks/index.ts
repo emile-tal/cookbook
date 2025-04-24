@@ -10,6 +10,8 @@ export async function addSavedBook(bookId: string) {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
         await sql`INSERT INTO savedrecipebooks (user_id, book_id) VALUES (${user.id}, ${bookId})`;
         return { success: true };
     } catch (error) {
@@ -24,6 +26,8 @@ export async function removeSavedBook(bookId: string) {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
         await sql`DELETE FROM savedrecipebooks WHERE user_id = ${user.id} AND book_id = ${bookId}`;
         return { success: true };
     } catch (error) {
@@ -38,6 +42,8 @@ export async function createBook(name: string) {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
         await sql`INSERT INTO recipeBooks (user_id, name, is_public) VALUES (${user.id}, ${name}, false)`;
         return { success: true };
     } catch (error) {
@@ -52,6 +58,8 @@ export async function createBookWithRecipe(name: string, recipeId: string) {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
         const [book] = await sql<Book[]>`
             INSERT INTO recipeBooks (user_id, name, is_public) 
             VALUES (${user.id}, ${name}, false)
@@ -75,6 +83,8 @@ export async function deleteBook(id: string) {
         return null;
     }
     try {
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
         await sql`DELETE FROM recipeBooks WHERE id = ${id} AND user_id = ${user.id}`;
         return { success: true };
     } catch (error) {
