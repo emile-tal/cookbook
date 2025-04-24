@@ -132,8 +132,11 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             };
         }
 
+        const claims = JSON.stringify({ sub: user.id });
+        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
+
         if (id) {
-            // Update existing recipe
+
             await sql`
                 UPDATE recipes
                 SET title = ${title}, 
@@ -150,7 +153,6 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             await sql`DELETE FROM instructions WHERE recipe_id = ${id}`;
             await sql`DELETE FROM recipecategories WHERE recipe_id = ${id}`;
 
-            // Insert new ingredients
             if (ingredients.length > 0) {
                 await Promise.all(
                     ingredients.map(ingredient =>
@@ -160,7 +162,6 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
                 );
             }
 
-            // Insert new instructions
             if (instructions.length > 0) {
                 await Promise.all(
                     instructions.map(instruction =>
@@ -170,7 +171,6 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
                 );
             }
 
-            // Insert new categories
             if (categories.length > 0) {
                 await Promise.all(
                     categories.map(category =>
