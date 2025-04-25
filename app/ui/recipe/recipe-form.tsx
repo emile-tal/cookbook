@@ -93,7 +93,7 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
 
     return (
         <form action={dispatch}>
-            <div className="flex flex-col gap-4 relative max-w-full overflow-x-scroll">
+            <div className="flex flex-col gap-4 relative">
                 {state?.message && (
                     <div className="text-red-500">{state.message}</div>
                 )}

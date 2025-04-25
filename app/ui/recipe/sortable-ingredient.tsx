@@ -1,7 +1,6 @@
 'use client'
 
 import { CSS } from '@dnd-kit/utilities'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import { Ingredient } from "@/app/types/definitions"
 import { useSortable } from '@dnd-kit/sortable'
@@ -10,7 +9,6 @@ interface SortableIngredientProps {
     ingredient: Ingredient
     index: number
     onUpdate: (position: number, ingredient: string, amount: string) => void
-    onRemove: (position: number) => void
     isLastEmpty: boolean
 }
 
@@ -18,7 +16,6 @@ export function SortableIngredient({
     ingredient,
     index,
     onUpdate,
-    onRemove,
     isLastEmpty
 }: SortableIngredientProps) {
     const {
@@ -92,16 +89,8 @@ export function SortableIngredient({
                 onChange={(e) => onUpdate(ingredient.position, e.target.value, ingredient.amount)}
                 className={`block min-w-full rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base col-span-7 sm:col-span-9 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
             />
-            <div className="col-span-2 sm:col-span-1 flex justify-end items-center gap-1 sm:gap-2">
+            <div className="col-span-2 sm:col-span-1 flex justify-center items-center gap-1 sm:gap-2">
                 {!isLastEmpty && <DragHandleIcon className="text-gray-400 text-lg sm:text-xl" />}
-                <button
-                    type="button"
-                    onClick={() => onRemove(ingredient.position)}
-                    className="text-rose-300 hover:text-rose-500 flex justify-center items-center"
-                    tabIndex={-1}
-                >
-                    <DeleteOutlineIcon className="text-lg sm:text-xl" />
-                </button>
             </div>
         </div>
     )

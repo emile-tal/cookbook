@@ -42,13 +42,6 @@ export default function DynamicIngredientsForm({ ingredients, setIngredients }: 
         setIngredients(updatedIngredients)
     }
 
-    const removeIngredient = (position: number) => {
-        const updatedIngredients = ingredients
-            .filter(ing => ing.position !== position)
-            .map((ing, idx) => ({ ...ing, position: idx + 1 }))
-        setIngredients(updatedIngredients)
-    }
-
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event
 
@@ -84,7 +77,6 @@ export default function DynamicIngredientsForm({ ingredients, setIngredients }: 
                             ingredient={ingredient}
                             index={index}
                             onUpdate={updateIngredient}
-                            onRemove={removeIngredient}
                             isLastEmpty={index === ingredients.length - 1 && !ingredient.ingredient && !ingredient.amount}
                         />
                     ))}

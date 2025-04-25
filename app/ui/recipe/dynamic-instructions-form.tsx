@@ -41,13 +41,6 @@ export default function DynamicInstructionsForm({ instructions, setInstructions 
         setInstructions(updatedInstructions)
     }
 
-    const removeInstruction = (position: number) => {
-        const updatedInstructions = instructions
-            .filter(inst => inst.position !== position)
-            .map((inst, idx) => ({ ...inst, position: idx + 1 }))
-        setInstructions(updatedInstructions)
-    }
-
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event
 
@@ -77,7 +70,6 @@ export default function DynamicInstructionsForm({ instructions, setInstructions 
                             key={instruction.id}
                             instruction={instruction}
                             onUpdate={updateInstruction}
-                            onRemove={removeInstruction}
                             isLastEmpty={index === instructions.length - 1 && !instruction.instruction}
                         />
                     ))}
