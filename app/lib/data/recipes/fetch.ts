@@ -23,6 +23,7 @@ export async function fetchRecipeById(id: string) {
                 recipes.is_public,
                 recipes.duration,
                 recipes.recipe_yield,
+                recipes.description,
                 COALESCE(users.username, 'Unknown') as username
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id

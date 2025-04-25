@@ -17,7 +17,7 @@ export default function BookHeader({ bookName, bookId, canEdit }: Props) {
     const searchParams = useSearchParams();
 
     return (
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold my-4">{bookName}</h1>
             {canEdit && (
                 <Tooltip title="Edit Book" placement="right">
