@@ -16,12 +16,12 @@ export default function Header() {
                     <Logo w={50} h={50} />
                     <span className={`${playfair.className} text-text font-serif text-2xl font-bold hidden md:block`}>RECIPIZ</span>
                 </Link>
-                <div className="flex-1 min-w-100px md:min-w-[300px] md:max-w-[500px] mx-2 md:mx-8">
+                <div className="flex-1 min-w-[100px] md:min-w-[300px] md:max-w-[500px] mx-2 md:mx-8">
                     <Suspense fallback={null}>
                         <SearchBar placeholder="Search..." />
                     </Suspense>
                 </div>
-                <nav className="flex gap-2 md:gap-12">
+                <nav className="flex gap-0 md:gap-12">
                     <NavLinks />
                 </nav>
             </div>
