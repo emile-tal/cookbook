@@ -3,6 +3,7 @@
 import { fetchBookByBookId, fetchEditableBooks } from "@/app/lib/data/recipebooks/fetch";
 import { fetchRecipesByBookId, fetchRecipesByBookIdAndQuery } from "@/app/lib/data/recipes/fetch";
 
+import BookHeader from "@/app/ui/books/book-header";
 import BookLogger from "@/app/components/BookLogger";
 import EmptyBook from "@/app/ui/books/empty-book";
 import Loading from "@/app/ui/loading";
@@ -46,7 +47,7 @@ export default async function Page({ params, searchParams }: Props) {
     return (
         <main>
             <BookLogger bookId={id} />
-            <h1 className="text-2xl font-bold my-4">{book.name}</h1>
+            <BookHeader bookName={book.name} bookId={id} canEdit={canEdit} />
             {(recipes && recipes.length > 0) ? (
                 <Suspense fallback={<div className="container-spacing">
                     <Loading size={24} />

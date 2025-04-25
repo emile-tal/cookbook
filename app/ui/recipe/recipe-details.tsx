@@ -31,8 +31,12 @@ export default function RecipeDetails({ recipe, username }: Props) {
 
     const handleRecipeYieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
-        setRecipeYield(value);
+        if (value > 0) {
+            setRecipeYield(value);
+        }
     };
+
+    console.log(recipe)
 
     return (
         <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-5xl border-b border-gray-200">
@@ -101,6 +105,7 @@ export default function RecipeDetails({ recipe, username }: Props) {
                             type="number"
                             value={recipeYield}
                             onChange={(e) => handleRecipeYieldChange(e)}
+                            min="1"
                             className="max-w-16 border border-gray-300 rounded-md p-1"
                         />
                         <span className="text-gray-500 italic"> servings</span>
@@ -115,9 +120,9 @@ export default function RecipeDetails({ recipe, username }: Props) {
                         {ingredients.length > 0 ? (
                             <div className="space-y-3">
                                 {ingredients.sort((a, b) => a.position - b.position).map((ingredient, index) => (
-                                    <div key={index} className="grid grid-cols-3 gap-2">
-                                        <span className="col-span-1 text-gray-600">{scaleIngredient(ingredient.amount, recipe.recipe_yield, recipeYield)}</span>
-                                        <span className="col-span-2">{ingredient.ingredient}</span>
+                                    <div key={index} className="grid grid-cols-6 gap-2">
+                                        <span className="col-span-1 md:col-span-2 text-gray-600">{scaleIngredient(ingredient.amount, recipe.recipe_yield, recipeYield)}</span>
+                                        <span className="col-span-5 md:col-span-4">{ingredient.ingredient}</span>
                                     </div>
                                 ))}
                             </div>

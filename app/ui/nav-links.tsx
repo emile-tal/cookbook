@@ -4,13 +4,13 @@ import { signOut, useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import BookIcon from '@mui/icons-material/Book';
 import IconButton from '@mui/material/IconButton';
 import Image from 'next/image';
 import Link from 'next/link';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Menu from '@mui/material/Menu';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -22,7 +22,7 @@ import { getUser } from '../lib/data/user';
 import { poppins } from './fonts';
 
 const links = [
-    { name: 'Books', href: '/books', icon: <BookIcon className='text-[rgb(30,30,30)] flex-shrink-0' /> },
+    { name: 'Books', href: '/books', icon: <MenuBookIcon className='text-[rgb(30,30,30)] flex-shrink-0' /> },
 ];
 
 export default function NavLinks() {

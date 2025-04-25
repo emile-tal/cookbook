@@ -17,19 +17,21 @@ export default async function CommentSection({ recipeId }: { recipeId: string })
     const userRating = await fetchUserRating(recipeId) || null
 
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-5xl mb-8 grid grid-cols-4">
-            {user && (
-                <div className="col-span-1">
-                    <h2 className="text-2xl font-bold mb-4">My Rating</h2>
-                    <AddRating recipeId={recipeId} userRating={userRating} />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-5xl mb-8">
+            <div className="flex flex-col space-y-8 md:space-y-0 md:grid md:grid-cols-4 md:gap-8">
+                {user && (
+                    <div className="md:col-span-1 md:p-6">
+                        <h2 className="text-xl font-bold mb-4">My Rating</h2>
+                        <AddRating recipeId={recipeId} userRating={userRating} />
+                    </div>
+                )}
+                <div className={`${user ? 'md:col-span-3' : 'md:col-span-4'} md:p-6`}>
+                    <h2 className="text-xl font-bold mb-4">Comments</h2>
+                    {user && <CommentForm recipeId={recipeId} />}
+                    <Suspense fallback={<Loading size={8} />}>
+                        <Comments recipeId={recipeId} />
+                    </Suspense>
                 </div>
-            )}
-            <div className={`${user ? 'col-span-3' : 'col-span-4'}`}>
-                <h2 className="text-2xl font-bold mb-4">Comments</h2>
-                {user && <CommentForm recipeId={recipeId} />}
-                <Suspense fallback={<Loading size={8} />}>
-                    <Comments recipeId={recipeId} />
-                </Suspense>
             </div>
         </div>
     )
