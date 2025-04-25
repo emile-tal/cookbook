@@ -88,27 +88,30 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                     <div className={clsx("flex w-full h-48 relative rounded-t-xl bg-white", showBooks && selectedRecipe === recipe.id ? "hover:cursor-default" : "items-center justify-center")}>
                         {showBooks && selectedRecipe === recipe.id ? (
                             <div className="flex flex-col min-w-full h-full">
-                                <button className="flex justify-between items-center bg-gray-50 hover:bg-gray-100 min-w-full px-4 py-4 rounded-xl mb-2"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setOpenNewBookDialog(true);
-                                    }}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <MenuBook className="scale-75 text-gray-500" />
-                                        <span className="text-gray-700 text-xl">New Book</span>
-                                    </div>
+                                <div className="flex items-center min-w-full rounded-xl mb-2 relative">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setOpenNewBookDialog(true);
+                                        }}
+                                        className="rounded-xl min-h-full min-w-full px-4 py-4 hover:cursor-pointer hover:shadow-sm bg-gray-50 hover:bg-gray-100"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <MenuBook className="scale-75 text-gray-500" />
+                                            <span className="text-gray-700 text-xl">New Book</span>
+                                        </div>
+                                    </button>
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleCloseMenus();
                                         }}
-                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group">
+                                        className="flex items-center justify-center rounded-full h-8 min-w-8 absolute right-1 top-[13px] hover:cursor-pointer hover:bg-white hover:shadow-sm group">
                                         <span className="text-text text-xl group-hover:text-lg">
                                             ✕
                                         </span>
                                     </button>
-                                </button>
+                                </div>
 
                                 <div className="flex-1 overflow-y-auto">
                                     {editableBooks?.map((book) => (
