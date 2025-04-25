@@ -41,13 +41,13 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
     )
     const [ingredients, setIngredients] = useState<Ingredient[]>(
         recipe?.ingredients
-            ? [...recipe.ingredients, { position: recipe.ingredients.length + 1, amount: '', ingredient: '' }]
-            : [{ position: 1, amount: '', ingredient: '' }]
+            ? [...recipe.ingredients, { id: crypto.randomUUID(), position: recipe.ingredients.length + 1, amount: '', ingredient: '' }]
+            : [{ id: crypto.randomUUID(), position: 1, amount: '', ingredient: '' }]
     )
     const [instructions, setInstructions] = useState<Instruction[]>(
         recipe?.instructions
-            ? [...recipe.instructions, { position: recipe.instructions.length + 1, instruction: '' }]
-            : [{ position: 1, instruction: '' }]
+            ? [...recipe.instructions, { id: crypto.randomUUID(), position: recipe.instructions.length + 1, instruction: '' }]
+            : [{ id: crypto.randomUUID(), position: 1, instruction: '' }]
     )
     const [title, setTitle] = useState(recipe?.title || '')
     const [selectedCategories, setSelectedCategories] = useState<string[]>(recipe?.categories || [])

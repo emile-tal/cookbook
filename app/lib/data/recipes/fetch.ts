@@ -44,6 +44,7 @@ export async function fetchRecipeById(id: string) {
             SELECT 
                 recipe_id,
                 json_agg(json_build_object(
+                    'id', id,
                     'position', position,
                     'amount', amount,
                     'ingredient', ingredient
@@ -56,6 +57,7 @@ export async function fetchRecipeById(id: string) {
             SELECT 
                 recipe_id,
                 json_agg(json_build_object(
+                    'id', id,
                     'position', position,
                     'instruction', instruction
                 ) ORDER BY position) as instructions

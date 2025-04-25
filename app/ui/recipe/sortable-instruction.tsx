@@ -27,7 +27,7 @@ export function SortableInstruction({
         transition,
         isDragging
     } = useSortable({
-        id: instruction.position,
+        id: instruction.id,
         disabled: isLastEmpty
     })
 

@@ -29,7 +29,7 @@ export function SortableIngredient({
         transition,
         isDragging
     } = useSortable({
-        id: ingredient.position,
+        id: ingredient.id,
         disabled: isLastEmpty
     })
 

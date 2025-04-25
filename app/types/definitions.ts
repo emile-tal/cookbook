@@ -8,12 +8,14 @@ export type Book = {
 }
 
 export type Ingredient = {
+    id: string,
     position: number,
     amount: string,
     ingredient: string
 }
 
 export type Instruction = {
+    id: string,
     position: number,
     instruction: string
 }

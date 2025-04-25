@@ -26,7 +26,12 @@ export default function DynamicIngredientsForm({ ingredients, setIngredients }: 
 
         // Add new row if this is the last row and ingredient field has content
         if (position === ingredients.length && ingredient) {
-            updatedIngredients.push({ position: position + 1, amount: '', ingredient: '' })
+            updatedIngredients.push({
+                id: crypto.randomUUID(),
+                position: position + 1,
+                amount: '',
+                ingredient: ''
+            })
         }
 
         // Remove the last empty row if the previous row is now empty
@@ -48,8 +53,8 @@ export default function DynamicIngredientsForm({ ingredients, setIngredients }: 
         const { active, over } = event
 
         if (active.id !== over?.id) {
-            const oldIndex = ingredients.findIndex((item) => item.position === active.id)
-            const newIndex = ingredients.findIndex((item) => item.position === over?.id)
+            const oldIndex = ingredients.findIndex((item) => item.id === active.id)
+            const newIndex = ingredients.findIndex((item) => item.id === over?.id)
 
             const newItems = arrayMove(ingredients, oldIndex, newIndex)
             setIngredients(newItems.map((item, index) => ({ ...item, position: index + 1 })))
@@ -70,12 +75,12 @@ export default function DynamicIngredientsForm({ ingredients, setIngredients }: 
                 onDragEnd={handleDragEnd}
             >
                 <SortableContext
-                    items={ingredients.map(i => i.position)}
+                    items={ingredients.map(i => i.id)}
                     strategy={verticalListSortingStrategy}
                 >
                     {ingredients.sort((a, b) => a.position - b.position).map((ingredient, index) => (
                         <SortableIngredient
-                            key={ingredient.position}
+                            key={ingredient.id}
                             ingredient={ingredient}
                             index={index}
                             onUpdate={updateIngredient}

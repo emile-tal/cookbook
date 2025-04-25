@@ -27,7 +27,11 @@ export default function InstructionsForm({ instructions, setInstructions }: Inst
 
         // Add new row if this is the last row and has content
         if (position === instructions.length && instruction) {
-            updatedInstructions.push({ position: position + 1, instruction: '' })
+            updatedInstructions.push({
+                id: crypto.randomUUID(),
+                position: position + 1,
+                instruction: ''
+            })
         }
 
         // Remove the last empty row if the previous row is now empty
@@ -49,8 +53,8 @@ export default function InstructionsForm({ instructions, setInstructions }: Inst
         const { active, over } = event
 
         if (active.id !== over?.id) {
-            const oldIndex = instructions.findIndex((item) => item.position === active.id)
-            const newIndex = instructions.findIndex((item) => item.position === over?.id)
+            const oldIndex = instructions.findIndex((item) => item.id === active.id)
+            const newIndex = instructions.findIndex((item) => item.id === over?.id)
 
             const newItems = arrayMove(instructions, oldIndex, newIndex)
             setInstructions(newItems.map((item, index) => ({ ...item, position: index + 1 })))
@@ -66,12 +70,12 @@ export default function InstructionsForm({ instructions, setInstructions }: Inst
                 onDragEnd={handleDragEnd}
             >
                 <SortableContext
-                    items={instructions.map(i => i.position)}
+                    items={instructions.map(i => i.id)}
                     strategy={verticalListSortingStrategy}
                 >
                     {instructions.map((instruction, index) => (
                         <SortableInstruction
-                            key={instruction.position}
+                            key={instruction.id}
                             instruction={instruction}
                             onUpdate={updateInstruction}
                             onRemove={removeInstruction}

@@ -7,23 +7,27 @@ import sql from '../lib/db';
 import { z } from "zod";
 
 type RawIngredient = {
+    id: string;
     position: number;
     amount: string | null;
     ingredient: string;
 };
 
 type RawInstruction = {
+    id: string;
     position: number;
     instruction: string;
 };
 
 const ingredientSchema = z.object({
+    id: z.string(),
     position: z.number(),
     amount: z.string().nullable().transform(val => val || ''),
     ingredient: z.string()
 });
 
 const instructionSchema = z.object({
+    id: z.string(),
     position: z.number(),
     instruction: z.string()
 });

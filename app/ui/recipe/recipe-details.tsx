@@ -117,8 +117,8 @@ export default function RecipeDetails({ recipe, username }: Props) {
                         <h2 className="text-xl font-bold pb-3 border-b border-gray-200 mb-4">Ingredients</h2>
                         {ingredients.length > 0 ? (
                             <div className="space-y-3">
-                                {ingredients.sort((a, b) => a.position - b.position).map((ingredient, index) => (
-                                    <div key={index} className="grid grid-cols-6 gap-2">
+                                {ingredients.sort((a, b) => a.position - b.position).map((ingredient) => (
+                                    <div key={ingredient.id} className="grid grid-cols-6 gap-2">
                                         <span className="col-span-1 md:col-span-2 text-gray-600">{scaleIngredient(ingredient.amount, recipe.recipe_yield, recipeYield)}</span>
                                         <span className="col-span-5 md:col-span-4">{ingredient.ingredient}</span>
                                     </div>
@@ -134,8 +134,8 @@ export default function RecipeDetails({ recipe, username }: Props) {
                         <h2 className="text-xl font-bold pb-3 border-b border-gray-200 mb-4">Instructions</h2>
                         {instructions.length > 0 ? (
                             <div className="space-y-6">
-                                {instructions.sort((a, b) => a.position - b.position).map((instruction, index) => (
-                                    <div key={index} className="flex gap-4">
+                                {instructions.sort((a, b) => a.position - b.position).map((instruction) => (
+                                    <div key={instruction.id} className="flex gap-4">
                                         <span className="text-2xl font-bold text-gray-400 shrink-0 w-8 text-right">
                                             {instruction.position}
                                         </span>
