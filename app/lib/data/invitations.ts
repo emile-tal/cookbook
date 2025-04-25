@@ -30,7 +30,7 @@ export async function fetchUnreadInvitationsCountByUser() {
         return 0
     }
     try {
-        const result = await sql<{ count: string }[]>`SELECT COUNT(*) FROM invitations WHERE recipient_email = ${user.email} AND status = 'false'`
+        const result = await sql<{ count: string }[]>`SELECT COUNT(*) FROM invitations WHERE recipient_email = ${user.email} AND status IS NULL`
         return Number(result[0].count) || 0
     } catch (error) {
         console.error(error)
@@ -58,7 +58,7 @@ export async function fetchPendingInvitationsByUser() {
             FROM invitations
             JOIN recipeBooks ON invitations.book_id = recipeBooks.id
             JOIN users ON invitations.sender_id = users.id
-            WHERE invitations.recipient_email = ${user.email} AND invitations.status = 'false'
+            WHERE invitations.recipient_email = ${user.email} AND invitations.status IS NULL
         `
         return invitations
     } catch (error) {
