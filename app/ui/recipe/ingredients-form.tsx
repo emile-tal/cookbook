@@ -1,12 +1,8 @@
 'use client'
 
-import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
+import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
-import { CSS } from '@dnd-kit/utilities'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import { Ingredient } from "@/app/types/definitions"
 import { SortableIngredient } from './sortable-ingredient'
 import { useState } from "react"
@@ -51,12 +47,12 @@ export default function IngredientsForm({ ingredients, setIngredients }: Ingredi
         setIngredients(updatedIngredients)
     }
 
-    const handleDragEnd = (event: any) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event
 
-        if (active.id !== over.id) {
+        if (active.id !== over?.id) {
             const oldIndex = ingredients.findIndex((item) => item.position === active.id)
-            const newIndex = ingredients.findIndex((item) => item.position === over.id)
+            const newIndex = ingredients.findIndex((item) => item.position === over?.id)
 
             const newItems = arrayMove(ingredients, oldIndex, newIndex)
             setIngredients(newItems.map((item, index) => ({ ...item, position: index + 1 })))
@@ -87,8 +83,6 @@ export default function IngredientsForm({ ingredients, setIngredients }: Ingredi
                             index={index}
                             onUpdate={updateIngredient}
                             onRemove={removeIngredient}
-                            hoveredIngredient={hoveredIngredient}
-                            setHoveredIngredient={setHoveredIngredient}
                             isLastEmpty={index === ingredients.length - 1 && !ingredient.ingredient && !ingredient.amount}
                         />
                     ))}

@@ -1,6 +1,6 @@
 'use client'
 
-import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
+import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
 
 import { Instruction } from "@/app/types/definitions"
@@ -47,12 +47,12 @@ export default function InstructionsForm({ instructions, setInstructions }: Inst
         setInstructions(updatedInstructions)
     }
 
-    const handleDragEnd = (event: any) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event
 
-        if (active.id !== over.id) {
+        if (active.id !== over?.id) {
             const oldIndex = instructions.findIndex((item) => item.position === active.id)
-            const newIndex = instructions.findIndex((item) => item.position === over.id)
+            const newIndex = instructions.findIndex((item) => item.position === over?.id)
 
             const newItems = arrayMove(instructions, oldIndex, newIndex)
             setInstructions(newItems.map((item, index) => ({ ...item, position: index + 1 })))
@@ -77,8 +77,6 @@ export default function InstructionsForm({ instructions, setInstructions }: Inst
                             instruction={instruction}
                             onUpdate={updateInstruction}
                             onRemove={removeInstruction}
-                            hoveredInstruction={hoveredInstruction}
-                            setHoveredInstruction={setHoveredInstruction}
                             isLastEmpty={index === instructions.length - 1 && !instruction.instruction}
                         />
                     ))}

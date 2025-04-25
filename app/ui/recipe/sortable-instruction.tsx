@@ -10,8 +10,6 @@ interface SortableInstructionProps {
     instruction: Instruction
     onUpdate: (position: number, instruction: string) => void
     onRemove: (position: number) => void
-    hoveredInstruction: number | null
-    setHoveredInstruction: (position: number | null) => void
     isLastEmpty: boolean
 }
 
@@ -19,8 +17,6 @@ export function SortableInstruction({
     instruction,
     onUpdate,
     onRemove,
-    hoveredInstruction,
-    setHoveredInstruction,
     isLastEmpty
 }: SortableInstructionProps) {
     const {
@@ -46,8 +42,6 @@ export function SortableInstruction({
             ref={setNodeRef}
             style={style}
             className="grid grid-cols-12 gap-2 items-center mb-2 relative"
-            onMouseEnter={() => setHoveredInstruction(instruction.position)}
-            onMouseLeave={() => setHoveredInstruction(null)}
             {...attributes}
             {...listeners}
             tabIndex={0}

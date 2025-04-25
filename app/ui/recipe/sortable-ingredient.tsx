@@ -11,8 +11,6 @@ interface SortableIngredientProps {
     index: number
     onUpdate: (position: number, ingredient: string, amount: string) => void
     onRemove: (position: number) => void
-    hoveredIngredient: number | null
-    setHoveredIngredient: (position: number | null) => void
     isLastEmpty: boolean
 }
 
@@ -21,8 +19,6 @@ export function SortableIngredient({
     index,
     onUpdate,
     onRemove,
-    hoveredIngredient,
-    setHoveredIngredient,
     isLastEmpty
 }: SortableIngredientProps) {
     const {
@@ -48,8 +44,6 @@ export function SortableIngredient({
             ref={setNodeRef}
             style={style}
             className="grid grid-cols-12 gap-2 items-center mb-2 relative"
-            onMouseEnter={() => setHoveredIngredient(ingredient.position)}
-            onMouseLeave={() => setHoveredIngredient(null)}
             {...attributes}
             {...listeners}
             tabIndex={0}
