@@ -5,7 +5,6 @@ import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSo
 
 import { Instruction } from "@/app/types/definitions"
 import { SortableInstruction } from './sortable-instruction'
-import { useState } from "react"
 
 interface InstructionsFormProps {
     instructions: Instruction[]
@@ -13,7 +12,6 @@ interface InstructionsFormProps {
 }
 
 export default function InstructionsForm({ instructions, setInstructions }: InstructionsFormProps) {
-    const [hoveredInstruction, setHoveredInstruction] = useState<number | null>(null)
 
     const sensors = useSensors(
         useSensor(PointerSensor),

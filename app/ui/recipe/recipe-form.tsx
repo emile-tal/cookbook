@@ -51,14 +51,12 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
     )
     const [title, setTitle] = useState(recipe?.title || '')
     const [selectedCategories, setSelectedCategories] = useState<string[]>(recipe?.categories || [])
-
     const [imageUrl, setImageUrl] = useState<string | null>(recipe?.image_url || null)
     const [isUploading, setIsUploading] = useState(false)
     const [isHovering, setIsHovering] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const router = useRouter()
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
-
 
     useEffect(() => {
         setTitle(recipe?.title || '')
@@ -67,7 +65,6 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
     const formatCategories = (categories: string[]) => {
         return categories.map(category => (category.charAt(0).toUpperCase() + category.slice(1)))
     }
-
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -92,44 +89,6 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
         await deleteRecipe(recipeId)
         router.back()
         router.refresh()
-    }
-
-    const increaseInstructionPosition = (position: number) => {
-        if (position !== instructions.length) {
-            const updatedInstructions = [...instructions];
-            const currentIndex = updatedInstructions.findIndex(inst => inst.position === position);
-            const nextIndex = currentIndex + 1;
-
-            // Swap the instructions
-            [updatedInstructions[currentIndex], updatedInstructions[nextIndex]] =
-                [updatedInstructions[nextIndex], updatedInstructions[currentIndex]];
-
-            // Update positions
-            updatedInstructions.forEach((inst, idx) => {
-                inst.position = idx + 1;
-            });
-
-            setInstructions(updatedInstructions);
-        }
-    }
-
-    const decreaseInstructionPosition = (position: number) => {
-        if (position !== 1) {
-            const updatedInstructions = [...instructions];
-            const currentIndex = updatedInstructions.findIndex(inst => inst.position === position);
-            const prevIndex = currentIndex - 1;
-
-            // Swap the instructions
-            [updatedInstructions[currentIndex], updatedInstructions[prevIndex]] =
-                [updatedInstructions[prevIndex], updatedInstructions[currentIndex]];
-
-            // Update positions
-            updatedInstructions.forEach((inst, idx) => {
-                inst.position = idx + 1;
-            });
-
-            setInstructions(updatedInstructions);
-        }
     }
 
     return (
