@@ -1,11 +1,13 @@
 import postgres from 'postgres';
 
-// Create a connection pool with a maximum of 10 connections
+// Create a connection pool with more resilient settings
 const sql = postgres(process.env.POSTGRES_URL!, {
     ssl: 'require',
-    max: 10, // Maximum number of connections in the pool
-    idle_timeout: 20, // Max idle time in seconds
-    connect_timeout: 10, // Connection timeout in seconds
+    max: 20, // Increased max connections
+    idle_timeout: 30, // Increased idle timeout
+    connect_timeout: 20, // Increased connection timeout
+    max_lifetime: 60 * 30, // 30 minutes max lifetime for connections
+    prepare: false, // Disable prepared statements to avoid the "prepared statement does not exist" error
 });
 
 export default sql; 
