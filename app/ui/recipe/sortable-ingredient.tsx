@@ -83,26 +83,26 @@ export function SortableIngredient({
                 name={`ingredient_amount_${index}`}
                 value={ingredient.amount}
                 onChange={(e) => onUpdate(ingredient.position, ingredient.ingredient, e.target.value)}
-                className={`block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
+                className={`block min-w-full rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base col-span-3 sm:col-span-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
             />
             <input
                 type="text"
                 name={`ingredient_name_${index}`}
                 value={ingredient.ingredient}
                 onChange={(e) => onUpdate(ingredient.position, e.target.value, ingredient.amount)}
-                className={`block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-9 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
+                className={`block min-w-full rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base col-span-7 sm:col-span-9 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
             />
-            <div className="col-span-1 flex justify-center items-center">
-                {!isLastEmpty && <DragHandleIcon />}
+            <div className="col-span-2 sm:col-span-1 flex justify-end items-center gap-1 sm:gap-2">
+                {!isLastEmpty && <DragHandleIcon className="text-gray-400 text-lg sm:text-xl" />}
+                <button
+                    type="button"
+                    onClick={() => onRemove(ingredient.position)}
+                    className="text-rose-300 hover:text-rose-500 flex justify-center items-center"
+                    tabIndex={-1}
+                >
+                    <DeleteOutlineIcon className="text-lg sm:text-xl" />
+                </button>
             </div>
-            <button
-                type="button"
-                onClick={() => onRemove(ingredient.position)}
-                className="text-rose-300 hover:text-rose-500 flex justify-center items-center absolute right-[-2.5rem] top-[0.5rem]"
-                tabIndex={-1}
-            >
-                <DeleteOutlineIcon />
-            </button>
         </div>
     )
 } 

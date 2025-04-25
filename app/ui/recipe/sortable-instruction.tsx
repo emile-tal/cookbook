@@ -77,25 +77,25 @@ export function SortableInstruction({
             }}
         >
             <div className="col-span-1 flex items-center">
-                <span>{instruction.position}.</span>
+                <span className="text-xs sm:text-base">{instruction.position}.</span>
             </div>
             <textarea
                 name={`instruction_${instruction.position}`}
                 value={instruction.instruction}
                 onChange={(e) => onUpdate(instruction.position, e.target.value)}
-                className={`block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-10 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!instruction.instruction ? 'bg-gray-100' : 'bg-white'}`}
+                className={`block min-w-full rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base col-span-9 sm:col-span-10 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!instruction.instruction ? 'bg-gray-100' : 'bg-white'}`}
             />
-            <div className="col-span-1 flex justify-center items-center">
-                {!isLastEmpty && <DragHandleIcon />}
+            <div className="col-span-2 sm:col-span-1 flex justify-end items-center gap-1 sm:gap-2">
+                {!isLastEmpty && <DragHandleIcon className="text-gray-400 text-lg sm:text-xl" />}
+                <button
+                    type="button"
+                    onClick={() => onRemove(instruction.position)}
+                    className="text-rose-300 hover:text-rose-500 flex justify-center items-center"
+                    tabIndex={-1}
+                >
+                    <DeleteOutlineIcon className="text-lg sm:text-xl" />
+                </button>
             </div>
-            <button
-                type="button"
-                onClick={() => onRemove(instruction.position)}
-                className="text-rose-300 hover:text-rose-500 flex justify-center items-center absolute right-[-2.5rem] top-[1.25rem]"
-                tabIndex={-1}
-            >
-                <DeleteOutlineIcon />
-            </button>
         </div>
     )
 } 

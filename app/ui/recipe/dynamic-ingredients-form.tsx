@@ -65,9 +65,9 @@ export default function DynamicIngredientsForm({ ingredients, setIngredients }: 
         <div className="py-4">
             <label htmlFor="ingredients" className="hidden">Ingredients</label>
             <div className="grid grid-cols-12 gap-2 mb-2">
-                <span className="col-span-2 text-sm">Quantity</span>
-                <span className="col-span-9 text-sm">Ingredient</span>
-                <span className="col-span-1"></span>
+                <span className="col-span-3 sm:col-span-2 text-sm">Quantity</span>
+                <span className="col-span-7 sm:col-span-9 text-sm">Ingredient</span>
+                <span className="col-span-2 sm:col-span-1"></span>
             </div>
             <DndContext
                 sensors={sensors}
