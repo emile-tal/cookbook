@@ -4,17 +4,15 @@ import { Ingredient, Instruction, Recipe } from "@/app/types/definitions"
 import { useActionState, useEffect, useRef, useState } from "react"
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import Autocomplete from "@mui/material/Autocomplete";
 import { BackButton } from "../back-button";
 import Chip from "@mui/material/Chip";
 import DeleteDialog from "@/app/components/DeleteDialog";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import EditTitle from '@/app/components/EditTitle'
 import Image from "next/image"
+import IngredientsForm from './ingredients-form'
+import InstructionsForm from './instructions-form'
 import { RecipeFormState } from "@/app/actions/recipe"
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
@@ -60,8 +58,7 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
     const fileInputRef = useRef<HTMLInputElement>(null)
     const router = useRouter()
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
-    const [hoveredIngredient, setHoveredIngredient] = useState<number | null>(null);
-    const [hoveredInstruction, setHoveredInstruction] = useState<number | null>(null);
+
 
     useEffect(() => {
         setTitle(recipe?.title || '')
@@ -71,85 +68,6 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
         return categories.map(category => (category.charAt(0).toUpperCase() + category.slice(1)))
     }
 
-    const addIngredient = () => {
-        setIngredients([...ingredients, { position: ingredients.length + 1, amount: '', ingredient: '' }])
-    }
-
-    const removeIngredient = (position: number) => {
-        const updatedIngredients = ingredients
-            .filter(ing => ing.position !== position)
-            .map((ing, idx) => ({ ...ing, position: idx + 1 }))
-        setIngredients(updatedIngredients)
-    }
-
-    const increasePosition = (position: number) => {
-        if (position !== ingredients.length) {
-            const updatedIngredients = ingredients.map((ing) =>
-                ing.position === position + 1 ? { ...ing, position: ing.position - 1 } :
-                    ing.position === position ? { ...ing, position: ing.position + 1 } : ing
-            )
-            setIngredients(updatedIngredients)
-        }
-    }
-
-    const decreasePosition = (position: number) => {
-        if (position !== 1) {
-            const updatedIngredients = ingredients.map((ing) =>
-                ing.position === position - 1 ? { ...ing, position: ing.position + 1 } :
-                    ing.position === position ? { ...ing, position: ing.position - 1 } : ing
-            )
-            setIngredients(updatedIngredients)
-        }
-    }
-
-
-    const addInstruction = () => {
-        const nextPosition = instructions.length + 1
-        setInstructions([...instructions, { position: nextPosition, instruction: '' }])
-    }
-
-    const removeInstruction = (position: number) => {
-        const updatedInstructions = instructions
-            .filter(inst => inst.position !== position)
-            .map((inst, idx) => ({ ...inst, position: idx + 1 }))
-        setInstructions(updatedInstructions)
-    }
-
-    const updateIngredient = (position: number, ingredient: string, amount: string) => {
-        let updatedIngredients = ingredients.map((ing) =>
-            ing.position === position ? { ...ing, ingredient, amount } : ing
-        )
-
-        // Add new row if this is the last row and ingredient field has content
-        if (position === ingredients.length && ingredient) {
-            updatedIngredients.push({ position: position + 1, amount: '', ingredient: '' })
-        }
-
-        // Remove the last empty row if the previous row is now empty
-        if (position === ingredients.length - 1 && !ingredient && !amount) {
-            updatedIngredients = updatedIngredients.filter((_, idx) => idx !== updatedIngredients.length - 1)
-        }
-
-        setIngredients(updatedIngredients)
-    }
-
-    const updateInstruction = (position: number, instruction: string) => {
-        let updatedInstructions = instructions.map(inst =>
-            inst.position === position ? { ...inst, instruction } : inst
-        )
-
-        // Add new row if this is the last row and has content
-        if (position === instructions.length && instruction) {
-            updatedInstructions.push({ position: position + 1, instruction: '' })
-        }
-
-        // Remove the last empty row if the previous row is now empty
-        if (position === instructions.length - 1 && !instruction) {
-            updatedInstructions = updatedInstructions.filter((_, idx) => idx !== updatedInstructions.length - 1)
-        }
-
-        setInstructions(updatedInstructions)
-    }
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -374,116 +292,16 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                     )}
                 </div>
 
-                <div className="py-4">
-                    <label htmlFor="ingredients" className="hidden">Ingredients</label>
-                    <div className="grid grid-cols-12 gap-2 mb-2">
-                        <span className="col-span-2 text-sm">Quantity</span>
-                        <span className="col-span-9 text-sm">Ingredient</span>
-                        <span className="col-span-1"></span>
-                    </div>
-                    {ingredients.sort((a, b) => a.position - b.position).map((ingredient, index) => (
-                        <div
-                            key={index}
-                            className="grid grid-cols-12 gap-2 items-center mb-2 relative"
-                            onMouseEnter={() => setHoveredIngredient(ingredient.position)}
-                            onMouseLeave={() => setHoveredIngredient(null)}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => decreasePosition(ingredient.position)}
-                                className={`text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-1 transition-colors duration-200 flex justify-center items-center absolute top-1/2 -translate-y-1/2 left-[-5rem] ${hoveredIngredient === ingredient.position ? 'opacity-100' : 'opacity-0'}`}
-                                aria-label="Move ingredient up"
-                                tabIndex={-1}
-                            >
-                                <ArrowDropUpIcon fontSize="large" />
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => increasePosition(ingredient.position)}
-                                className={`text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-1 transition-colors duration-200 flex justify-center items-center absolute top-1/2 -translate-y-1/2 left-[-3rem] ${hoveredIngredient === ingredient.position ? 'opacity-100' : 'opacity-0'}`}
-                                aria-label="Move ingredient down"
-                                tabIndex={-1}
-                            >
-                                <ArrowDropDownIcon fontSize="large" />
-                            </button>
+                <IngredientsForm
+                    ingredients={ingredients}
+                    setIngredients={setIngredients}
+                />
 
-                            <input
-                                type="text"
-                                name={`ingredient_amount_${index}`}
-                                value={ingredient.amount}
-                                onChange={(e) => updateIngredient(ingredient.position, ingredient.ingredient, e.target.value)}
-                                className={`block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
-                            />
-                            <input
-                                type="text"
-                                name={`ingredient_name_${index}`}
-                                value={ingredient.ingredient}
-                                onChange={(e) => updateIngredient(ingredient.position, e.target.value, ingredient.amount)}
-                                className={`block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-9 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
-                            />
-                            <div className="col-span-1 flex justify-center items-center">
-                                <button
-                                    type="button"
-                                    onClick={() => removeIngredient(index)}
-                                    className="text-rose-300 hover:text-rose-500 flex justify-center items-center"
-                                    tabIndex={-1}
-                                >
-                                    <DeleteOutlineIcon />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                    <input type="hidden" name="ingredients" value={JSON.stringify(ingredients)} />
-                </div>
+                <InstructionsForm
+                    instructions={instructions}
+                    setInstructions={setInstructions}
+                />
 
-                <div>
-                    <label htmlFor="instructions" className="block text-sm font-medium mb-2">Instructions</label>
-                    {instructions.map((instruction) => (
-                        <div
-                            key={instruction.position}
-                            className="grid grid-cols-12 gap-2 items-center mb-2 relative"
-                            onMouseEnter={() => setHoveredInstruction(instruction.position)}
-                            onMouseLeave={() => setHoveredInstruction(null)}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => decreaseInstructionPosition(instruction.position)}
-                                className={`text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-1 transition-colors duration-200 flex justify-center items-center absolute top-1/2 -translate-y-1/2 left-[-5rem] ${hoveredInstruction === instruction.position ? 'opacity-100' : 'opacity-0'}`}
-                                aria-label="Move instruction up"
-                                tabIndex={-1}
-                            >
-                                <ArrowDropUpIcon fontSize="large" />
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => increaseInstructionPosition(instruction.position)}
-                                className={`text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-1 transition-colors duration-200 flex justify-center items-center absolute top-1/2 -translate-y-1/2 left-[-3rem] ${hoveredInstruction === instruction.position ? 'opacity-100' : 'opacity-0'}`}
-                                aria-label="Move instruction down"
-                                tabIndex={-1}
-                            >
-                                <ArrowDropDownIcon fontSize="large" />
-                            </button>
-                            <div className="col-span-1 flex items-center">
-                                <span>{instruction.position}.</span>
-                            </div>
-                            <textarea
-                                name={`instruction_${instruction.position}`}
-                                value={instruction.instruction}
-                                onChange={(e) => updateInstruction(instruction.position, e.target.value)}
-                                className={`block min-w-full rounded-md border border-gray-300 px-3 py-2 col-span-10 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!instruction.instruction ? 'bg-gray-100' : 'bg-white'}`}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => removeInstruction(instruction.position)}
-                                className="col-span-1 text-rose-300 hover:text-rose-500 flex justify-center items-center"
-                                tabIndex={-1}
-                            >
-                                <DeleteOutlineIcon />
-                            </button>
-                        </div>
-                    ))}
-                    <input type="hidden" name="instructions" value={JSON.stringify(instructions)} />
-                </div>
                 <div className="flex items-center">
                     <Switch
                         name="is_public"
