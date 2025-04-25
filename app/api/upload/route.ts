@@ -8,6 +8,12 @@ interface CloudinaryUploadResult {
 }
 
 export async function POST(request: NextRequest) {
+    console.log("Cloudinary config on Cloud Run:", {
+        name: process.env.CLOUDINARY_CLOUD_NAME,
+        key: process.env.CLOUDINARY_API_KEY,
+        secret: process.env.CLOUDINARY_API_SECRET ? 'exists' : 'missing'
+    });
+
     try {
         const formData = await request.formData();
         const file = formData.get('file') as File;
