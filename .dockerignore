@@ -7,3 +7,4 @@ npm-debug.log
 Dockerfile
 *.md
 *.tsbuildinfo
+supabase/functions/
