@@ -36,5 +36,11 @@ steps:
         '--set-secrets',
         'CLOUDINARY_API_KEY=CLOUDINARY_API_KEY:latest',
         '--set-secrets',
-        'CLOUDINARY_API_SECRET=CLOUDINARY_API_SECRET:latest'
+        'CLOUDINARY_API_SECRET=CLOUDINARY_API_SECRET:latest',
+        '--set-secrets',
+        'NEXT_PUBLIC_SUPABASE_URL=NEXT_PUBLIC_SUPABASE_URL:latest',
+        '--set-secrets',
+        'NEXT_PUBLIC_SUPABASE_ANON_KEY=NEXT_PUBLIC_SUPABASE_ANON_KEY:latest',
+        '--set-secrets',
+        'SUPABASE_SERVICE_ROLE_KEY=SUPABASE_SERVICE_ROLE_KEY:latest'
       ]
