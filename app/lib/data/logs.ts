@@ -41,3 +41,47 @@ export async function logSearch(searchTerm: string) {
     console.error('Failed to log search:', error)
   }
 }
+
+export async function searchAutocomplete(input: string) {
+    const user = await getCurrentUser();
+    
+  if (!input || input.trim().length < 1) {
+    return { personalMatches: [], popularMatches: [] }
+  }
+
+  const searchInput = `%${input.toLowerCase()}%`
+
+  try {
+    let personalMatchesQuery;
+    
+    if (user) {
+        // Fetch personal search history matches
+        personalMatchesQuery = await sql`
+        SELECT DISTINCT search_term, created_at
+        FROM searchlogs
+        WHERE user_id = ${user.id}
+        AND LOWER(search_term) LIKE ${searchInput}
+        ORDER BY created_at DESC
+        LIMIT 5
+    `
+    }
+    // Fetch general popular matching searches
+    const popularMatchesQuery = await sql`
+      SELECT r.title as search_term, COUNT(rl.recipe_id) as count
+      FROM recipes r
+      LEFT JOIN recipelogs rl ON r.id = rl.recipe_id
+      WHERE LOWER(r.title) LIKE ${searchInput}
+      GROUP BY r.title
+      ORDER BY count DESC
+      LIMIT 10
+    `
+
+    const personalMatches = personalMatchesQuery ? personalMatchesQuery.map((row: any) => row.search_term) : []
+    const popularMatches = popularMatchesQuery.map((row: any) => row.search_term)
+
+    return { personalMatches, popularMatches }
+  } catch (error) {
+    console.error('Error fetching autocomplete:', error)
+    return { personalMatches: [], popularMatches: [] }
+  }
+}
