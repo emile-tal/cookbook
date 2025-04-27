@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Input } from '@/app/ui/input';
 import { Search } from 'lucide-react';
-import { useDebouncedCallback } from 'use-debounce';
+import { logSearch } from '../lib/data/logs';
 import { useRef } from 'react';
 
 interface SearchBarProps {
@@ -18,30 +18,19 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
     const currentQuery = searchParams.get('q') || '';
     const isSubmitting = useRef(false);
 
-    const debouncedSearch = useDebouncedCallback((value: string) => {
-        if (isSubmitting.current) return;
-
-        const params = new URLSearchParams(searchParams.toString());
-        if (value) {
-            params.set('q', value);
-        } else {
-            params.delete('q');
+    const handleSearch = (formData: FormData) => {
+        isSubmitting.current = true;
+        const query = formData.get('q') as string;
+        logSearch(query);
+        const params = new URLSearchParams();
+        if (query) {
+            params.set('q', query);
         }
         if (pathname === '/') {
             router.push(`/search?${params.toString()}`);
         } else {
             router.push(`${pathname}?${params.toString()}`);
         }
-    }, 300);
-
-    const handleSearch = (formData: FormData) => {
-        isSubmitting.current = true;
-        const query = formData.get('q') as string;
-        const params = new URLSearchParams();
-        if (query) {
-            params.set('q', query);
-        }
-        router.push(`/search?${params.toString()}`);
         // Reset the flag after navigation
         setTimeout(() => {
             isSubmitting.current = false;
@@ -57,7 +46,6 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
                     placeholder={placeholder}
                     className="pl-8 min-w-full max-w-full rounded-xl shadow-sm"
                     defaultValue={currentQuery}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => debouncedSearch(e.target.value)}
                 />
             </form>
         </div>
