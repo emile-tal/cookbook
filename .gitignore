@@ -44,6 +44,6 @@ next-env.d.ts
 .cursor/*
 .cursor/
 
-# seed
-/app/seed/*
-/app/seed
+# vscode
+.vscode/*
+.vscode/
