@@ -30,9 +30,14 @@ export default function RecipeDetails({ recipe, username }: Props) {
     const categories = Array.isArray(recipe.categories) ? recipe.categories : [];
 
     const handleRecipeYieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Number(e.target.value);
-        if (value > 0) {
-            setRecipeYield(value);
+        const value = e.target.value;
+        if (value === '') {
+            setRecipeYield(0);
+        } else {
+            const numValue = Number(value);
+            if (numValue > 0) {
+                setRecipeYield(numValue);
+            }
         }
     };
 
@@ -101,9 +106,9 @@ export default function RecipeDetails({ recipe, username }: Props) {
                         <h2 className="text-xl font-bold pb-3">Yield</h2>
                         <input
                             type="number"
-                            value={recipeYield}
+                            value={recipeYield || ''}
                             onChange={(e) => handleRecipeYieldChange(e)}
-                            min="1"
+                            min="0"
                             className="max-w-16 border border-gray-300 rounded-md p-1"
                         />
                         <span className="text-gray-500 italic"> servings</span>
