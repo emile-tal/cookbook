@@ -3,11 +3,18 @@
 import { addRating, removeRating } from '@/app/lib/data/rating'
 
 import ClearIcon from '@mui/icons-material/Clear'
+import Loading from '../ui/loading'
 import { Rating } from '@mui/material'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 
-export default function AddRating({ recipeId, userRating, loggedIn }: { recipeId: string, userRating: number | null, loggedIn: boolean }) {
+export default function AddRating({ recipeId, userRating }: { recipeId: string, userRating: number | null }) {
     const [selectedRating, setSelectedRating] = useState<number | null>(userRating)
+    const { data: session, status } = useSession();
+
+    if (status === 'loading') {
+        return <Loading size={8} />
+    }
 
     const addUserRating = async (rating: number) => {
         await addRating(recipeId, rating)
@@ -18,7 +25,7 @@ export default function AddRating({ recipeId, userRating, loggedIn }: { recipeId
     }
 
     const handleRatingChange = (_: React.SyntheticEvent<Element, Event>, newValue: number | null) => {
-        if (loggedIn) {
+        if (session) {
             setSelectedRating(newValue)
             if (newValue === null) {
                 removeUserRating()

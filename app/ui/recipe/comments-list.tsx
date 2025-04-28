@@ -5,7 +5,7 @@ import { Comment } from '@/app/types/definitions'
 export default function CommentsList({ comments }: { comments: Comment[] }) {
     if (comments.length === 0) {
         return (
-            <div className="text-center py-2 md:py-8 text-gray-500">
+            <div className="py-2 md:py-8 text-gray-500">
                 No comments yet. Be the first to share your thoughts!
             </div>
         )

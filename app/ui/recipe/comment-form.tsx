@@ -1,15 +1,22 @@
 'use client'
 
 import { CommentState } from '@/app/actions/comment'
+import Loading from '../loading'
 import { addComment } from '@/app/actions/comment'
 import { useActionState } from 'react'
+import { useSession } from 'next-auth/react'
 
-export default function CommentForm({ recipeId, loggedIn }: { recipeId: string, loggedIn: boolean }) {
+export default function CommentForm({ recipeId }: { recipeId: string }) {
     const initialState: CommentState = { message: null, errors: {} }
     const [state, dispatch] = useActionState(addComment, initialState)
+    const { data: session, status } = useSession();
+
+    if (status === 'loading') {
+        return <Loading size={8} />
+    }
 
     return (
-        <form action={dispatch} className="mb-8 border-b border-gray-200 pb-12">
+        <form action={dispatch} className="mb-8 pb-12">
             <div className="space-y-4">
                 {state?.message && !state.message.includes('successfully') && (
                     <div className={`text-sm text-red-500 bg-red-50 p-3 rounded-lg`}>
@@ -21,7 +28,7 @@ export default function CommentForm({ recipeId, loggedIn }: { recipeId: string, 
                         id="comment"
                         name="comment"
                         rows={3}
-                        className={`min-w-full text-sm md:text-base rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all duration-200 ${!loggedIn && 'pointer-events-none'}`}
+                        className={`min-w-full text-sm md:text-base rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all duration-200 ${!session && 'pointer-events-none'}`}
                         placeholder="Share your thoughts about this recipe..."
                     />
                     {state?.errors?.comment && (
@@ -32,7 +39,7 @@ export default function CommentForm({ recipeId, loggedIn }: { recipeId: string, 
                 <div className="flex justify-end">
                     <button
                         type="submit"
-                        className={`bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-opacity-90 transition-all duration-200 font-medium ${loggedIn ? 'cursor-pointer' : 'pointer-events-none'}`}
+                        className={`bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-opacity-90 transition-all duration-200 font-medium ${session ? 'cursor-pointer' : 'pointer-events-none'}`}
                     >
                         Post Comment
                     </button>
