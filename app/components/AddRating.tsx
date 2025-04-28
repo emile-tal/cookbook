@@ -6,7 +6,7 @@ import ClearIcon from '@mui/icons-material/Clear'
 import { Rating } from '@mui/material'
 import { useState } from 'react'
 
-export default function AddRating({ recipeId, userRating }: { recipeId: string, userRating: number | null }) {
+export default function AddRating({ recipeId, userRating, loggedIn }: { recipeId: string, userRating: number | null, loggedIn: boolean }) {
     const [selectedRating, setSelectedRating] = useState<number | null>(userRating)
 
     const addUserRating = async (rating: number) => {
@@ -18,11 +18,13 @@ export default function AddRating({ recipeId, userRating }: { recipeId: string, 
     }
 
     const handleRatingChange = (_: React.SyntheticEvent<Element, Event>, newValue: number | null) => {
-        setSelectedRating(newValue)
-        if (newValue === null) {
-            removeUserRating()
-        } else {
-            addUserRating(newValue)
+        if (loggedIn) {
+            setSelectedRating(newValue)
+            if (newValue === null) {
+                removeUserRating()
+            } else {
+                addUserRating(newValue)
+            }
         }
     }
 

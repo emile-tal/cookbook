@@ -4,7 +4,7 @@ import { CommentState } from '@/app/actions/comment'
 import { addComment } from '@/app/actions/comment'
 import { useActionState } from 'react'
 
-export default function CommentForm({ recipeId }: { recipeId: string }) {
+export default function CommentForm({ recipeId, loggedIn }: { recipeId: string, loggedIn: boolean }) {
     const initialState: CommentState = { message: null, errors: {} }
     const [state, dispatch] = useActionState(addComment, initialState)
 
@@ -21,7 +21,7 @@ export default function CommentForm({ recipeId }: { recipeId: string }) {
                         id="comment"
                         name="comment"
                         rows={3}
-                        className="min-w-full text-sm md:text-base rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all duration-200"
+                        className={`min-w-full text-sm md:text-base rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all duration-200 ${!loggedIn && 'pointer-events-none'}`}
                         placeholder="Share your thoughts about this recipe..."
                     />
                     {state?.errors?.comment && (
@@ -32,7 +32,7 @@ export default function CommentForm({ recipeId }: { recipeId: string }) {
                 <div className="flex justify-end">
                     <button
                         type="submit"
-                        className="bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-opacity-90 transition-all duration-200 font-medium"
+                        className={`bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-opacity-90 transition-all duration-200 font-medium ${loggedIn ? 'cursor-pointer' : 'pointer-events-none'}`}
                     >
                         Post Comment
                     </button>
