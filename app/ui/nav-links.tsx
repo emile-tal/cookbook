@@ -80,21 +80,29 @@ export default function NavLinks() {
         setHamburgerAnchorEl(null);
     };
 
+    if (!loggedIn) {
+        return (
+            <button
+                className="flex items-center justify-center text-sm sm:text-base bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors"
+                onClick={() => { router.push('/login') }}
+            >
+                <span className={poppins.className}>Sign In</span>
+            </button>
+        )
+    }
     return (
         <>
             {/* Desktop Navigation */}
             <div className="hidden sm:flex items-center gap-4">
-                {loggedIn &&
-                    links.map((link) => {
-                        return (
-                            <div key={link.name} className={clsx('flex items-center', { 'glow': pathname === link.href })}>
-                                <Link href={link.href}>
-                                    <p className={`${poppins.className}`}>{link.name}</p>
-                                </Link>
-                            </div>
-                        );
-                    })
-                }
+                {links.map((link) => {
+                    return (
+                        <div key={link.name} className={clsx('flex items-center', { 'glow': pathname === link.href })}>
+                            <Link href={link.href}>
+                                <p className={`${poppins.className}`}>{link.name}</p>
+                            </Link>
+                        </div>
+                    );
+                })}
                 <div className={clsx({ 'glow': pathname === '/profile' })}>
                     <IconButton
                         onClick={handleClick}
@@ -167,25 +175,25 @@ export default function NavLinks() {
                         </Link>
                     </div>
                 </MenuItem>
-                {loggedIn && (
-                    <MenuItem onClick={handleClose}>
-                        <div className="flex items-center gap-2 w-full">
-                            <div className='flex items-center justify-center size-8 relative'>
-                                <NotificationsIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
-                                {invitationsCount !== null && invitationsCount > 0 && (
-                                    <div className='absolute top-0 right-0 size-4 rounded-full bg-red-500 flex items-center justify-center'>
-                                        <span className='text-white text-xs'>{invitationsCount}</span>
-                                    </div>
-                                )}
-                            </div>
-                            <Link href="/notifications" className={`w-full ${poppins.className}`}>
-                                <span className={`hidden sm:inline ${poppins.className}`}>Notifications</span>
-                            </Link>
+
+                <MenuItem onClick={handleClose}>
+                    <div className="flex items-center gap-2 w-full">
+                        <div className='flex items-center justify-center size-8 relative'>
+                            <NotificationsIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
+                            {invitationsCount !== null && invitationsCount > 0 && (
+                                <div className='absolute top-0 right-0 size-4 rounded-full bg-red-500 flex items-center justify-center'>
+                                    <span className='text-white text-xs'>{invitationsCount}</span>
+                                </div>
+                            )}
                         </div>
-                    </MenuItem>
-                )}
+                        <Link href="/notifications" className={`w-full ${poppins.className}`}>
+                            <span className={`hidden sm:inline ${poppins.className}`}>Notifications</span>
+                        </Link>
+                    </div>
+                </MenuItem>
+
                 <MenuItem
-                    onClick={loggedIn ? handleSignOut : () => { router.push('/login') }}
+                    onClick={handleSignOut}
                     sx={{
                         backgroundColor: '#fff5f5',
                         '&:hover': {
@@ -200,12 +208,9 @@ export default function NavLinks() {
                 >
                     <div className="flex items-center gap-2 w-full">
                         <div className='flex items-center justify-center size-8'>
-                            {loggedIn ?
-                                <LogoutIcon className='text-[rgb(30,30,30)] flex-shrink-0' /> :
-                                <LoginIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
-                            }
+                            <LogoutIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
                         </div>
-                        <span className={`hidden sm:inline ${poppins.className}`}>{loggedIn ? 'Sign Out' : 'Sign In'}</span>
+                        <span className={`hidden sm:inline ${poppins.className}`}>Sign Out</span>
                     </div>
                 </MenuItem>
             </Menu>
@@ -231,7 +236,7 @@ export default function NavLinks() {
                     }
                 }}
             >
-                {loggedIn && links.map((link) => (
+                {links.map((link) => (
                     <MenuItem key={link.name} onClick={handleHamburgerClose}>
                         <div className="flex items-center gap-2 w-full">
                             <div className='flex items-center justify-center size-8'>
@@ -269,7 +274,7 @@ export default function NavLinks() {
                     </div>
                 </MenuItem>
                 <MenuItem
-                    onClick={loggedIn ? handleSignOut : () => { router.push('/login') }}
+                    onClick={handleSignOut}
                     sx={{
                         backgroundColor: '#fff5f5',
                         '&:hover': {
@@ -284,12 +289,9 @@ export default function NavLinks() {
                 >
                     <div className="flex items-center gap-2 w-full">
                         <div className='flex items-center justify-center size-8'>
-                            {loggedIn ?
-                                <LogoutIcon className='text-[rgb(30,30,30)] flex-shrink-0' /> :
-                                <LoginIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
-                            }
+                            <LogoutIcon className='text-[rgb(30,30,30)] flex-shrink-0' />
                         </div>
-                        <span className={poppins.className}>{loggedIn ? 'Sign Out' : 'Sign In'}</span>
+                        <span className={poppins.className}>Sign Out</span>
                     </div>
                 </MenuItem>
             </Menu>
