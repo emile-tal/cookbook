@@ -31,7 +31,6 @@ export function SortableInstruction({
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
-        cursor: isLastEmpty ? 'default' : (isDragging ? 'grabbing' : 'grab')
     }
 
     return (
@@ -39,8 +38,6 @@ export function SortableInstruction({
             ref={setNodeRef}
             style={style}
             className="grid grid-cols-12 gap-2 items-center mb-2 relative"
-            {...attributes}
-            {...listeners}
             tabIndex={0}
             onKeyDown={(e) => {
                 if (e.key === 'Tab') {
@@ -82,7 +79,11 @@ export function SortableInstruction({
                 onChange={(e) => onUpdate(instruction.position, e.target.value)}
                 className={`block min-w-full rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base col-span-9 sm:col-span-10 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!instruction.instruction ? 'bg-gray-100' : 'bg-white'}`}
             />
-            <div className="col-span-2 sm:col-span-1 flex justify-center items-center gap-1 sm:gap-2">
+            <div
+                className={`col-span-2 sm:col-span-1 flex justify-center items-center gap-1 sm:gap-2 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                {...attributes}
+                {...listeners}
+            >
                 {!isLastEmpty && <DragHandleIcon className="text-gray-400 text-lg sm:text-xl" />}
             </div>
         </div>

@@ -33,7 +33,6 @@ export function SortableIngredient({
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
-        cursor: isLastEmpty ? 'default' : (isDragging ? 'grabbing' : 'grab')
     }
 
     return (
@@ -41,8 +40,6 @@ export function SortableIngredient({
             ref={setNodeRef}
             style={style}
             className="grid grid-cols-12 gap-2 items-center mb-2 relative"
-            {...attributes}
-            {...listeners}
             tabIndex={0}
             onKeyDown={(e) => {
                 if (e.key === 'Tab') {
@@ -89,7 +86,11 @@ export function SortableIngredient({
                 onChange={(e) => onUpdate(ingredient.position, e.target.value, ingredient.amount)}
                 className={`block min-w-full rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base col-span-7 sm:col-span-9 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
             />
-            <div className="col-span-2 sm:col-span-1 flex justify-center items-center gap-1 sm:gap-2">
+            <div
+                className={`col-span-2 sm:col-span-1 flex justify-center items-center gap-1 sm:gap-2 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                {...attributes}
+                {...listeners}
+            >
                 {!isLastEmpty && <DragHandleIcon className="text-gray-400 text-lg sm:text-xl" />}
             </div>
         </div>
