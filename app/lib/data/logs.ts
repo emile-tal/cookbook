@@ -1,5 +1,6 @@
 'use server'
 
+import { Row } from 'postgres';
 import { getCurrentUser } from "../auth";
 import sql from '../db';
 import supabase from "../supabase";
@@ -76,8 +77,8 @@ export async function searchAutocomplete(input: string) {
       LIMIT 10
     `
 
-    const personalMatches = personalMatchesQuery ? personalMatchesQuery.map((row: any) => row.search_term) : []
-    const popularMatches = popularMatchesQuery.map((row: any) => row.search_term)
+    const personalMatches = personalMatchesQuery ? personalMatchesQuery.map((row: Row) => (row as { search_term: string; created_at: Date }).search_term) : []
+    const popularMatches = popularMatchesQuery.map((row: Row) => (row as { search_term: string; count: number }).search_term)
 
     return { personalMatches, popularMatches }
   } catch (error) {
