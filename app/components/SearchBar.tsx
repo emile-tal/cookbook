@@ -18,6 +18,7 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
     const [debouncedInput] = useDebounce(typedInput, 800);
     const [suggestions, setSuggestions] = useState<{ personalMatches: string[], popularMatches: string[] }>({ personalMatches: [], popularMatches: [] });
     const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
     const inputRef = useRef<HTMLInputElement>(null);
@@ -36,6 +37,18 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
         }
         loadSuggestions();
     }, [debouncedInput]);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const combinedSuggestions = [
         ...suggestions.personalMatches.map(term => ({ term, from: 'personal' })),
@@ -65,6 +78,7 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
         } else {
             router.push(`${pathname}?${params.toString()}`);
         }
+        setShowSuggestions(false);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -139,12 +153,13 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
                         setTypedInput(e.target.value);
                         setInput(e.target.value);
                         setSelectedIndex(-1);
+                        setShowSuggestions(true);
                     }}
                     onKeyDown={handleKeyDown}
                 />
             </div>
 
-            {combinedSuggestions.length > 0 && (
+            {combinedSuggestions.length > 0 && showSuggestions && (
                 <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 min-w-full">
                     {combinedSuggestions.map(({ term, from }, index) => (
                         <div
@@ -159,7 +174,7 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
                 </div>
             )}
 
-            {debouncedInput && combinedSuggestions.length === 0 && (
+            {debouncedInput && combinedSuggestions.length === 0 && showSuggestions && (
                 <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 px-4 py-2 text-gray-500 min-w-full">
                     No results found
                 </div>
