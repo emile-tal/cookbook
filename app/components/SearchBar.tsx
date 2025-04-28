@@ -2,7 +2,7 @@
 
 import { logSearch, searchAutocomplete } from '../lib/data/logs';
 import { useEffect, useRef, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { Input } from '@/app/ui/input';
 import { Search } from 'lucide-react';
@@ -13,45 +13,48 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
-    const [input, setInput] = useState('')
-    const [debouncedInput] = useDebounce(input, 1000) // 1 second debounce
-    const [suggestions, setSuggestions] = useState<{ personalMatches: string[], popularMatches: string[] }>({ personalMatches: [], popularMatches: [] })
+    const [typedInput, setTypedInput] = useState('');
+    const [input, setInput] = useState('');
+    const [debouncedInput] = useDebounce(typedInput, 800);
+    const [suggestions, setSuggestions] = useState<{ personalMatches: string[], popularMatches: string[] }>({ personalMatches: [], popularMatches: [] });
+    const [selectedIndex, setSelectedIndex] = useState(-1);
     const router = useRouter();
-    const searchParams = useSearchParams();
     const pathname = usePathname();
-    const currentQuery = searchParams.get('q') || '';
-    const isSubmitting = useRef(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         async function loadSuggestions() {
             if (!debouncedInput) {
-                setSuggestions({ personalMatches: [], popularMatches: [] })
-                return
+                setSuggestions({ personalMatches: [], popularMatches: [] });
+                return;
             }
-
-            const results = await searchAutocomplete(debouncedInput)
-            setSuggestions(results)
+            const results = await searchAutocomplete(debouncedInput);
+            setSuggestions({
+                personalMatches: deduplicate(results.personalMatches),
+                popularMatches: deduplicate(results.popularMatches),
+            });
         }
-
-        loadSuggestions()
-    }, [debouncedInput])
-
-    const highlightMatch = (term: string) => {
-        if (!debouncedInput) return term
-        const regex = new RegExp(`(${debouncedInput})`, 'gi')
-        return term.replace(regex, '<strong>$1</strong>')
-    }
+        loadSuggestions();
+    }, [debouncedInput]);
 
     const combinedSuggestions = [
         ...suggestions.personalMatches.map(term => ({ term, from: 'personal' })),
         ...suggestions.popularMatches
             .filter(term => !suggestions.personalMatches.includes(term))
             .map(term => ({ term, from: 'popular' }))
-    ].slice(0, 10) // limit to 10 total
+    ].slice(0, 10);
 
-    const handleSearch = (formData: FormData) => {
-        isSubmitting.current = true;
-        const query = formData.get('q') as string;
+    function deduplicate(array: string[]) {
+        return Array.from(new Set(array));
+    }
+
+    const highlightMatch = (term: string) => {
+        if (!typedInput) return term;
+        const regex = new RegExp(`(${typedInput})`, 'gi');
+        return term.replace(regex, '<strong>$1</strong>');
+    };
+
+    const handleSearch = (query: string) => {
         logSearch(query);
         const params = new URLSearchParams();
         if (query) {
@@ -62,37 +65,105 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
         } else {
             router.push(`${pathname}?${params.toString()}`);
         }
-        // Reset the flag after navigation
-        setTimeout(() => {
-            isSubmitting.current = false;
-        }, 0);
-    }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (['ArrowDown', 'ArrowUp', 'Enter', 'Tab'].includes(e.key)) {
+            e.preventDefault();
+        }
+
+        const totalSuggestions = combinedSuggestions.length;
+
+        switch (e.key) {
+            case 'ArrowDown':
+                if (totalSuggestions === 0) return;
+                setSelectedIndex(prev => {
+                    if (prev === totalSuggestions - 1) {
+                        return -1; // Wrap back to typed input
+                    } else if (prev === -1) {
+                        return 0; // Move to first suggestion
+                    } else {
+                        return prev + 1;
+                    }
+                });
+                break;
+            case 'ArrowUp':
+                if (totalSuggestions === 0) return;
+                setSelectedIndex(prev => {
+                    if (prev === 0) {
+                        return -1; // Back to typed input
+                    } else if (prev === -1) {
+                        return totalSuggestions - 1; // Jump to last suggestion
+                    } else {
+                        return prev - 1;
+                    }
+                });
+                break;
+            case 'Enter':
+                if (selectedIndex !== -1) {
+                    const selectedTerm = combinedSuggestions[selectedIndex].term;
+                    setInput(selectedTerm);
+                    setTypedInput(selectedTerm);
+                    handleSearch(selectedTerm);
+                } else {
+                    handleSearch(input);
+                }
+                break;
+            case 'Tab':
+                if (selectedIndex >= 0) {
+                    const selectedTerm = combinedSuggestions[selectedIndex].term;
+                    setInput(selectedTerm);
+                    setTypedInput(selectedTerm);
+                }
+                break;
+        }
+    };
+
+    const handleSuggestionClick = (term: string) => {
+        setInput(term);
+        setTypedInput(term);
+        handleSearch(term);
+    };
 
     return (
         <div className="relative w-full">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <form action={handleSearch} className="max-w-full">
+            <div className="max-w-full">
                 <Input
+                    ref={inputRef}
                     name="q"
                     placeholder={placeholder}
                     className="pl-8 min-w-full max-w-full rounded-xl shadow-sm"
-                    defaultValue={currentQuery}
-                    onChange={(e) => setInput(e.target.value)}
+                    value={input}
+                    onChange={(e) => {
+                        setTypedInput(e.target.value);
+                        setInput(e.target.value);
+                        setSelectedIndex(-1);
+                    }}
+                    onKeyDown={handleKeyDown}
                 />
-            </form>
-            {combinedSuggestions.length > 0 ? (
-                combinedSuggestions.map(({ term, from }) => (
-                    <div
-                        key={term}
-                        className={`${from === 'personal' ? 'text-purple-900' : 'text-black'}`}
-                        dangerouslySetInnerHTML={{ __html: highlightMatch(term) }}
-                    />
-                ))
-            ) : (
-                <div className="text-gray-500">
+            </div>
+
+            {combinedSuggestions.length > 0 && (
+                <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 min-w-full">
+                    {combinedSuggestions.map(({ term, from }, index) => (
+                        <div
+                            key={index}
+                            tabIndex={-1}
+                            className={`px-4 py-2 cursor-pointer hover:bg-gray-100 transition-colors text-base ${from === 'personal' ? 'text-purple-900' : 'text-gray-900'
+                                } ${index === selectedIndex ? 'bg-gray-200 font-semibold' : ''}`}
+                            dangerouslySetInnerHTML={{ __html: highlightMatch(term) }}
+                            onClick={() => handleSuggestionClick(term)}
+                        />
+                    ))}
+                </div>
+            )}
+
+            {debouncedInput && combinedSuggestions.length === 0 && (
+                <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 px-4 py-2 text-gray-500 min-w-full">
                     No results found
                 </div>
             )}
         </div>
     );
-} 
+}
