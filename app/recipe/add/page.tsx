@@ -1,4 +1,4 @@
-import RecipeForm from "@/app/ui/recipe/recipe-form";
+import RecipeImportWrapper from "@/app/ui/recipe/recipe-import-wrapper";
 import { fetchCategories } from "@/app/lib/data/categories";
 import { recipeAction } from "@/app/actions/recipe";
 
@@ -10,7 +10,11 @@ export default async function AddRecipePage({ searchParams }: { searchParams: Pr
     return (
         <main className="container-spacing mb-8">
             <div className="max-w-2xl mx-auto">
-                <RecipeForm formAction={recipeAction} bookId={bookId} categories={categories} />
+                <RecipeImportWrapper
+                    formAction={recipeAction}
+                    bookId={bookId}
+                    categories={categories}
+                />
             </div>
         </main>
     );
