@@ -6,10 +6,13 @@ import type { Metadata } from "next";
 import { poppins } from "./ui/fonts";
 
 export const metadata: Metadata = {
-  title: "CookBook",
+  title: "Recipiz",
   description: "All-in-one marketplace for cookbooks and recipes.",
   icons: {
     icon: '/favicon.svg',
+  },
+  alternates: {
+    canonical: 'https://myrecipiz.com/',
   },
 };
 
