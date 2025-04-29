@@ -9,7 +9,7 @@ serve(async (req: Request) => {
   }
 
   if (!user_id || typeof user_id !== 'string') {
-    return new Response('Invalid user ID', { status: 400 })
+    return new Response('Search skipped (no user ID)', { status: 200 })
   }
 
   const supabase = createClient(
