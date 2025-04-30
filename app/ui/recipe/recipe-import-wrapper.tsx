@@ -18,13 +18,13 @@ export default function RecipeImportWrapper({ formAction, bookId, categories }: 
         <>
             <ImportRecipe onRecipeImported={(recipe) => {
                 setImportedRecipe(recipe);
-                // TODO: When recipe parsing is implemented, we'll populate the form with the parsed data
             }} />
+
             <RecipeForm
                 formAction={formAction}
                 bookId={bookId}
                 categories={categories}
-            // TODO: Add imported recipe data to the form when parsing is implemented
+                recipe={importedRecipe || null}
             />
         </>
     );

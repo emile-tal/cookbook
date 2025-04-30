@@ -28,11 +28,11 @@ export async function POST(req: NextRequest) {
     const endpoint = isImage ? 'upload-image' : 'upload-pdf';
 
     const response = await axios.post(
-        `https://raw-text-extractor-10153696170.us-central1.run.app/${endpoint}`,
+        `${process.env.RAW_TEXT_EXTRACTOR_API_KEY}/${endpoint}`,
         outgoingForm,
         {
           headers: outgoingForm.getHeaders(),
-          maxBodyLength: Infinity, // important for large files
+          maxBodyLength: Infinity,
         }
       );
 

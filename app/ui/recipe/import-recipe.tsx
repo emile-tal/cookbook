@@ -7,7 +7,7 @@ import { uploadRecipe } from "@/app/lib/uploadRecipe";
 import { useState } from "react";
 
 interface ImportRecipeProps {
-    onRecipeImported?: (recipe: any) => void;
+    onRecipeImported: (recipe: any) => void;
 }
 
 export default function ImportRecipe({ onRecipeImported }: ImportRecipeProps) {
@@ -20,10 +20,12 @@ export default function ImportRecipe({ onRecipeImported }: ImportRecipeProps) {
             setIsLoading(true);
             setError(null);
             const rawtext = await uploadRecipe(selectedFile);
-            // TODO: Parse rawtext into recipe object
-            const recipe = { rawtext }; // Placeholder for future parsing
-            console.log(recipe);
-            onRecipeImported?.(recipe);
+            const parsedRecipe = await fetch('/api/parse-recipe', {
+                method: 'POST',
+                body: JSON.stringify({ rawText: rawtext }),
+            });
+            const parsedRecipeData = await parsedRecipe.json();
+            onRecipeImported(parsedRecipeData);
         } catch (err) {
             setError('Failed to upload recipe. Please try again.');
             console.error('Upload error:', err);
