@@ -8,14 +8,14 @@ export type Book = {
 }
 
 export type Ingredient = {
-    id: string,
+    id?: string,
     position: number,
     amount: string,
     ingredient: string
 }
 
 export type Instruction = {
-    id: string,
+    id?: string,
     position: number,
     instruction: string
 }
@@ -75,4 +75,14 @@ export type Invitation = {
     message: string,
     can_edit: boolean,
     created_at: string,
+}
+
+export type ImportedRecipe = {
+    title: string,
+    description: string,
+    categories: string[],
+    duration: number | null,
+    recipe_yield: number | null,
+    ingredients: Ingredient[],
+    instructions: Instruction[],
 }

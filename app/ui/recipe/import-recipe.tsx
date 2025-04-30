@@ -1,8 +1,9 @@
 'use client'
 
+import { ImportedRecipe, Ingredient, Instruction, Recipe } from "@/app/types/definitions";
+
 import CircularProgress from '@mui/material/CircularProgress';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { Recipe } from "@/app/types/definitions";
 import { poppins } from "../fonts";
 import { uploadRecipe } from "@/app/lib/uploadRecipe";
 import { useState } from "react";
@@ -16,6 +17,36 @@ export default function ImportRecipe({ onRecipeImported }: ImportRecipeProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const formatRecipe = (parsed: ImportedRecipe): Recipe => {
+        return {
+            id: '',
+            title: parsed.title || '',
+            description: parsed.description || '',
+            categories: parsed.categories || [],
+            duration: parsed.duration ?? 0,
+            recipe_yield: parsed.recipe_yield ?? 0,
+            image_url: '',
+            username: '',
+            is_public: false,
+            average_rating: {
+                average_rating: 0,
+                num_ratings: 0,
+            },
+            ingredients: (parsed.ingredients || []).map((ing: Ingredient, index: number) => ({
+                id: crypto.randomUUID(),
+                position: ing.position ?? index + 1,
+                amount: ing.amount || '',
+                ingredient: ing.ingredient || '',
+            })),
+            instructions: (parsed.instructions || []).map((inst: Instruction, index: number) => ({
+                id: crypto.randomUUID(),
+                position: inst.position ?? index + 1,
+                instruction: inst.instruction || '',
+            })),
+        };
+    }
+
+
     const handleRecipeUpload = async (selectedFile: File) => {
         try {
             setIsLoading(true);
@@ -26,7 +57,8 @@ export default function ImportRecipe({ onRecipeImported }: ImportRecipeProps) {
                 body: JSON.stringify({ rawText: rawtext }),
             });
             const parsedRecipeData = await parsedRecipe.json();
-            onRecipeImported(parsedRecipeData);
+            const formattedRecipe = formatRecipe(parsedRecipeData);
+            onRecipeImported(formattedRecipe);
         } catch (err) {
             setError('Failed to upload recipe. Please try again.');
             console.error('Upload error:', err);
