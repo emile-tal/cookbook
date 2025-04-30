@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get('file');
 
-    if (!(file instanceof File)) {
+    if (!file || typeof file !== 'object' || typeof file.arrayBuffer !== 'function') {
       return NextResponse.json({ error: 'Invalid file' }, { status: 400 });
     }
 
