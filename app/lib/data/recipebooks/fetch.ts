@@ -117,23 +117,33 @@ export async function fetchRecentlyViewedBooks() {
         await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
 
         const recentlyViewedBooks = await sql<Book[]>`
-            SELECT DISTINCT ON (recipeBooks.id) 
+            WITH recent_views AS (
+                SELECT 
+                    book_id,
+                    MAX(opened_at) AS last_opened
+                FROM recipebooklogs
+                WHERE user_id = ${user.id}
+                GROUP BY book_id
+            )
+            SELECT 
                 recipeBooks.id, 
                 recipeBooks.name, 
                 recipeBooks.image_url, 
                 users.username,
-                COUNT(recipeBookRecipes.recipe_id) as recipe_count,
-                recipebooklogs.opened_at
-            FROM recipebooklogs
-            JOIN recipeBooks ON recipebooklogs.book_id = recipeBooks.id
+                COUNT(recipeBookRecipes.recipe_id) AS recipe_count,
+                rv.last_opened
+            FROM recent_views rv
+            JOIN recipeBooks ON rv.book_id = recipeBooks.id
             JOIN users ON recipeBooks.user_id = users.id
             LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
-            WHERE recipebooklogs.user_id = ${user.id} AND (recipeBooks.user_id = ${user.id} OR recipeBooks.is_public = true OR recipeBooks.id IN (
-                SELECT book_id FROM permissions WHERE user_id = ${user.id}
-            ))
-            GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username, recipebooklogs.opened_at
-            ORDER BY recipeBooks.id, recipebooklogs.opened_at DESC
-            LIMIT 4
+            WHERE recipeBooks.user_id = ${user.id}
+                OR recipeBooks.is_public = true
+                OR recipeBooks.id IN (
+                    SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                )
+            GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username, rv.last_opened
+            ORDER BY rv.last_opened DESC
+            LIMIT 4;
         `;
         return recentlyViewedBooks || null;
     } catch (error) {
@@ -146,21 +156,21 @@ export async function fetchRecentlyViewedBooks() {
 export async function fetchMostViewedBooks() {
     try {
         const mostViewedBooks = await sql<Book[]>`
-            SELECT DISTINCT ON (recipeBooks.id) 
+            SELECT 
                 recipeBooks.id, 
                 recipeBooks.name, 
                 recipeBooks.image_url, 
                 users.username,
-                COUNT(recipeBookRecipes.recipe_id) as recipe_count,
-                COUNT(recipebooklogs.book_id) as view_count
+                COUNT(DISTINCT recipeBookRecipes.recipe_id) AS recipe_count,
+                COUNT(recipebooklogs.id) AS view_count
             FROM recipeBooks
             JOIN users ON recipeBooks.user_id = users.id
             LEFT JOIN recipebooklogs ON recipeBooks.id = recipebooklogs.book_id
             LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
             WHERE recipeBooks.is_public = true
             GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username
-            ORDER BY recipeBooks.id, view_count DESC
-            LIMIT 4
+            ORDER BY view_count DESC
+            LIMIT 4;
         `;
         return mostViewedBooks || null;
     } catch (error) {

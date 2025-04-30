@@ -215,8 +215,16 @@ export async function fetchRecentlyViewedRecipesByUser() {
                     array_agg(category) as categories
                 FROM recipecategories
                 GROUP BY recipe_id
+            ),
+            recent_views AS (
+                SELECT
+                    recipe_id,
+                    MAX(opened_at) as last_opened
+                FROM recipelogs
+                WHERE user_id = ${user.id}
+                GROUP BY recipe_id
             )
-            SELECT DISTINCT ON(recipes.id)
+            SELECT 
                 recipes.id,
                 recipes.title,
                 recipes.description,
@@ -226,14 +234,14 @@ export async function fetchRecentlyViewedRecipesByUser() {
                 recipes.recipe_yield,
                 COALESCE(users.username, 'Unknown') as username,
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories,
-                recipelogs.opened_at
-            FROM recipelogs
-            JOIN recipes ON recipelogs.recipe_id = recipes.id
+                rv.last_opened
+            FROM recent_views rv
+            JOIN recipes ON rv.recipe_id = recipes.id
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
-            WHERE recipelogs.user_id = ${user.id} AND (recipes.user_id = ${user.id} OR recipes.is_public = true)
-            ORDER BY recipes.id, recipelogs.opened_at DESC
-            LIMIT 4
+            WHERE recipes.is_public = true OR recipes.user_id = ${user.id}
+            ORDER BY rv.last_opened DESC
+                LIMIT 4;
         `;
         return recentlyViewedRecipes || null;
     } catch (error) {
@@ -254,7 +262,7 @@ export async function fetchMostViewedRecipes() {
                 FROM recipecategories
                 GROUP BY recipe_id
             )
-            SELECT DISTINCT ON(recipes.id)
+            SELECT 
                 recipes.id,
                 recipes.title,
                 recipes.description,
@@ -264,16 +272,15 @@ export async function fetchMostViewedRecipes() {
                 recipes.recipe_yield,
                 COALESCE(users.username, 'Unknown') as username,
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories,
-                COUNT(recipelogs.recipe_id) as view_count
+                COUNT(recipelogs.id) AS view_count
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipelogs ON recipes.id = recipelogs.recipe_id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
             WHERE recipes.is_public = true
-            GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url,
-                recipes.is_public, recipes.duration, recipes.recipe_yield, users.username, rc.categories
-            ORDER BY recipes.id, view_count DESC
-            LIMIT 4
+            GROUP BY recipes.id, users.username, rc.categories
+            ORDER BY view_count DESC
+            LIMIT 4;
         `;
         return mostViewedRecipes || null;
     } catch (error) {
@@ -300,7 +307,7 @@ export async function fetchMostViewedRecipesByUser() {
                 FROM recipecategories
                 GROUP BY recipe_id
             )
-            SELECT DISTINCT ON(recipes.id)
+            SELECT 
                 recipes.id,
                 recipes.title,
                 recipes.description,
@@ -310,16 +317,16 @@ export async function fetchMostViewedRecipesByUser() {
                 recipes.recipe_yield,
                 COALESCE(users.username, 'Unknown') as username,
                 COALESCE(rc.categories, ARRAY[]::text[]) as categories,
-                COUNT(recipelogs.recipe_id) as view_count
+                COUNT(recipelogs.id) AS view_count
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipelogs ON recipes.id = recipelogs.recipe_id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
-            WHERE recipelogs.user_id = ${user.id} AND (recipes.user_id = ${user.id} OR recipes.is_public = true)
-            GROUP BY recipes.id, recipes.title, recipes.description, recipes.image_url,
-                recipes.is_public, recipes.duration, recipes.recipe_yield, users.username, rc.categories
-            ORDER BY recipes.id, view_count DESC
-            LIMIT 4
+            WHERE recipelogs.user_id = ${user.id} 
+            AND (recipes.user_id = ${user.id} OR recipes.is_public = true)
+            GROUP BY recipes.id, users.username, rc.categories
+            ORDER BY view_count DESC
+            LIMIT 4;
         `;
         return mostViewedRecipesByUser || null;
     } catch (error) {
