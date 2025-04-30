@@ -25,7 +25,7 @@ export function BookNavBar({ view, handleViewChange, canEdit }: BookNavBarProps)
     const handleAdd = () => {
         const bookId = pathname.match(/\/books\/([^\/]+)$/)?.[1];
         if (bookId) {
-            router.push(`/recipe/add?bookId=${bookId}`);
+            router.push(`/recipe/add?bookId=${bookId}&from=${pathname}`);
         } else {
             setOpenDialog(true);
         }
