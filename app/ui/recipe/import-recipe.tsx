@@ -32,13 +32,13 @@ export default function ImportRecipe({ onRecipeImported }: ImportRecipeProps) {
                 average_rating: 0,
                 num_ratings: 0,
             },
-            ingredients: (parsed.ingredients || []).map((ing: Ingredient, index: number) => ({
+            ingredients: (parsed.ingredients || []).map((ing: { position: number, amount: string, ingredient: string }, index: number) => ({
                 id: crypto.randomUUID(),
                 position: ing.position ?? index + 1,
                 amount: ing.amount || '',
                 ingredient: ing.ingredient || '',
             })),
-            instructions: (parsed.instructions || []).map((inst: Instruction, index: number) => ({
+            instructions: (parsed.instructions || []).map((inst: { position: number, instruction: string }, index: number) => ({
                 id: crypto.randomUUID(),
                 position: inst.position ?? index + 1,
                 instruction: inst.instruction || '',
