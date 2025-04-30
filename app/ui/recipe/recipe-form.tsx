@@ -57,10 +57,31 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
     const fileInputRef = useRef<HTMLInputElement>(null)
     const router = useRouter()
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+    const [isPublic, setIsPublic] = useState(recipe?.is_public ?? true);
 
     useEffect(() => {
         setTitle(recipe?.title || '')
     }, [recipe?.title])
+
+    useEffect(() => {
+        setSelectedCategories(recipe?.categories || [])
+
+        // Update ingredients
+        if (recipe?.ingredients) {
+            setIngredients([
+                ...recipe.ingredients,
+                { id: crypto.randomUUID(), position: recipe.ingredients.length + 1, amount: '', ingredient: '' }
+            ]);
+        }
+
+        // Update instructions
+        if (recipe?.instructions) {
+            setInstructions([
+                ...recipe.instructions,
+                { id: crypto.randomUUID(), position: recipe.instructions.length + 1, instruction: '' }
+            ]);
+        }
+    }, [recipe])
 
     const formatCategories = (categories: string[]) => {
         return categories.map(category => (category.charAt(0).toUpperCase() + category.slice(1)))
@@ -264,7 +285,8 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                 <div className="flex items-center">
                     <Switch
                         name="is_public"
-                        defaultChecked={recipe?.is_public ?? true}
+                        checked={isPublic}
+                        onChange={(e) => setIsPublic(e.target.checked)}
                         color="primary"
                     />
                     <label className="text-sm font-medium ml-2">
