@@ -25,7 +25,6 @@ export default function ImportRecipe({ onRecipeImported }: ImportRecipeProps) {
                 body: JSON.stringify({ rawText: rawtext }),
             });
             const parsedRecipeData = await parsedRecipe.json();
-            console.log(parsedRecipeData);
             onRecipeImported(parsedRecipeData);
         } catch (err) {
             setError('Failed to upload recipe. Please try again.');

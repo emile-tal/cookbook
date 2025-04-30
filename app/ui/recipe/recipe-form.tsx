@@ -58,6 +58,8 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
     const router = useRouter()
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
     const [isPublic, setIsPublic] = useState(recipe?.is_public ?? true);
+    const [duration, setDuration] = useState<string>(recipe?.duration?.toString() || '');
+    const [recipeYield, setRecipeYield] = useState<string>(recipe?.recipe_yield?.toString() || '');
 
     useEffect(() => {
         setTitle(recipe?.title || '')
@@ -82,6 +84,13 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
             ]);
         }
     }, [recipe])
+
+    useEffect(() => {
+        if (recipe) {
+            setDuration(recipe.duration?.toString() || '');
+            setRecipeYield(recipe.recipe_yield?.toString() || '');
+        }
+    }, [recipe]);
 
     const formatCategories = (categories: string[]) => {
         return categories.map(category => (category.charAt(0).toUpperCase() + category.slice(1)))
@@ -111,6 +120,20 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
         router.back()
         router.refresh()
     }
+
+    const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setDuration(value);
+    };
+
+    const handleYieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setRecipeYield(value);
+    };
+
+    const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+        e.currentTarget.blur();
+    };
 
     return (
         <form action={dispatch}>
@@ -250,7 +273,10 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                     <input
                         type="number"
                         name="duration"
-                        defaultValue={recipe?.duration}
+                        min={0}
+                        value={duration}
+                        onChange={handleDurationChange}
+                        onWheel={handleWheel}
                         className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none"
                     />
                     {state?.errors?.duration && (
@@ -263,8 +289,10 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                     <input
                         type="number"
                         name="recipe_yield"
-                        defaultValue={recipe?.recipe_yield}
-                        min={1}
+                        min={0}
+                        value={recipeYield}
+                        onChange={handleYieldChange}
+                        onWheel={handleWheel}
                         className="mt-1 block min-w-full rounded-md border border-gray-300 px-3 py-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none"
                     />
                     {state?.errors?.recipe_yield && (

@@ -36,7 +36,6 @@ const recipeSchema = z.object({
     id: z.string(),
     title: z.string().min(3, { message: "Title must be at least 3 characters long" }).trim(),
     description: z.string().default(''),
-
     categories: z.string().transform((str) => {
         try {
             return z.array(z.string()).parse(JSON.parse(str));
@@ -45,8 +44,16 @@ const recipeSchema = z.object({
             return [];
         }
     }).default('[]'),
-    duration: z.coerce.number().optional().default(0),
-    recipe_yield: z.coerce.number().optional().default(0),
+    duration: z.string().transform((val) => {
+        if (val === '') return 0;
+        const num = Number(val);
+        return isNaN(num) ? 0 : num;
+    }),
+    recipe_yield: z.string().transform((val) => {
+        if (val === '') return 0;
+        const num = Number(val);
+        return isNaN(num) ? 0 : num;
+    }),
     is_public: z.boolean(),
     image_url: z.string().optional(),
     ingredients: z.string().transform((str) => {
@@ -94,7 +101,6 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
         const formDataWithBoolean = {
             ...rawFormData,
             is_public: formData.get('is_public') === 'on',
-            duration: rawFormData.duration || 0,
             description: rawFormData.description || '',
             categories: JSON.stringify(
                 JSON.parse(rawFormData.categories as string).map((cat: string) => cat)
@@ -226,7 +232,6 @@ export async function recipeAction(prevState: RecipeFormState, formData: FormDat
             // Check if a book ID was provided to associate this recipe with
             const bookId = formData.get('bookId');
             if (bookId) {
-                console.log(`Adding recipe ${newRecipe.id} to book ${bookId}`);
                 // Add the recipe to the specified book
                 await sql`
                     INSERT INTO recipeBookRecipes (book_id, recipe_id)
