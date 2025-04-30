@@ -2,12 +2,13 @@
 
 import CircularProgress from '@mui/material/CircularProgress';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Recipe } from "@/app/lib/definitions";
 import { poppins } from "../fonts";
 import { uploadRecipe } from "@/app/lib/uploadRecipe";
 import { useState } from "react";
 
 interface ImportRecipeProps {
-    onRecipeImported: (recipe: any) => void;
+    onRecipeImported: (recipe: Recipe) => void;
 }
 
 export default function ImportRecipe({ onRecipeImported }: ImportRecipeProps) {

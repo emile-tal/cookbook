@@ -18,18 +18,17 @@ export default function RecipeImportWrapper({ formAction, bookId, categories }: 
     return (
         <>
             <ImportRecipe onRecipeImported={(recipe) => {
-                // Convert the imported recipe data to match the Recipe type
                 const formattedRecipe: Recipe = {
                     id: '',
                     title: recipe.title || '',
                     description: recipe.description || '',
-                    ingredients: recipe.ingredients?.map((ing: any, index: number) => ({
+                    ingredients: recipe.ingredients?.map((ing: string, index: number) => ({
                         id: crypto.randomUUID(),
                         position: index + 1,
                         amount: ing.amount || '',
                         ingredient: ing.ingredient || ''
                     })) || [],
-                    instructions: recipe.instructions?.map((inst: any, index: number) => ({
+                    instructions: recipe.instructions?.map((inst: string, index: number) => ({
                         id: crypto.randomUUID(),
                         position: index + 1,
                         instruction: inst.instruction || ''
@@ -38,7 +37,7 @@ export default function RecipeImportWrapper({ formAction, bookId, categories }: 
                     duration: recipe.duration || 0,
                     recipe_yield: recipe.recipe_yield || 0,
                     image_url: recipe.image_url || null,
-                    username: '', // This will be set by the server
+                    username: '',
                     is_public: false,
                     average_rating: {
                         average_rating: 0,

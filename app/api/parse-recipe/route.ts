@@ -64,8 +64,8 @@ Raw text:
     const json = JSON.parse(content); // will throw if OpenAI returned invalid JSON
 
     return NextResponse.json(json);
-  } catch (err: any) {
-    console.error('OpenAI error:', err.message);
-    return NextResponse.json({ error: 'Failed to parse recipe' }, { status: 500 });
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
