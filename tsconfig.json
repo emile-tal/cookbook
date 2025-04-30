@@ -38,6 +38,7 @@
   ],
   "exclude": [
     "postcss.config.mjs",
-    "node_modules"
+    "node_modules",
+    "supabase/functions"
   ]
 }
