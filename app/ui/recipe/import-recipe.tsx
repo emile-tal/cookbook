@@ -2,7 +2,7 @@
 
 import CircularProgress from '@mui/material/CircularProgress';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { Recipe } from "@/app/lib/definitions";
+import { Recipe } from "@/app/types/definitions";
 import { poppins } from "../fonts";
 import { uploadRecipe } from "@/app/lib/uploadRecipe";
 import { useState } from "react";
