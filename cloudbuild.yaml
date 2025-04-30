@@ -41,4 +41,8 @@ steps:
         'NEXT_PUBLIC_SUPABASE_URL=NEXT_PUBLIC_SUPABASE_URL:latest',
         '--set-secrets',
         'NEXT_PUBLIC_SUPABASE_ANON_KEY=NEXT_PUBLIC_SUPABASE_ANON_KEY:latest',
+        '--set-secrets',
+        'RAW_TEXT_EXTRACTOR_API_URL=RAW_TEXT_EXTRACTOR_API_URL:latest',
+        '--set-secrets',
+        'OPENAI_API_KEY=OPENAI_API_KEY:latest',
       ]

@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const endpoint = isImage ? 'upload-image' : 'upload-pdf';
 
     const response = await axios.post(
-        `${process.env.RAW_TEXT_EXTRACTOR_API_KEY}/${endpoint}`,
+        `${process.env.RAW_TEXT_EXTRACTOR_API_URL}/${endpoint}`,
         outgoingForm,
         {
           headers: outgoingForm.getHeaders(),
