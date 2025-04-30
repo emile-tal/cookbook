@@ -1,6 +1,6 @@
 'use client'
 
-import { ImportedRecipe, Ingredient, Instruction, Recipe } from "@/app/types/definitions";
+import { ImportedRecipe, Recipe } from "@/app/types/definitions";
 
 import CircularProgress from '@mui/material/CircularProgress';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
