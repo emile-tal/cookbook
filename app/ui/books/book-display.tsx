@@ -88,5 +88,5 @@ export function BookDisplay({ books, recipeCountByBook = {}, savedBooks = [] }: 
                 <BooksGrid books={sortedBooks} savedBooks={savedBooks} />
             )}
         </div>
-    );
+    )
 }

@@ -40,7 +40,7 @@ export default function RecipesList({ recipes }: Props) {
             {recipes?.map((recipe) => (
                 <div
                     key={recipe.id}
-                    className='py-2 grid grid-cols-12 w-full'
+                    className='py-3 grid grid-cols-12 w-full border-b border-gray-100 items-center hover:cursor-pointer hover:bg-gray-50'
                     onClick={() => router.push(`/recipe/${recipe.id}?from=${fullUrl}`)}
                     onContextMenu={(e) => handleContextMenu(e, recipe.id)}
                 >

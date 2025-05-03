@@ -58,7 +58,7 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
             {books?.map((book) => (
                 <div
                     key={book.id}
-                    className='py-3 grid grid-cols-12 w-full border-b border-gray-100 items-center hover:cursor-pointer'
+                    className='py-3 grid grid-cols-12 w-full border-b border-gray-100 items-center hover:cursor-pointer hover:bg-gray-50'
                     onClick={() => router.push(`/books/${book.id}?from=${fullUrl}`)}
                     onContextMenu={(e) => handleContextMenu(e, book.id)}
                 >

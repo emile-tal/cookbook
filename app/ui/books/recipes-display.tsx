@@ -65,23 +65,25 @@ export function RecipesDisplay({ recipes, editableBooks }: Props) {
 
     return (
         <div className="py-4">
-            {view === "list" ?
-                (
-                    <>
-                        <div className="grid grid-cols-12 py-2 font-bold">
-                            {tableHeaders.map((header) => (
-                                <div key={header.sort} className={`col-span-${header.column} flex gap-2 hover:cursor-pointer`} onClick={() => handleSort(header.sort)}>
-                                    <h3>{header.label}</h3>
-                                    <SwapVertIcon />
-                                </div>
-
-                            ))}
-                        </div>
-                        <RecipesList recipes={sortedRecipes} />
-                    </>
-                ) : (
-                    <RecipesGrid recipes={sortedRecipes} editableBooks={editableBooks} />
-                )}
+            {view === "list" ? (
+                <>
+                    <div className="grid grid-cols-12 pt-2 pb-4 font-bold border-b border-gray-200">
+                        {tableHeaders.map((header) => (
+                            <div
+                                key={header.sort}
+                                className={`col-span-${header.column} flex gap-2 hover:cursor-pointer`}
+                                onClick={() => handleSort(header.sort)}
+                            >
+                                <h3>{header.label}</h3>
+                                <SwapVertIcon />
+                            </div>
+                        ))}
+                    </div>
+                    <RecipesList recipes={sortedRecipes} />
+                </>
+            ) : (
+                <RecipesGrid recipes={sortedRecipes} editableBooks={editableBooks} />
+            )}
         </div >
     )
 }
