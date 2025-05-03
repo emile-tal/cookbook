@@ -42,7 +42,7 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                     onClick={() => router.push(`/books/${book.id}?from=${fullUrl}`)}
                 >
                     <div className="col-span-5 flex items-center gap-2">
-                        <p className=" font-medium truncate">
+                        <p className="truncate">
                             {book.name}
                         </p>
                     </div>
