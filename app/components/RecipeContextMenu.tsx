@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 interface RecipeContextMenuProps {
     position: { x: number, y: number },
-    recipeId: string | null,
+    recipeId: string,
     onClose: () => void,
     fullUrl: string
 }

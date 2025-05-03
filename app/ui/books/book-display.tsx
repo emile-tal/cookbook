@@ -12,7 +12,7 @@ const tableHeaders = [
     {
         label: "Name",
         sort: "name",
-        column: 5
+        column: 4
     },
     {
         label: "Owner",
@@ -22,7 +22,7 @@ const tableHeaders = [
     {
         label: "Recipes",
         sort: "recipes",
-        column: 2
+        column: 3
     }
 ];
 
@@ -70,7 +70,7 @@ export function BookDisplay({ books, recipeCountByBook = {}, savedBooks = [] }: 
         <div className="py-4 w-full">
             {view === "list" ? (
                 <>
-                    <div className="grid grid-cols-12 py-2 font-bold border-b border-gray-200">
+                    <div className="grid grid-cols-12 pt-2 pb-4 font-bold border-b border-gray-200">
                         {tableHeaders.map((header) => (
                             <div
                                 key={header.sort}

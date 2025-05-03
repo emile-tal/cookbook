@@ -59,7 +59,7 @@ export default function RecipesList({ recipes }: Props) {
                     </div>
                 </div>
             ))}
-            {menuVisible && <RecipeContextMenu position={position} recipeId={selectedRecipe} onClose={() => setMenuVisible(false)} fullUrl={fullUrl} />}
+            {menuVisible && selectedRecipe && <RecipeContextMenu position={position} recipeId={selectedRecipe} onClose={() => setMenuVisible(false)} fullUrl={fullUrl} />}
         </div>
     )
 }
