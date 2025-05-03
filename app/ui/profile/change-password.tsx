@@ -2,8 +2,9 @@
 
 import { useState, useTransition } from "react";
 
-import Link from "next/link";
+import PrimaryButton from "../buttons/primary-button";
 import { changePassword } from "@/app/actions/auth";
+import { useRouter } from "next/navigation";
 
 export default function ChangePassword() {
     const [currentPassword, setCurrentPassword] = useState("");
@@ -12,6 +13,7 @@ export default function ChangePassword() {
     const [message, setMessage] = useState("");
     const [isPending, startTransition] = useTransition();
     const [isSuccess, setIsSuccess] = useState(false);
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -34,12 +36,11 @@ export default function ChangePassword() {
                 <div className="text-green-600 text-center">
                     <p className="text-lg font-medium">Password updated successfully!</p>
                 </div>
-                <Link
-                    href="/profile"
-                    className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors"
-                >
-                    Return to Profile
-                </Link>
+                <PrimaryButton
+                    onClick={() => router.push("/profile")}
+                    type="button"
+                    text="Return to Profile"
+                />
             </div>
         );
     }
@@ -86,13 +87,11 @@ export default function ChangePassword() {
                 />
             </div>
             <div className="flex justify-center min-w-full pt-8">
-                <button
+                <PrimaryButton
                     type="submit"
+                    text={isPending ? "Updating..." : "Change Password"}
                     disabled={isPending}
-                    className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    {isPending ? "Updating..." : "Change Password"}
-                </button>
+                />
             </div>
             {!message.includes("updated") && (
                 <div className={`text-sm text-red-500`}>

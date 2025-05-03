@@ -3,6 +3,8 @@
 import Image from "next/image"
 import { Invitation } from "@/app/types/definitions"
 import MenuBookIcon from '@mui/icons-material/MenuBook'
+import PrimaryButton from "../buttons/primary-button"
+import SecondaryButton from "../buttons/secondary-button"
 import { addUserToPermissions } from "@/app/lib/data/permissions"
 import { rejectInvitation } from "@/app/lib/data/invitations"
 import { useRouter } from "next/navigation"
@@ -82,17 +84,15 @@ export default function UnreadFeed({ invitations }: { invitations: Invitation[] 
                             </div>
 
                             <div className="mt-4 flex gap-3 justify-end">
-                                <button
+                                <SecondaryButton
                                     onClick={() => { declineInvitation(invitation.id) }}
-                                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
-                                    Decline
-                                </button>
-                                <button
-                                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors"
+                                    text="Decline"
+                                />
+                                <PrimaryButton
                                     onClick={() => { acceptInvitation(invitation.id, invitation.book_id, invitation.can_edit,) }}
-                                >
-                                    Accept
-                                </button>
+                                    type="button"
+                                    text="Accept"
+                                />
                             </div>
                         </div>
                     </div>

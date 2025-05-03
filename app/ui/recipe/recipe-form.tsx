@@ -5,7 +5,7 @@ import { useActionState, useEffect, useRef, useState } from "react"
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import Autocomplete from "@mui/material/Autocomplete";
-import { BackButton } from "../back-button";
+import { BackButton } from "../buttons/back-button";
 import Chip from "@mui/material/Chip";
 import DeleteDialog from "@/app/components/DeleteDialog";
 import EditIcon from '@mui/icons-material/Edit';
@@ -13,7 +13,9 @@ import EditTitle from '@/app/components/EditTitle'
 import Image from "next/image"
 import IngredientsForm from './ingredients-form'
 import InstructionsForm from './instructions-form'
+import PrimaryButton from "../buttons/primary-button";
 import { RecipeFormState } from "@/app/actions/recipe"
+import SecondaryButton from "../buttons/secondary-button";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import { deleteRecipe } from "@/app/lib/data/recipes";
@@ -322,27 +324,19 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                     </label>
                 </div>
                 <div className="flex justify-between pt-8">
-                    <button
-                        type="button"
-                        className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90"
+                    <SecondaryButton
+                        text="Delete Recipe"
                         onClick={() => setOpenDeleteDialog(true)}
-                    >
-                        Delete Recipe
-                    </button>
+                    />
                     <div className="flex gap-2">
-                        <button
-                            type="button"
-                            className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90"
+                        <SecondaryButton
+                            text="Cancel"
                             onClick={() => router.back()}
-                        >
-                            Cancel
-                        </button>
-                        <button
+                        />
+                        <PrimaryButton
+                            text="Save Recipe"
                             type="submit"
-                            className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90"
-                        >
-                            Save Recipe
-                        </button>
+                        />
                     </div>
                 </div>
             </div>

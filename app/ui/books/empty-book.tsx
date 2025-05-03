@@ -3,6 +3,8 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import PrimaryButton from '../buttons/primary-button';
+import TertiaryButton from '../buttons/tertiary-button';
 
 export default function EmptyBook({ bookName, canEdit }: { bookName: string, canEdit: boolean }) {
     const pathname = usePathname();
@@ -21,18 +23,15 @@ export default function EmptyBook({ bookName, canEdit }: { bookName: string, can
                     <>
                         <p className="text-gray-600 text-lg mb-4 pt-4">{`You don't have any recipes in this book yet.`}</p>
                         <div className="flex gap-4">
-                            <button
+                            <PrimaryButton
                                 onClick={() => router.push(`/recipe/add?from=${fullUrl}`)}
-                                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
-                            >
-                                Add a recipe
-                            </button>
-                            <button
+                                text="Add a recipe"
+                                type="button"
+                            />
+                            <TertiaryButton
                                 onClick={() => router.push(`/`)}
-                                className="px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary/5 transition-colors"
-                            >
-                                Find recipes
-                            </button>
+                                text="Find recipes"
+                            />
                         </div>
                     </>
                 ) : (

@@ -5,7 +5,9 @@ import { addRecipeToBook, removeRecipeFromBook } from '@/app/lib/data/recipes';
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
+import IconButton from "../buttons/icon-button";
 import Image from "next/image";
 import MenuBook from "@mui/icons-material/MenuBook";
 import MenuIcon from '@mui/icons-material/Menu';
@@ -101,16 +103,17 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                             <span className="text-gray-700 text-xl">New Book</span>
                                         </div>
                                     </button>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleCloseMenus();
-                                        }}
-                                        className="flex items-center justify-center rounded-full h-8 min-w-8 absolute right-1 top-[13px] hover:cursor-pointer hover:bg-white hover:shadow-sm group">
-                                        <span className="text-text text-xl group-hover:text-lg">
-                                            ✕
-                                        </span>
-                                    </button>
+                                    <div className="absolute right-2 top-[13px]">
+                                        <IconButton
+                                            onClick={() => {
+                                                handleCloseMenus();
+                                            }}
+                                            icon={CloseIcon}
+                                            tooltipTitle="Close"
+                                            tooltipPlacement="bottom"
+                                            variant="light"
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="flex-1 overflow-y-auto">
@@ -128,7 +131,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                                 <span className={`text-gray-700 truncate`}>{book.name}</span>
                                             </div>
                                             {bookIdsWithRecipe.includes(book.id) && (
-                                                <CheckIcon className="text-gray-500 scale-75" />
+                                                <CheckIcon className="text-gray-700 scale-75" />
                                             )}
                                         </button>
                                     ))}
@@ -148,52 +151,51 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                                 </div>
                             )
                         )}
-                        {session?.user && ((showBooks && selectedRecipe === recipe.id) || <button
-                            className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedRecipe(recipe.id)
-                                setShowMenu(true)
-                                setShowBooks(false)
-                            }}>
-                            <MenuIcon className="text-text text-base group-hover:text-lg" />
-                        </button>)}
+                        {session?.user && ((showBooks && selectedRecipe === recipe.id) || <div
+                            className="absolute top-1.5 right-1.5">
+                            <IconButton
+                                onClick={() => {
+                                    setSelectedRecipe(recipe.id)
+                                    setShowMenu(true)
+                                    setShowBooks(false)
+                                }}
+                                icon={MenuIcon}
+                                tooltipTitle="Menu"
+                                tooltipPlacement="right"
+                                variant="light"
+                            />
+                        </div>)}
                         {showMenu && selectedRecipe === recipe.id && (
                             <div className="absolute top-0 right-0 flex flex-col gap-2 h-full bg-gray-100 rounded-tr-xl p-2">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
+                                <IconButton
+                                    onClick={() => {
                                         handleCloseMenus();
                                     }}
-                                    className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group">
-                                    <span className="text-text text-xl group-hover:text-lg">
-                                        ✕
-                                    </span>
-                                </button>
+                                    icon={CloseIcon}
+                                    tooltipTitle="Close"
+                                    tooltipPlacement="right"
+                                    variant="dark"
+                                />
                                 {session?.user?.username === recipe.username && (!showBooks || selectedRecipe !== recipe.id) && (
-                                    <Tooltip title="Edit Recipe" placement="right">
-                                        <button
-                                            className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                router.push(`/recipe/${recipe.id}/edit?from=${fullUrl}`);
-                                            }}>
-
-                                            <EditIcon className="text-text text-base group-hover:text-lg" />
-
-                                        </button>
-                                    </Tooltip>)}
-                                <Tooltip title="Add to Book" placement="right">
-                                    <button
-                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleShowBooks(recipe.id);
+                                    <IconButton
+                                        onClick={() => {
+                                            router.push(`/recipe/${recipe.id}/edit?from=${fullUrl}`);
                                         }}
-                                    >
-                                        <MenuBook className="text-text text-base group-hover:text-lg" />
-                                    </button>
-                                </Tooltip>
+                                        icon={EditIcon}
+                                        tooltipTitle="Edit"
+                                        tooltipPlacement="right"
+                                        variant="dark"
+                                    />
+                                )}
+                                <IconButton
+                                    onClick={() => {
+                                        handleShowBooks(recipe.id);
+                                    }}
+                                    icon={MenuBook}
+                                    tooltipTitle="Add to Book"
+                                    tooltipPlacement="right"
+                                    variant="dark"
+                                />
                             </div>
                         )}
                     </div>

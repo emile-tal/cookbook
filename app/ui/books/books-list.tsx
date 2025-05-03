@@ -4,6 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Book } from '@/app/types/definitions';
 import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '../buttons/icon-button';
 import ShareDialog from '@/app/components/ShareDialog';
 import ShareIcon from '@mui/icons-material/Share';
 import TurnedIn from '@mui/icons-material/TurnedIn';
@@ -35,15 +36,15 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
     return (
         <div className="flex flex-col w-full">
             {books?.map((book) => (
-                <div key={book.id} className='py-3 grid grid-cols-12 w-full border-b border-gray-100 items-center'>
+                <div
+                    key={book.id}
+                    className='py-3 grid grid-cols-12 w-full border-b border-gray-100 items-center hover:cursor-pointer'
+                    onClick={() => router.push(`/books/${book.id}?from=${fullUrl}`)}
+                >
                     <div className="col-span-5 flex items-center gap-2">
-                        <p
-                            onClick={() => router.push(`/books/${book.id}?from=${fullUrl}`)}
-                            className="hover:cursor-pointer font-medium truncate"
-                        >
+                        <p className=" font-medium truncate">
                             {book.name}
                         </p>
-
                     </div>
                     <p className="col-span-4 truncate">{book.username}</p>
                     <div className="col-span-2 items-center">
@@ -51,25 +52,28 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                     </div>
                     <div className="col-span-1 flex justify-end gap-2">
                         {session?.user?.username === book.username &&
-                            <button
+                            <IconButton
                                 onClick={() => router.push(`/books/${book.id}/edit?from=${fullUrl}`)}
-                                className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
-                            >
-                                <EditIcon className="text-text text-base group-hover:text-lg" />
-                            </button>
+                                icon={EditIcon}
+                                tooltipTitle="Edit Book"
+                                tooltipPlacement="top"
+                                variant="light"
+                            />
                         }
-                        {session?.user?.username === book.username && <button
+                        {session?.user?.username === book.username &&
+                            <IconButton
+                                onClick={() => {
+                                    setSelectedBook(book.id);
+                                    setShowShareDialog(true);
+                                }}
+                                icon={ShareIcon}
+                                tooltipTitle="Share Book"
+                                tooltipPlacement="top"
+                                variant="light"
+                            />
+                        }
+                        <IconButton
                             onClick={() => {
-                                setSelectedBook(book.id);
-                                setShowShareDialog(true);
-                            }}
-                            className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
-                        >
-                            <ShareIcon className="text-text text-base group-hover:text-lg" />
-                        </button>}
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
                                 if (savedBooks.includes(book.id)) {
                                     removeSavedBook(book.id);
                                     router.refresh();
@@ -78,14 +82,17 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                                     router.refresh();
                                 }
                             }}
-                            className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
-                        >
-                            {savedBooks.includes(book.id) ? (
-                                <TurnedIn className="text-red-500 text-base group-hover:text-lg" />
-                            ) : (
-                                <TurnedInNot className="text-text text-base group-hover:text-lg" />
-                            )}
-                        </button>
+                            renderIcon={() => {
+                                return savedBooks.includes(book.id) ? (
+                                    <TurnedIn className="text-primary text-base group-hover:text-lg" />
+                                ) : (
+                                    <TurnedInNot className="text-text text-base group-hover:text-lg" />
+                                )
+                            }}
+                            tooltipTitle={savedBooks.includes(book.id) ? "Unsave Book" : "Save Book"}
+                            tooltipPlacement="top"
+                            variant="light"
+                        />
                     </div>
                 </div>
             ))}

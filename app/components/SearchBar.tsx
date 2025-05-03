@@ -93,9 +93,9 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
                 if (totalSuggestions === 0) return;
                 setSelectedIndex(prev => {
                     if (prev === totalSuggestions - 1) {
-                        return -1; // Wrap back to typed input
+                        return -1;
                     } else if (prev === -1) {
-                        return 0; // Move to first suggestion
+                        return 0;
                     } else {
                         return prev + 1;
                     }
@@ -105,9 +105,9 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
                 if (totalSuggestions === 0) return;
                 setSelectedIndex(prev => {
                     if (prev === 0) {
-                        return -1; // Back to typed input
+                        return -1;
                     } else if (prev === -1) {
-                        return totalSuggestions - 1; // Jump to last suggestion
+                        return totalSuggestions - 1;
                     } else {
                         return prev - 1;
                     }

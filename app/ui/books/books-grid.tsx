@@ -4,13 +4,14 @@ import { addSavedBook, removeSavedBook } from "@/app/lib/data/recipebooks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Book } from "@/app/types/definitions";
+import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
+import IconButton from "../buttons/icon-button";
 import Image from "next/image";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShareDialog from "@/app/components/ShareDialog";
 import ShareIcon from '@mui/icons-material/Share';
-import Tooltip from "@mui/material/Tooltip";
 import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
 import { sendInvitation } from "@/app/lib/data/invitations";
@@ -59,69 +60,70 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                             ) : (
                                 <MenuBookIcon className="w-full h-full text-gray-300 scale-[300%]" />
                             )}
-                            {session?.user && (<button
-                                className="absolute top-1.5 right-1.5 flex items-center justify-center bg-gray-50 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedBook(book.id)
-                                    setShowMenu(true)
-                                }}>
-                                <MenuIcon className="text-text text-base group-hover:text-lg" />
-                            </button>)}
+                            {session?.user && (
+                                <div className="absolute top-1.5 right-1.5">
+                                    <IconButton
+                                        onClick={() => {
+                                            setSelectedBook(book.id)
+                                            setShowMenu(true)
+                                        }}
+                                        icon={MenuIcon}
+                                        tooltipTitle="Menu"
+                                        tooltipPlacement="right"
+                                        variant="light"
+                                    />
+                                </div>
+                            )}
                             {showMenu && selectedBook === book.id && (
                                 <div className="absolute top-0 right-0 flex flex-col gap-2 h-full bg-gray-100 rounded-tr-xl p-2">
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
+                                    <IconButton
+                                        onClick={() => {
                                             setShowMenu(false)
                                         }}
-                                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group">
-                                        <span className="text-text text-xl group-hover:text-lg">
-                                            ✕
-                                        </span>
-                                    </button>
+                                        icon={CloseIcon}
+                                        tooltipTitle="Close"
+                                        tooltipPlacement="right"
+                                        variant="dark"
+                                    />
                                     {(session?.user?.username === book.username) &&
-                                        <Tooltip title="Edit Book" placement="right">
-                                            <button
-                                                className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    router.push(`/books/${book.id}/edit?from=${fullUrl}`);
-                                                }}>
-                                                <EditIcon className="text-text text-base group-hover:text-lg" />
-                                            </button>
-                                        </Tooltip>}
-                                    <Tooltip title={saved ? "Unsave Book" : "Save Book"} placement="right">
-                                        <button
-                                            className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                if (saved) {
-                                                    removeSavedBook(book.id);
-                                                    router.refresh();
-                                                } else {
-                                                    addSavedBook(book.id);
-                                                    router.refresh();
-                                                }
-                                            }}>
-                                            {saved ? (
-                                                <TurnedIn className="text-red-400 text-base group-hover:text-lg" />
+                                        <IconButton
+                                            onClick={() => router.push(`/books/${book.id}/edit?from=${fullUrl}`)}
+                                            icon={EditIcon}
+                                            tooltipTitle="Edit Book"
+                                            tooltipPlacement="right"
+                                            variant="dark"
+                                        />
+                                    }
+                                    <IconButton
+                                        onClick={() => {
+                                            if (saved) {
+                                                removeSavedBook(book.id)
+                                                router.refresh();
+                                            } else {
+                                                addSavedBook(book.id)
+                                                router.refresh();
+                                            }
+                                        }}
+                                        renderIcon={() => {
+                                            return saved ? (
+                                                <TurnedIn className="text-primary text-base group-hover:text-lg" />
                                             ) : (
                                                 <TurnedInNot className="text-text text-base group-hover:text-lg" />
-                                            )}
-                                        </button>
-                                    </Tooltip>
+                                            )
+                                        }}
+                                        tooltipTitle={saved ? "Unsave Book" : "Save Book"}
+                                        tooltipPlacement="right"
+                                        variant="dark"
+                                    />
                                     {(session?.user?.username === book.username) &&
-                                        <Tooltip title="Share Book" placement="right">
-                                            <button
-                                                className="flex items-center justify-center bg-gray-100 rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setShowShareDialog(true);
-                                                }}>
-                                                <ShareIcon className="text-text text-base group-hover:text-lg" />
-                                            </button>
-                                        </Tooltip>}
+                                        <IconButton
+                                            onClick={() => setShowShareDialog(true)}
+                                            icon={ShareIcon}
+                                            tooltipTitle="Share Book"
+                                            tooltipPlacement="right"
+                                            variant="dark"
+                                        />
+                                    }
                                 </div>
                             )}
                         </div>

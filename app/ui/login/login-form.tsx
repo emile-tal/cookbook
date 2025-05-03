@@ -1,5 +1,6 @@
 "use client"
 
+import PrimaryButton from "../buttons/primary-button";
 import { register } from "@/app/actions/auth";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -121,12 +122,7 @@ export default function LoginForm({ from }: { from?: string }) {
                 )}
 
                 <div className="flex justify-center">
-                    <button
-                        type="submit"
-                        className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-text hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-200"
-                    >
-                        {signup ? "Create account" : "Sign in"}
-                    </button>
+                    <PrimaryButton type="submit" text={signup ? "Create account" : "Sign in"} />
                 </div>
             </form>
         </div>

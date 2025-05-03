@@ -2,6 +2,8 @@
 
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 
+import PrimaryButton from "../ui/buttons/primary-button"
+import SecondaryButton from "../ui/buttons/secondary-button"
 import { useState } from "react"
 
 interface ShareDialogProps {
@@ -66,14 +68,14 @@ export default function ShareDialog({ open, onClose, onShare, bookName }: ShareD
                         onChange={(e) => setMessage(e.target.value)}
                     />
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-end pt-1 pb-2">
                     <span className={`text-sm ${message.length > 200 ? 'text-red-500' : 'text-gray-500'}`}>
                         {message.length} / 200 characters
                     </span>
                 </div>
-                <DialogActions className="px-0 pb-2">
-                    <button className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors" onClick={onClose}>Cancel</button>
-                    <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors" onClick={validateShare}>Share</button>
+                <DialogActions sx={{ px: 0, py: 1 }}>
+                    <SecondaryButton text="Cancel" onClick={onClose} />
+                    <PrimaryButton text="Share" onClick={validateShare} type="button" />
                 </DialogActions>
             </DialogContent>
         </Dialog>

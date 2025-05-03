@@ -2,6 +2,7 @@
 
 import { CommentState } from '@/app/actions/comment'
 import Loading from '../loading'
+import PrimaryButton from '../buttons/primary-button'
 import { addComment } from '@/app/actions/comment'
 import { useActionState } from 'react'
 import { useSession } from 'next-auth/react'
@@ -37,12 +38,11 @@ export default function CommentForm({ recipeId }: { recipeId: string }) {
                 </div>
                 <input type="hidden" name="recipeId" value={recipeId} />
                 <div className="flex justify-end">
-                    <button
+                    <PrimaryButton
+                        text="Post Comment"
                         type="submit"
-                        className={`bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-opacity-90 transition-all duration-200 font-medium ${session ? 'cursor-pointer' : 'pointer-events-none'}`}
-                    >
-                        Post Comment
-                    </button>
+                        disabled={!session}
+                    />
                 </div>
             </div>
         </form>

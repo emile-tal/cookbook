@@ -5,6 +5,7 @@ import { getCurrentUser } from '../../auth';
 import sql from '../../db';
 
 export async function addSavedBook(bookId: string) {
+    console.log('Adding saved book', bookId);
     const user = await getCurrentUser();
     if (!user) {
         return null;

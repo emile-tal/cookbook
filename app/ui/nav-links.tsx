@@ -14,6 +14,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/PersonOutline';
+import PrimaryButton from './buttons/primary-button';
 import { Session } from 'next-auth';
 import clsx from 'clsx';
 import { fetchUnreadInvitationsCountByUser } from '../lib/data/invitations';
@@ -81,12 +82,7 @@ export default function NavLinks() {
 
     if (!loggedIn) {
         return (
-            <button
-                className="flex items-center justify-center text-sm sm:text-base bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors"
-                onClick={() => { router.push('/login') }}
-            >
-                <span className={poppins.className}>Sign In</span>
-            </button>
+            <PrimaryButton text="Sign In" onClick={() => { router.push('/login') }} type="button" />
         )
     }
     return (

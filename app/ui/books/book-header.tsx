@@ -3,7 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import EditIcon from '@mui/icons-material/Edit';
-import { Tooltip } from '@mui/material';
+import IconButton from '../buttons/icon-button';
 
 interface Props {
     bookName: string;
@@ -20,13 +20,13 @@ export default function BookHeader({ bookName, bookId, canEdit }: Props) {
         <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold my-4">{bookName}</h1>
             {canEdit && (
-                <Tooltip title="Edit Book" placement="right">
-                    <button
-                        onClick={() => router.push(`/books/${bookId}/edit?from=${pathname + '?' + searchParams.toString()}`)}
-                        className="flex items-center justify-center rounded-full h-8 min-w-8 hover:cursor-pointer hover:bg-white hover:shadow-sm group">
-                        <EditIcon className="text-text text-base group-hover:text-lg" />
-                    </button>
-                </Tooltip>
+                <IconButton
+                    onClick={() => router.push(`/books/${bookId}/edit?from=${pathname + '?' + searchParams.toString()}`)}
+                    icon={EditIcon}
+                    tooltipTitle="Edit Book"
+                    tooltipPlacement="right"
+                    variant="light"
+                />
             )}
         </div>
     );

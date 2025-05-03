@@ -3,12 +3,14 @@
 import { useActionState, useRef, useState } from "react";
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import { BackButton } from "../back-button";
+import { BackButton } from "../buttons/back-button";
 import { Book } from '@/app/types/definitions';
 import DeleteDialog from "@/app/components/DeleteDialog";
 import EditIcon from '@mui/icons-material/Edit';
 import EditTitle from "@/app/components/EditTitle";
 import Image from "next/image";
+import PrimaryButton from "../buttons/primary-button";
+import SecondaryButton from "../buttons/secondary-button";
 import { Switch } from "@mui/material";
 import { deleteBook } from "@/app/lib/data/recipebooks";
 import { uploadImage } from "@/app/lib/uploadImage";
@@ -143,10 +145,10 @@ export default function BookForm({ formAction, book }: Props) {
                 </div>
             </div>
             <div className="flex justify-between">
-                <button type="button" className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90" onClick={() => setOpenDeleteDialog(true)}>Delete</button>
+                <SecondaryButton text="Delete" onClick={() => setOpenDeleteDialog(true)} />
                 <div className="flex flex-end gap-2">
-                    <button type="button" className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90" onClick={() => router.back()}>Cancel</button>
-                    <button type="submit" className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90">Save</button>
+                    <SecondaryButton text="Cancel" onClick={() => router.back()} />
+                    <PrimaryButton text="Save" type="submit" />
                 </div>
             </div>
             <DeleteDialog

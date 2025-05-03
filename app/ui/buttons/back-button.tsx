@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { IconButton } from '@mui/material';
+import IconButton from './icon-button';
 
 export function BackButton() {
     const router = useRouter();
@@ -12,14 +12,11 @@ export function BackButton() {
 
     return (
         <IconButton
-            aria-label="go back"
-            size="small"
-            sx={{
-                color: 'var(--primary-color)',
-            }}
             onClick={() => router.push(from)}
-        >
-            <ArrowBackIcon />
-        </IconButton>
+            icon={ArrowBackIcon}
+            tooltipTitle="Back"
+            tooltipPlacement="bottom"
+            variant="subtle"
+        />
     );
 } 

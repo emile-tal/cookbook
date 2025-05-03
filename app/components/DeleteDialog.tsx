@@ -1,5 +1,8 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 
+import PrimaryButton from "../ui/buttons/primary-button"
+import SecondaryButton from "../ui/buttons/secondary-button"
+
 interface DeleteDialogProps {
     open: boolean
     onClose: () => void
@@ -14,8 +17,8 @@ export default function DeleteDialog({ open, onClose, onDelete, itemName }: Dele
             <DialogContent>
                 <p className="text-sm text-gray-500 mb-4">Are you sure you want to delete this {itemName.toLowerCase()}? This action cannot be undone.</p>
                 <DialogActions>
-                    <button className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-opacity-90" onClick={onClose}>Cancel</button>
-                    <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90" onClick={onDelete}>Delete</button>
+                    <SecondaryButton text="Cancel" onClick={onClose} />
+                    <PrimaryButton text="Delete" onClick={onDelete} type="button" />
                 </DialogActions>
             </DialogContent>
         </Dialog>

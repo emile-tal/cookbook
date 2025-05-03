@@ -1,5 +1,7 @@
 'use client'
 
+import PrimaryButton from "../buttons/primary-button"
+
 export default function LoginOverlay({ handleLogin }: { handleLogin: () => void }) {
 
     return (
@@ -12,12 +14,11 @@ export default function LoginOverlay({ handleLogin }: { handleLogin: () => void 
                     <p className="text-gray-600 mb-4">
                         You must be logged in to add a rating and comment on this recipe.
                     </p>
-                    <button
+                    <PrimaryButton
+                        text="Log In"
+                        type="button"
                         onClick={handleLogin}
-                        className="bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-opacity-90 transition-all duration-200 font-medium pointer-events-auto"
-                    >
-                        Log In
-                    </button>
+                    />
                 </div>
             </div>
         </div>

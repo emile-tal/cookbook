@@ -1,5 +1,7 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 
+import PrimaryButton from "../ui/buttons/primary-button";
+import SecondaryButton from "../ui/buttons/secondary-button";
 import { useState } from "react";
 
 interface NewBookDialogProps {
@@ -33,18 +35,8 @@ export default function NewBookDialog({ open, onClose, createRecipeBook }: NewBo
                 />
             </DialogContent>
             <DialogActions>
-                <button
-                    onClick={onClose}
-                    className="px-4 py-2 text-primary hover:bg-primary/5 rounded-md transition-colors"
-                >
-                    Cancel
-                </button>
-                <button
-                    onClick={() => createRecipeBook(recipeBookName)}
-                    className="px-4 py-2 bg-primary text-white hover:bg-primary/80 rounded-md transition-colors"
-                >
-                    Create Book
-                </button>
+                <SecondaryButton text="Cancel" onClick={onClose} />
+                <PrimaryButton text="Create Book" onClick={() => createRecipeBook(recipeBookName)} type="button" />
             </DialogActions>
         </Dialog>
     )
