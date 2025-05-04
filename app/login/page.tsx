@@ -2,8 +2,8 @@ import LoginForm from "../ui/login/login-form"
 
 export default function LoginPage() {
     return (
-        <div className="flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8 bg-white p-2 md:p-8 rounded-xl shadow-md w-[12.5rem] sm:w-[22.5rem]">
+        <div className="flex justify-center bg-background pt-8 sm:pt-12 md:pt-24 px-8">
+            <div className="space-y-8 bg-white p-2 sm:p-8 rounded-xl shadow-md min-w-full sm:min-w-[22.5rem]">
                 <LoginForm />
             </div>
         </div>

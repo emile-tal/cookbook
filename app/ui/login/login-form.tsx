@@ -51,12 +51,12 @@ export default function LoginForm({ from }: { from?: string }) {
     }
 
     return (
-        <div>
+        <>
             <div>
-                <h2 className="mt-6 text-center text-xl md:text-2xl font-bold text-text">
+                <h2 className="mt-6 text-center text-xl sm:text-2xl font-bold text-text">
                     {signup ? "Create your account" : "Sign in to your account"}
                 </h2>
-                <p className="mt-2 text-center text-xs md:text-sm text-gray-600">
+                <p className="mt-2 text-center text-xs sm:text-sm text-gray-600">
                     {signup ? "Already have an account?" : "Don't have an account?"}{" "}
                     <button
                         onClick={() => setSignup(!signup)}
@@ -69,7 +69,7 @@ export default function LoginForm({ from }: { from?: string }) {
             <form onSubmit={handleSubmit} className="mt-8 space-y-6">
                 <div className="space-y-4">
                     <div>
-                        <label htmlFor="email" className="block text-xs md:text-base font-medium text-text">
+                        <label htmlFor="email" className="block text-xs sm:text-base font-medium text-text">
                             Email address
                         </label>
                         <input
@@ -83,7 +83,7 @@ export default function LoginForm({ from }: { from?: string }) {
                     </div>
                     {signup && (
                         <div>
-                            <label htmlFor="username" className="block text-xs md:text-base font-medium text-text">
+                            <label htmlFor="username" className="block text-xs sm:text-base font-medium text-text">
                                 Username
                             </label>
                             <input
@@ -97,7 +97,7 @@ export default function LoginForm({ from }: { from?: string }) {
                         </div>
                     )}
                     <div>
-                        <label htmlFor="password" className="block text-xs md:text-base font-medium text-text">
+                        <label htmlFor="password" className="block text-xs sm:text-base font-medium text-text">
                             Password
                         </label>
                         <input
@@ -125,6 +125,6 @@ export default function LoginForm({ from }: { from?: string }) {
                     <PrimaryButton type="submit" text={signup ? "Create account" : "Sign in"} />
                 </div>
             </form>
-        </div>
+        </>
     )
 }
