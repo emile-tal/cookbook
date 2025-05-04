@@ -68,7 +68,7 @@ export default function ImportRecipe({ onRecipeImported }: ImportRecipeProps) {
     };
 
     return (
-        <div className="mb-4">
+        <div className="mb-4 max-w-screen-sm mx-auto">
             <div className="relative">
                 <input
                     type="file"

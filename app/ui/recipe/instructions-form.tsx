@@ -13,5 +13,9 @@ const DynamicInstructionsForm = dynamic(() => import('./dynamic-instructions-for
 })
 
 export default function InstructionsForm(props: InstructionsFormProps) {
-    return <DynamicInstructionsForm {...props} />
+    return (
+        <div className="max-w-full">
+            <DynamicInstructionsForm {...props} />
+        </div>
+    )
 }

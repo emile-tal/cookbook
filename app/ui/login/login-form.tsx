@@ -25,7 +25,6 @@ export default function LoginForm({ from }: { from?: string }) {
                 setError(result.error as string || "Registration failed");
                 return;
             }
-            // Registration successful, proceed with sign in
         }
 
         try {

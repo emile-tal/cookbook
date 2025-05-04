@@ -138,7 +138,7 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
     };
 
     return (
-        <form action={dispatch}>
+        <form action={dispatch} className="max-w-screen-sm mx-auto">
             <div className="flex flex-col gap-4 relative">
                 {state?.message && (
                     <div className="text-red-500">{state.message}</div>
@@ -323,7 +323,7 @@ export default function RecipeForm({ formAction, recipe, bookId, categories }: P
                         Make recipe public
                     </label>
                 </div>
-                <div className="flex justify-between pt-8">
+                <div className="flex gap-2 justify-end sm:justify-between pt-8">
                     <SecondaryButton
                         text="Delete Recipe"
                         onClick={() => setOpenDeleteDialog(true)}

@@ -13,5 +13,9 @@ const DynamicIngredientsForm = dynamic(() => import('./dynamic-ingredients-form'
 })
 
 export default function IngredientsForm(props: IngredientsFormProps) {
-    return <DynamicIngredientsForm {...props} />
+    return (
+        <div className="max-w-full">
+            < DynamicIngredientsForm {...props} />
+        </div>
+    )
 }
