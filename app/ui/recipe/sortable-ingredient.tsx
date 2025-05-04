@@ -77,14 +77,14 @@ export function SortableIngredient({
                 name={`ingredient_amount_${index}`}
                 value={ingredient.amount}
                 onChange={(e) => onUpdate(ingredient.position, ingredient.ingredient, e.target.value)}
-                className={`block min-w-full rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base col-span-3 sm:col-span-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
+                className={`block w-full rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base col-span-3 sm:col-span-2 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
             />
             <input
                 type="text"
                 name={`ingredient_name_${index}`}
                 value={ingredient.ingredient}
                 onChange={(e) => onUpdate(ingredient.position, e.target.value, ingredient.amount)}
-                className={`block min-w-full rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base col-span-7 sm:col-span-9 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
+                className={`block w-full rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-2 text-sm sm:text-base col-span-7 sm:col-span-9 focus-visible:ring-1 focus-visible:ring-primary focus:outline-none ${!ingredient.amount && !ingredient.ingredient ? 'bg-gray-100' : 'bg-white'}`}
             />
             <div
                 className={`col-span-2 sm:col-span-1 flex justify-center items-center gap-1 sm:gap-2 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
