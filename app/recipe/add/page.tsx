@@ -8,8 +8,8 @@ export default async function AddRecipePage({ searchParams }: { searchParams: Pr
     const categories = await fetchCategories();
 
     return (
-        <main className="container-spacing mb-8">
-            <div className="max-w-2xl mx-auto">
+        <main className="mb-8">
+            <div className="container-spacing">
                 <RecipeImportWrapper
                     formAction={recipeAction}
                     bookId={bookId}

@@ -14,7 +14,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import NewBookDialog from "@/app/components/NewBookDialog";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { Session } from "next-auth";
-import Tooltip from "@mui/material/Tooltip";
 import clsx from "clsx";
 import { createBookWithRecipe } from "@/app/lib/data/recipebooks";
 import { fetchBookIdsByRecipeId } from "@/app/lib/data/recipebooks/fetch";
