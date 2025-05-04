@@ -11,7 +11,7 @@ export default function Header() {
 
     return (
         <header className="bg-background text-text bg-opacity-85">
-            <div className="py-8 md:py-12 flex items-center justify-between container-spacing text-l md:text-xl">
+            <div className="py-8 md:pt-12 flex items-center justify-between container-spacing text-l md:text-xl">
                 <Link href='/' className="flex items-center">
                     <Logo w={50} h={50} />
                     <span className={`${playfair.className} text-text font-serif text-2xl font-bold hidden md:block`}>RECIPIZ</span>

@@ -200,23 +200,7 @@ export default function RecipesGrid({ recipes, editableBooks }: Props) {
                         )}
                     </div>
                     <div className="pt-3">
-                        <Tooltip
-                            title={recipe.title}
-                            placement="top"
-                            slotProps={{
-                                popper: {
-                                    modifiers: [
-                                        {
-                                            name: 'offset',
-                                            options: {
-                                                offset: [0, -16],
-                                            },
-                                        },
-                                    ],
-                                },
-                            }}>
-                            <h3 className="font-medium text-lg truncate">{recipe.title}</h3>
-                        </Tooltip>
+                        <h3 className="font-medium text-lg truncate" title={recipe.title}>{recipe.title}</h3>
                         <div className="flex justify-between items-center mt-1">
                             <p className="text-sm text-gray-600">By {recipe.username}</p>
                             {recipe.duration > 0 && (
