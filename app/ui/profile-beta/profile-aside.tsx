@@ -1,27 +1,19 @@
 'use client'
 
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-
-import GridViewIcon from '@mui/icons-material/GridView';
 import Image from "next/image"
 import { Person } from "@mui/icons-material"
-import TertiaryButton from "../buttons/tertiary-button";
+import ProfileNav from "./profile-nav"
 import { UserPublicInfo } from "@/app/types/definitions"
-import ViewListIcon from '@mui/icons-material/ViewList';
-import { useBookRecipeContext } from "@/app/context/book-recipe-context";
-import { useDisplayView } from "@/app/context/display-view-context";
 
-interface ProfileHeaderProps {
+interface ProfileAsideProps {
     userPublicInfo: UserPublicInfo
 }
 
-export default function ProfileHeader({ userPublicInfo }: ProfileHeaderProps) {
-    const { displayView, setDisplayView } = useDisplayView();
-    const { bookRecipeView, setBookRecipeView } = useBookRecipeContext();
+export default function ProfileAside({ userPublicInfo }: ProfileAsideProps) {
 
     return (
-        <div className="flex items-center gap-8 py-12 px-6 max-w-screen-lg mx-auto">
-            <div className="w-full max-w-2xl bg-white rounded-xl border border-gray-100 shadow-sm p-8">
+        <div className="w-full sm:col-span-1 sm:sticky sm:top-4 sm:self-start">
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm py-8 px-4">
                 <div className="flex flex-col items-center gap-6">
                     <div className="relative min-w-32 h-32 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
                         {userPublicInfo.user_image_url ? (
@@ -52,32 +44,7 @@ export default function ProfileHeader({ userPublicInfo }: ProfileHeaderProps) {
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div className="w-full">
-                <div className="flex gap-4 justify-center mb-6">
-                    <TertiaryButton text="Books" onClick={() => setBookRecipeView("books")} />
-                    <TertiaryButton text="Recipes" onClick={() => setBookRecipeView("recipes")} />
-                </div>
-                <ToggleButtonGroup
-                    value={displayView}
-                    exclusive
-                    onChange={(_, newView) => setDisplayView(newView)}
-                    aria-label="view toggle"
-                    sx={{
-                        border: 'none',
-                        '& .MuiButtonBase-root': {
-                            border: 'none',
-                        },
-                    }}
-                >
-                    <ToggleButton value="grid" aria-label="grid view">
-                        <GridViewIcon />
-                    </ToggleButton>
-                    <ToggleButton value="list" aria-label="list view">
-                        <ViewListIcon />
-                    </ToggleButton>
-                </ToggleButtonGroup>
+                <ProfileNav id={userPublicInfo.id} />
             </div>
         </div>
     )

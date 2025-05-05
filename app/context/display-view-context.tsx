@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 type DisplayViewContextType = {
     displayView: "list" | "grid";
@@ -11,14 +11,31 @@ const DisplayViewContext = createContext<DisplayViewContextType | undefined>(und
 
 export const DisplayViewProvider = ({ children }: { children: React.ReactNode }) => {
     const [displayView, setDisplayView] = useState<"list" | "grid">("grid");
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    useEffect(() => {
+        const savedDisplayView = localStorage.getItem("displayView");
+        if (savedDisplayView === "list" || savedDisplayView === "grid") {
+            setDisplayView(savedDisplayView);
+        }
+        setIsInitialized(true);
+    }, []);
+
+    const handleSetDisplayView = (newView: "list" | "grid") => {
+        setDisplayView(newView);
+        localStorage.setItem("displayView", newView);
+    };
+
+    if (!isInitialized) {
+        return null;
+    }
 
     return (
-        <DisplayViewContext.Provider value={{ displayView, setDisplayView }}>
+        <DisplayViewContext.Provider value={{ displayView, setDisplayView: handleSetDisplayView }}>
             {children}
         </DisplayViewContext.Provider>
     )
 }
-
 
 export function useDisplayView() {
     const context = useContext(DisplayViewContext);

@@ -52,6 +52,7 @@ export type Recipe = LiteRecipe & {
 }
 
 export type UserPublicInfo = {
+    id: string,
     username: string,
     user_image_url: string,
     recipe_count: number,

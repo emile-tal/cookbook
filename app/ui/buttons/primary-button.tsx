@@ -11,7 +11,7 @@ export default function PrimaryButton({ text, onClick, type, disabled }: Primary
     return (
         <button
             type={type}
-            className="flex items-center justify-center text-sm sm:text-base bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors"
+            className="flex items-center justify-center text-sm sm:text-base px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors"
             onClick={onClick}
             disabled={disabled}
         >

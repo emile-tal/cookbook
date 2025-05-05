@@ -64,7 +64,7 @@ export function RecipesDisplay({ recipes, editableBooks }: Props) {
     }
 
     return (
-        <div className="py-4">
+        <div>
             {displayView === "list" ? (
                 <>
                     <div className="grid grid-cols-12 pt-2 pb-4 font-bold border-b border-gray-200">

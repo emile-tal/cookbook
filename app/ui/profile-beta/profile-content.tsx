@@ -18,6 +18,8 @@ export default async function ProfileContent({ params }: { params: Promise<{ id:
     }
 
     return (
-        <ProfileDisplay userRecipes={userRecipes} userBooks={userBooks} editableBooks={editableBooks} savedBooks={savedBooks} />
+        <div className='sm:col-span-2 md:col-span-3 lg:col-span-4'>
+            <ProfileDisplay userRecipes={userRecipes} userBooks={userBooks} editableBooks={editableBooks} savedBooks={savedBooks} />
+        </div>
     )
 }

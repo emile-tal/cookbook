@@ -54,6 +54,7 @@ export async function getUserPublicInfo(id: string) {
     try {
         const user = await sql<UserPublicInfo[]>`
             SELECT 
+                u.id,
                 u.username, 
                 u.user_image_url,
                 (SELECT COUNT(*)::integer FROM recipes WHERE user_id = ${id} AND is_public = true) as recipe_count,

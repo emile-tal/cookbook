@@ -28,11 +28,10 @@ const tableHeaders = [
 
 interface Props {
     books: Book[];
-    recipeCountByBook?: Record<string, number>;
     savedBooks?: string[];
 }
 
-export function BookDisplay({ books, recipeCountByBook = {}, savedBooks = [] }: Props) {
+export function BookDisplay({ books, savedBooks = [] }: Props) {
     const { displayView } = useDisplayView();
     const [sort, setSort] = useState<string>("name");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -54,20 +53,20 @@ export function BookDisplay({ books, recipeCountByBook = {}, savedBooks = [] }: 
             } else if (sort === "owner") {
                 return sortDirection === "asc" ? a.username.localeCompare(b.username) : b.username.localeCompare(a.username);
             } else if (sort === "recipes") {
-                const countA = recipeCountByBook[a.id] || 0;
-                const countB = recipeCountByBook[b.id] || 0;
+                const countA = a.recipe_count || 0;
+                const countB = b.recipe_count || 0;
                 return sortDirection === "asc" ? countA - countB : countB - countA;
             }
             return 0;
         });
-    }, [books, sort, sortDirection, recipeCountByBook]);
+    }, [books, sort, sortDirection]);
 
     if (!books || books.length === 0) {
         return <div>No books found.</div>;
     }
 
     return (
-        <div className="py-4 w-full">
+        <div className="w-full">
             {displayView === "list" ? (
                 <>
                     <div className="grid grid-cols-12 pt-2 pb-4 font-bold border-b border-gray-200">
