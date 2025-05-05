@@ -1,6 +1,6 @@
 'use server'
 
-import { User, UserCredentials } from "../../types/definitions";
+import { UserCredentials, UserPublicInfo } from "../../types/definitions";
 
 import sql from '../db';
 
@@ -50,12 +50,19 @@ export async function updateUsername(id: string, username: string) {
     }
 }
 
-export async function getUser(id: string) {
+export async function getUserPublicInfo(id: string) {
     try {
-        const user = await sql<User[]>`SELECT id, email, username, user_image_url FROM users WHERE id = ${id}`;
+        const user = await sql<UserPublicInfo[]>`
+            SELECT 
+                u.username, 
+                u.user_image_url,
+                (SELECT COUNT(*)::integer FROM recipes WHERE user_id = ${id} AND is_public = true) as recipe_count,
+                (SELECT COUNT(*)::integer FROM recipebooks WHERE user_id = ${id} AND is_public = true) as book_count
+            FROM users u
+            WHERE u.id = ${id}`;
         return user[0] || null;
     } catch (error) {
-        console.error('Error getting user:', error);
+        console.error('Error getting user public information:', error);
         return null;
     }
 }

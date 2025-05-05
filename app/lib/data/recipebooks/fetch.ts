@@ -303,3 +303,34 @@ export async function fetchSharedBooksByQuery(searchQuery?: string) {
         return null;
     }
 }
+
+export async function fetchPublicBooksByUserId(userId: string) {
+    const user = await getCurrentUser();
+
+    try {
+        const userBooks = await sql<Book[]>`
+            SELECT 
+                recipeBooks.id, 
+                recipeBooks.name, 
+                recipeBooks.image_url, 
+                recipeBooks.is_public, 
+                users.username,
+                COUNT(recipeBookRecipes.recipe_id) as recipe_count
+            FROM recipeBooks
+            JOIN users ON recipeBooks.user_id = users.id
+            LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
+            WHERE recipeBooks.user_id = ${userId}
+                AND (
+                    recipeBooks.is_public = true 
+                    ${user ? sql`OR recipeBooks.id IN (
+                        SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                    )` : sql``}
+                )
+            GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
+        `;
+        return userBooks || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}

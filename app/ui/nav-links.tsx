@@ -18,7 +18,7 @@ import PrimaryButton from './buttons/primary-button';
 import { Session } from 'next-auth';
 import clsx from 'clsx';
 import { fetchUnreadInvitationsCountByUser } from '../lib/data/invitations';
-import { getUser } from '../lib/data/user';
+import { getUserPublicInfo } from '../lib/data/user';
 import { poppins } from './fonts';
 
 const links = [
@@ -39,8 +39,8 @@ export default function NavLinks() {
 
     const fetchUserData = useCallback(async () => {
         if (session?.user?.id) {
-            const user = await getUser(session.user.id);
-            setProfilePhoto(user?.user_image_url || null);
+            const userPublicInfo = await getUserPublicInfo(session.user.id);
+            setProfilePhoto(userPublicInfo?.user_image_url || null);
         }
     }, [session?.user?.id]);
 

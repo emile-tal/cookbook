@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { BookNavBar } from "@/app/ui/books/nav-bar";
-import { ViewContext } from "@/app/context/view-context";
+import { ViewContext } from "@/app/context/display-view-context";
 
 export default function ClientBookLayout({ children, canEdit }: { children: React.ReactNode, canEdit: boolean }) {
     const [view, setView] = useState<"list" | "grid">("grid");

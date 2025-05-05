@@ -51,11 +51,11 @@ export type Recipe = LiteRecipe & {
     instructions: Instruction[],
 }
 
-export type User = {
-    id: string,
+export type UserPublicInfo = {
     username: string,
-    email: string,
-    user_image_url: string
+    user_image_url: string,
+    recipe_count: number,
+    book_count: number,
 }
 
 export type UserCredentials = {

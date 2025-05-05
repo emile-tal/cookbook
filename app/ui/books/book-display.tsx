@@ -6,7 +6,7 @@ import { Book } from "@/app/types/definitions";
 import BooksGrid from "./books-grid";
 import BooksList from "./books-list";
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import { useView } from "@/app/context/view-context";
+import { useDisplayView } from "@/app/context/display-view-context";
 
 const tableHeaders = [
     {
@@ -33,7 +33,7 @@ interface Props {
 }
 
 export function BookDisplay({ books, recipeCountByBook = {}, savedBooks = [] }: Props) {
-    const { view } = useView();
+    const { displayView } = useDisplayView();
     const [sort, setSort] = useState<string>("name");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
@@ -68,7 +68,7 @@ export function BookDisplay({ books, recipeCountByBook = {}, savedBooks = [] }: 
 
     return (
         <div className="py-4 w-full">
-            {view === "list" ? (
+            {displayView === "list" ? (
                 <>
                     <div className="grid grid-cols-12 pt-2 pb-4 font-bold border-b border-gray-200">
                         {tableHeaders.map((header) => (

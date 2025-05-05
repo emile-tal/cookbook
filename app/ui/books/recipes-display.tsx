@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import RecipesGrid from "./recipes-grid";
 import RecipesList from "./recipes-list";
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import { useView } from "@/app/context/view-context";
+import { useDisplayView } from "@/app/context/display-view-context";
 
 const tableHeaders = [
     {
@@ -32,7 +32,7 @@ interface Props {
 }
 
 export function RecipesDisplay({ recipes, editableBooks }: Props) {
-    const { view } = useView()
+    const { displayView } = useDisplayView()
     const [sort, setSort] = useState<string>("title")
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
 
@@ -65,7 +65,7 @@ export function RecipesDisplay({ recipes, editableBooks }: Props) {
 
     return (
         <div className="py-4">
-            {view === "list" ? (
+            {displayView === "list" ? (
                 <>
                     <div className="grid grid-cols-12 pt-2 pb-4 font-bold border-b border-gray-200">
                         {tableHeaders.map((header) => (

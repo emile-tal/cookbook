@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import { BookNavBar } from "@/app/ui/books/nav-bar";
-import { ViewContext } from "@/app/context/view-context";
+import { ViewContext } from "@/app/context/display-view-context";
 import { usePathname } from "next/navigation";
 
 interface BooksLayoutProps {
