@@ -1,4 +1,4 @@
-import { fetchAllBooksByQuery, fetchSavedBooks } from "../lib/data/recipebooks/fetch";
+import { fetchAllBooksByQuery, fetchEditableBooks, fetchSavedBooks } from "../lib/data/recipebooks/fetch";
 
 import BooksGrid from "../ui/books/books-grid";
 import Loading from "../ui/loading";
@@ -9,13 +9,14 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
 
     const books = await fetchAllBooksByQuery(q);
     const savedBooks = await fetchSavedBooks(q);
+    const editableBooks = await fetchEditableBooks();
 
     return (
         <main className="container-spacing">
             <Suspense fallback={<div className="container-spacing">
                 <Loading size={24} />
             </div>}>
-                <BooksGrid books={books} savedBooks={savedBooks?.map((book) => book.id) || []} />
+                <BooksGrid books={books} savedBooks={savedBooks?.map((book) => book.id) || []} editableBooks={editableBooks?.map((book) => book.id) || []} />
             </Suspense>
         </main>
     );

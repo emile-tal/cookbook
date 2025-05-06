@@ -61,4 +61,6 @@ const RecipeContextMenu = forwardRef<HTMLDivElement, RecipeContextMenuProps>(({ 
     )
 })
 
+RecipeContextMenu.displayName = 'RecipeContextMenu';
+
 export default RecipeContextMenu;

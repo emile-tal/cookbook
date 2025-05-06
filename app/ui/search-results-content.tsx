@@ -1,4 +1,4 @@
-import RecipesGrid from "./books/recipes-grid"
+import RecipesGrid from "./recipe/recipes-grid"
 import { fetchAllRecipesByQuery } from "../lib/data/recipes/fetch"
 import { fetchEditableBooks } from "../lib/data/recipebooks/fetch"
 

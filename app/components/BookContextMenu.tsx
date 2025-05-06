@@ -45,4 +45,6 @@ const BookContextMenu = forwardRef<HTMLDivElement, BookContextMenuProps>(({ posi
     )
 })
 
+BookContextMenu.displayName = 'BookContextMenu';
+
 export default BookContextMenu;

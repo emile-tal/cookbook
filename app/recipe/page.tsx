@@ -1,7 +1,7 @@
 import { fetchAllRecipesByQuery, fetchSavedRecipesByQuery } from "../lib/data/recipes/fetch";
 
 import Loading from "../ui/loading";
-import RecipesGrid from "../ui/books/recipes-grid";
+import RecipesGrid from "../ui/recipe/recipes-grid";
 import { Suspense } from "react";
 import { fetchEditableBooks } from "../lib/data/recipebooks/fetch";
 

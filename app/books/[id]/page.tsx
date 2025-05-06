@@ -1,17 +1,15 @@
 'use server'
 
 import { fetchBookByBookId, fetchEditableBooks } from "@/app/lib/data/recipebooks/fetch";
-import { fetchRecipesByBookId, fetchRecipesByBookIdAndQuery } from "@/app/lib/data/recipes/fetch";
+import { fetchEditableRecipes, fetchRecipesByBookId, fetchRecipesByBookIdAndQuery } from "@/app/lib/data/recipes/fetch";
 
 import BookHeader from "@/app/ui/books/book-header";
 import BookLogger from "@/app/components/BookLogger";
 import EmptyBook from "@/app/ui/books/empty-book";
 import Loading from "@/app/ui/loading";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import { RecipesDisplay } from "@/app/ui/books/recipes-display";
+import { RecipesDisplay } from "@/app/ui/recipe/recipes-display";
 import { Suspense } from "react";
-import { getCurrentUser } from "@/app/lib/auth";
-import { userCanEditBook } from "@/app/lib/data/recipebookpermissions";
 
 type Props = {
     params: Promise<{ id: string }>;
@@ -21,14 +19,13 @@ type Props = {
 export default async function Page({ params, searchParams }: Props) {
     const { id } = await params;
     const { q } = await searchParams;
-    const user = await getCurrentUser();
-    const canEdit = user && id ? await userCanEditBook(id, user.id) : false;
 
-    const [book, bookRecipes, recipes, editableBooks] = await Promise.all([
+    const [book, bookRecipes, recipes, editableBooks, editableRecipes] = await Promise.all([
         fetchBookByBookId(id),
         fetchRecipesByBookId(id),
         fetchRecipesByBookIdAndQuery(id, q),
         fetchEditableBooks(),
+        fetchEditableRecipes(),
     ]);
 
     if (!book) {
@@ -39,7 +36,7 @@ export default async function Page({ params, searchParams }: Props) {
         return (
             <>
                 <BookLogger bookId={id} />
-                <EmptyBook bookName={book.name} canEdit={canEdit} />
+                <EmptyBook bookName={book.name} canEdit={editableBooks?.map((book) => book.id).includes(id) || false} />
             </>
         );
     }
@@ -47,12 +44,12 @@ export default async function Page({ params, searchParams }: Props) {
     return (
         <main>
             <BookLogger bookId={id} />
-            <BookHeader bookName={book.name} bookId={id} canEdit={canEdit} />
+            <BookHeader bookName={book.name} bookId={id} canEdit={editableBooks?.map((book) => book.id).includes(id) || false} />
             {(recipes && recipes.length > 0) ? (
                 <Suspense fallback={<div className="container-spacing">
                     <Loading size={24} />
                 </div>}>
-                    <RecipesDisplay recipes={recipes} editableBooks={editableBooks} />
+                    <RecipesDisplay recipes={recipes} editableBooks={editableBooks} editableRecipes={editableRecipes?.map((recipe) => recipe.id) || []} />
                 </Suspense>
             ) : (
                 <div className="flex flex-col items-center justify-center py-12 px-4 text-center bg-white rounded-xl border border-gray-100 shadow-sm">

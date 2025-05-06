@@ -25,7 +25,7 @@ interface Props {
 
 export default function BooksList({ books, savedBooks = [], editableBooks }: Props) {
     const router = useRouter();
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const [showShareDialog, setShowShareDialog] = useState(false);
@@ -35,10 +35,6 @@ export default function BooksList({ books, savedBooks = [], editableBooks }: Pro
     const [rawClick, setRawClick] = useState<{ x: number, y: number } | null>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const menuRef = useRef<HTMLDivElement>(null)
-
-    if (status === 'loading') {
-        return <div>Loading...</div>
-    }
 
     const handleContextMenu = (e: React.MouseEvent, bookId: string) => {
         e.preventDefault();

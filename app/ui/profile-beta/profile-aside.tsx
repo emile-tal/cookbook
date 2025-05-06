@@ -33,7 +33,7 @@ export default function ProfileAside({ userPublicInfo }: ProfileAsideProps) {
 
                     <div className="text-center">
                         <h1 className="text-3xl font-bold text-gray-900 mb-3">{userPublicInfo.username}</h1>
-                        <div className="flex gap-4 text-gray-600">
+                        <div className="flex gap-4 text-gray-600 min-w-full justify-center">
                             <div>
                                 <p className="text-2xl font-semibold text-gray-900">{userPublicInfo.book_count}</p>
                                 <p className="text-sm text-gray-500">{userPublicInfo.book_count === 1 ? "Book" : "Books"}</p>

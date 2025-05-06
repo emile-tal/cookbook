@@ -2,7 +2,7 @@ import { fetchEditableBooks, fetchMostViewedBooks, fetchRecentlyViewedBooks, fet
 import { fetchMostViewedRecipes, fetchMostViewedRecipesByUser, fetchRecentlyViewedRecipesByUser, fetchSavedRecipesByQuery } from "./lib/data/recipes/fetch";
 
 import BooksGrid from "./ui/books/books-grid";
-import RecipesGrid from "./ui/books/recipes-grid";
+import RecipesGrid from "./ui/recipe/recipes-grid";
 
 export default async function Page() {
   const [recentlyViewedRecipesByUser, mostViewedRecipesByUser, mostViewedRecipes, recentlyViewedBooks, mostViewedBooks, savedBooks, editableBooks, savedRecipes] = await Promise.all([
@@ -32,11 +32,11 @@ export default async function Page() {
       </div>}
       {recentlyViewedBooks && recentlyViewedBooks.length > 0 && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Your Recently Viewed Books</h2>
-        <BooksGrid books={recentlyViewedBooks} savedBooks={savedBooks?.map((book) => book.id) || []} />
+        <BooksGrid books={recentlyViewedBooks} savedBooks={savedBooks?.map((book) => book.id) || []} editableBooks={editableBooks?.map((book) => book.id) || []} />
       </div>}
       {mostViewedBooks && mostViewedBooks.length > 0 && <div className="flex flex-col gap-4 py-4">
         <h2 className="text-xl font-bold">Most Popular Books</h2>
-        <BooksGrid books={mostViewedBooks} savedBooks={savedBooks?.map((book) => book.id) || []} />
+        <BooksGrid books={mostViewedBooks} savedBooks={savedBooks?.map((book) => book.id) || []} editableBooks={editableBooks?.map((book) => book.id) || []} />
       </div>}
     </main>
   );
