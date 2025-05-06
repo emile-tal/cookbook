@@ -17,7 +17,8 @@ import Person from '@mui/icons-material/PersonOutline';
 import PrimaryButton from './buttons/primary-button';
 import { Session } from 'next-auth';
 import clsx from 'clsx';
-import { fetchUnreadInvitationsCountByUser } from '../lib/data/invitations';
+import { fetchUnreadBookInvitationsCountByUser } from '../lib/data/recipebookinvitations';
+import { fetchUnreadRecipeInvitationsCountByUser } from '../lib/data/recipeinvitations';
 import { getUserPublicInfo } from '../lib/data/user';
 import { poppins } from './fonts';
 
@@ -45,7 +46,7 @@ export default function NavLinks() {
     }, [session?.user?.id]);
 
     const fetchInvitations = useCallback(async () => {
-        const invitationsCount = await fetchUnreadInvitationsCountByUser();
+        const invitationsCount = (await fetchUnreadBookInvitationsCountByUser()) + (await fetchUnreadRecipeInvitationsCountByUser());
         setInvitationsCount(invitationsCount || 0);
     }, []);
 

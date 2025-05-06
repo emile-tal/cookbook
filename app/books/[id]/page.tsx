@@ -11,7 +11,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { RecipesDisplay } from "@/app/ui/books/recipes-display";
 import { Suspense } from "react";
 import { getCurrentUser } from "@/app/lib/auth";
-import { userCanEditBook } from "@/app/lib/data/permissions";
+import { userCanEditBook } from "@/app/lib/data/recipebookpermissions";
 
 type Props = {
     params: Promise<{ id: string }>;

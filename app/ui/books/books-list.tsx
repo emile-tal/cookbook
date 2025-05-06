@@ -12,7 +12,7 @@ import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
 import { addSavedBook } from '@/app/lib/data/recipebooks';
 import { removeSavedBook } from '@/app/lib/data/recipebooks';
-import { sendInvitation } from '@/app/lib/data/invitations';
+import { sendInvitation } from '@/app/lib/data/recipebookinvitations';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 

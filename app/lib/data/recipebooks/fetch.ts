@@ -56,7 +56,7 @@ export async function fetchEditableBooks() {
             JOIN users ON recipeBooks.user_id = users.id
             LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
             WHERE recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
-                SELECT book_id FROM permissions WHERE user_id = ${user.id} AND can_edit = true
+                SELECT book_id FROM recipebookpermissions WHERE user_id = ${user.id} AND can_edit = true
             )
             GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
         `;
@@ -91,7 +91,7 @@ export async function fetchBookByBookId(id: string) {
         WHERE recipeBooks.id = ${id} AND (
             recipeBooks.is_public = true 
             ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
-                SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                SELECT book_id FROM recipebookpermissions WHERE user_id = ${user.id}
             )` : sql``}
         )
         GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
@@ -136,7 +136,7 @@ export async function fetchRecentlyViewedBooks() {
             WHERE recipeBooks.user_id = ${user.id}
                 OR recipeBooks.is_public = true
                 OR recipeBooks.id IN (
-                    SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                    SELECT book_id FROM recipebookpermissions WHERE user_id = ${user.id}
                 )
             GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, users.username, rv.last_opened
             ORDER BY rv.last_opened DESC
@@ -199,7 +199,7 @@ export async function fetchSavedBooks(searchQuery?: string) {
             JOIN users ON recipeBooks.user_id = users.id
             LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
             WHERE savedrecipebooks.user_id = ${user.id} AND (recipeBooks.is_public = true OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
-                SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                SELECT book_id FROM recipebookpermissions WHERE user_id = ${user.id}
             ))
             ${searchQuery ? sql`AND (
                 recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
@@ -236,7 +236,7 @@ export async function fetchAllBooksByQuery(searchQuery?: string) {
             WHERE (
                 recipeBooks.is_public = true 
                 ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
-                    SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                    SELECT book_id FROM recipebookpermissions WHERE user_id = ${user.id}
                 )` : sql``}
             )
             ${searchQuery ? sql`AND (
@@ -285,9 +285,9 @@ export async function fetchSharedBooksByQuery(searchQuery?: string) {
                 COUNT(recipeBookRecipes.recipe_id) as recipe_count
             FROM recipeBooks
             JOIN users ON recipeBooks.user_id = users.id
-            JOIN permissions ON recipeBooks.id = permissions.book_id
+            JOIN recipebookpermissions ON recipeBooks.id = recipebookpermissions.book_id
             LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
-            WHERE permissions.user_id = ${user.id}
+            WHERE recipebookpermissions.user_id = ${user.id}
             ${searchQuery ? sql`AND (
                 recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
                 users.username ILIKE ${`%${searchQuery}%`}
@@ -320,7 +320,7 @@ export async function fetchPublicBooksByUserId(userId: string, searchQuery?: str
                 AND (
                     recipeBooks.is_public = true 
                     ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
-                        SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                        SELECT book_id FROM recipebookpermissions WHERE user_id = ${user.id}
                     )` : sql``}
                 )
                 ${searchQuery ? sql`AND (

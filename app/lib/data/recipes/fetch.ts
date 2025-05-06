@@ -31,12 +31,7 @@ export async function fetchRecipeById(id: string) {
                 recipes.user_id = ${user.id} 
                 OR recipes.is_public = true 
                 OR recipes.id IN (
-                    SELECT recipe_id 
-                    FROM recipeBookRecipes rbr
-                    JOIN recipebooks rb ON rbr.book_id = rb.id
-                    WHERE rb.is_public = true 
-                    OR rb.user_id = ${user.id}
-                    OR rb.id IN (SELECT book_id FROM permissions WHERE user_id = ${user.id})
+                    SELECT recipe_id FROM recipepermissions WHERE recipe_id = ${id}
                 )
             )` : sql`AND recipes.is_public = true`}
         ),
@@ -133,9 +128,9 @@ export async function fetchRecipesByBookId(bookId: string) {
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
             WHERE recipeBookRecipes.book_id = ${bookId} AND (
-                recipebooks.is_public = true 
-                ${user ? sql`OR recipebooks.user_id = ${user.id} OR recipebooks.id IN (
-                    SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                recipes.is_public = true 
+                ${user ? sql`OR recipes.user_id = ${user.id} OR recipes.id IN (
+                    SELECT recipe_id FROM recipepermissions WHERE user_id = ${user.id}
                 )` : sql``}
             )`;
         return recipes || null;
@@ -176,9 +171,9 @@ export async function fetchRecipesByBookIdAndQuery(id: string, searchQuery?: str
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
             WHERE recipeBookRecipes.book_id = ${id} AND (
-                recipebooks.is_public = true 
-                ${user ? sql`OR recipebooks.user_id = ${user.id} OR recipebooks.id IN (
-                    SELECT book_id FROM permissions WHERE user_id = ${user.id}
+                recipes.is_public = true 
+                ${user ? sql`OR recipes.user_id = ${user.id} OR recipes.id IN (
+                    SELECT recipe_id FROM recipepermissions WHERE user_id = ${user.id}
                 )` : sql``}
             )
             ${searchQuery ? sql`AND (
@@ -239,7 +234,9 @@ export async function fetchRecentlyViewedRecipesByUser() {
             JOIN recipes ON rv.recipe_id = recipes.id
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
-            WHERE recipes.is_public = true OR recipes.user_id = ${user.id}
+            WHERE recipes.is_public = true OR recipes.user_id = ${user.id} OR recipes.id IN (
+                SELECT recipe_id FROM recipepermissions WHERE user_id = ${user.id}
+            )
             ORDER BY rv.last_opened DESC
                 LIMIT 4;
         `;
@@ -323,7 +320,9 @@ export async function fetchMostViewedRecipesByUser() {
             LEFT JOIN recipelogs ON recipes.id = recipelogs.recipe_id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
             WHERE recipelogs.user_id = ${user.id} 
-            AND (recipes.user_id = ${user.id} OR recipes.is_public = true)
+            AND (recipes.user_id = ${user.id} OR recipes.is_public = true OR recipes.id IN (
+                SELECT recipe_id FROM recipepermissions WHERE user_id = ${user.id}
+            ))
             GROUP BY recipes.id, users.username, rc.categories
             ORDER BY view_count DESC
             LIMIT 4;
@@ -365,7 +364,9 @@ export async function fetchAllRecipesByQuery(searchQuery?: string) {
             FROM recipes
             LEFT JOIN users ON recipes.user_id = users.id
             LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
-            WHERE (recipes.is_public = true ${user ? sql`OR recipes.user_id = ${user.id}` : sql``})
+            WHERE (recipes.is_public = true ${user ? sql`OR recipes.user_id = ${user.id} OR recipes.id IN (
+                SELECT recipe_id FROM recipepermissions WHERE user_id = ${user.id}
+            )` : sql``})
             ${searchQuery ? sql`AND (
                 recipes.title ILIKE ${`%${searchQuery}%`} OR
                 recipes.description ILIKE ${`%${searchQuery}%`} OR
@@ -409,7 +410,9 @@ export async function fetchAllPublicRecipesByUserId(userId: string, searchQuery?
         FROM recipes
         LEFT JOIN users ON recipes.user_id = users.id
         LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
-        WHERE recipes.user_id = ${userId} AND (recipes.is_public = true ${user ? sql`OR recipes.user_id = ${user.id}` : sql``})
+        WHERE recipes.user_id = ${userId} AND (recipes.is_public = true ${user ? sql`OR recipes.user_id = ${user.id} OR recipes.id IN (
+            SELECT recipe_id FROM recipepermissions WHERE user_id = ${user.id}
+        )` : sql``})
         ${searchQuery ? sql`AND (
             recipes.title ILIKE ${`%${searchQuery}%`} OR
             recipes.description ILIKE ${`%${searchQuery}%`} OR
@@ -417,6 +420,90 @@ export async function fetchAllPublicRecipesByUserId(userId: string, searchQuery?
             recipes.duration::text ILIKE ${`%${searchQuery}%`}
         )` : sql``}
         ORDER BY recipes.title ASC`;
+        return recipes || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}
+
+export async function fetchSavedRecipesByQuery(searchQuery?: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        const recipes = await sql<LiteRecipe[]>`
+        WITH recipe_categories AS (
+            SELECT 
+                recipe_id,
+                array_agg(category) as categories
+            FROM recipecategories
+            GROUP BY recipe_id
+        )
+        SELECT DISTINCT
+            recipes.id, 
+            recipes.title, 
+            recipes.image_url,
+            COALESCE(users.username, 'Unknown') as username, 
+            recipes.duration,
+            recipes.recipe_yield,
+            COALESCE(rc.categories, ARRAY[]::text[]) as categories
+        FROM recipes
+        LEFT JOIN users ON recipes.user_id = users.id
+        LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
+        WHERE recipes.id IN (
+                SELECT recipe_id FROM savedrecipes WHERE user_id = ${user.id}
+            )
+        ${searchQuery ? sql`AND (
+            recipes.title ILIKE ${`%${searchQuery}%`} OR
+            recipes.description ILIKE ${`%${searchQuery}%`} OR
+            COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR
+                recipes.duration::text ILIKE ${`%${searchQuery}%`}
+            )` : sql``}
+        `;
+        return recipes || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}
+
+export async function fetchSharedRecipesByQuery(searchQuery?: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        const recipes = await sql<LiteRecipe[]>`
+        WITH recipe_categories AS (
+            SELECT 
+                recipe_id,
+                array_agg(category) as categories
+            FROM recipecategories
+            GROUP BY recipe_id
+        )
+        SELECT DISTINCT
+            recipes.id, 
+            recipes.title, 
+            recipes.image_url,
+            COALESCE(users.username, 'Unknown') as username, 
+            recipes.duration,
+            recipes.recipe_yield,
+            COALESCE(rc.categories, ARRAY[]::text[]) as categories
+        FROM recipes
+        LEFT JOIN users ON recipes.user_id = users.id
+        LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
+        WHERE recipes.id IN (
+                SELECT recipe_id FROM recipepermissions WHERE user_id = ${user.id}
+            )
+        ${searchQuery ? sql`AND (
+            recipes.title ILIKE ${`%${searchQuery}%`} OR
+            recipes.description ILIKE ${`%${searchQuery}%`} OR
+            COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR
+                recipes.duration::text ILIKE ${`%${searchQuery}%`}
+            )` : sql``}
+        `;
         return recipes || null;
     } catch (error) {
         console.error(`Database error: ${error}`);

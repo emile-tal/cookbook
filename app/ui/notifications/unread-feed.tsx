@@ -1,18 +1,27 @@
 'use client'
 
+import { BookInvitation, RecipeInvitation } from "@/app/types/definitions"
+
 import Image from "next/image"
-import { Invitation } from "@/app/types/definitions"
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import PrimaryButton from "../buttons/primary-button"
 import SecondaryButton from "../buttons/secondary-button"
-import { addUserToPermissions } from "@/app/lib/data/permissions"
-import { rejectInvitation } from "@/app/lib/data/invitations"
+import { addUserToBookPermissions } from "@/app/lib/data/recipebookpermissions"
+import { rejectBookInvitation } from "@/app/lib/data/recipebookinvitations"
+import { rejectRecipeInvitation } from "@/app/lib/data/recipeinvitations"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 
-export default function UnreadFeed({ invitations }: { invitations: Invitation[] }) {
+interface UnreadFeedProps {
+    bookInvitations: BookInvitation[]
+    recipeInvitations: RecipeInvitation[]
+}
+
+export default function UnreadFeed({ bookInvitations, recipeInvitations }: UnreadFeedProps) {
     const router = useRouter()
     const { data: session, status } = useSession()
+
+    const invitations = [...bookInvitations, ...recipeInvitations].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
     if (status === 'loading') {
         return <div>Loading...</div>
@@ -23,21 +32,25 @@ export default function UnreadFeed({ invitations }: { invitations: Invitation[] 
         return
     }
 
-    async function acceptInvitation(invitationId: string, bookId: string, canEdit: boolean) {
+    async function acceptInvitation(invitationId: string, id: string, canEdit: boolean) {
         if (!session?.user.id) {
             router.push('/login')
             return
         }
-        await addUserToPermissions(invitationId, bookId, canEdit, session?.user.id)
+        await addUserToBookPermissions(invitationId, id, canEdit, session?.user.id)
         router.refresh()
     }
 
-    async function declineInvitation(invitationId: string) {
+    async function declineInvitation(invitationId: string, isBookInvitation: boolean) {
         if (!session?.user.id) {
             router.push('/login')
             return
         }
-        await rejectInvitation(invitationId)
+        if (isBookInvitation) {
+            await rejectBookInvitation(invitationId)
+        } else {
+            await rejectRecipeInvitation(invitationId)
+        }
         router.refresh()
     }
 
@@ -50,7 +63,7 @@ export default function UnreadFeed({ invitations }: { invitations: Invitation[] 
                             <div className="flex justify-between">
                                 <h3 className="font-medium">
                                     <span className="text-black font-bold">{invitation.sender_username}</span>
-                                    <span className="text-gray-600"> has invited you to <span className="font-bold">{invitation.can_edit ? 'edit' : 'view'}</span> the following book:</span>
+                                    <span className="text-gray-600"> has invited you to <span className="font-bold">{invitation.can_edit ? 'edit' : 'view'}</span> the following {('book_id' in invitation) ? 'book' : 'recipe'}:</span>
                                 </h3>
                                 <span className="text-xs text-gray-500">
                                     {new Date(invitation.created_at).toLocaleDateString()}
@@ -58,14 +71,20 @@ export default function UnreadFeed({ invitations }: { invitations: Invitation[] 
                             </div>
                             <div className="mt-2 flex gap-4">
                                 <button className="flex gap-2 flex-col" onClick={() => {
-                                    router.push(`/books/${invitation.book_id}`)
+                                    if ('book_id' in invitation) {
+                                        router.push(`/books/${invitation.book_id}`)
+                                    } else if ('recipe_id' in invitation) {
+                                        router.push(`/recipes/${invitation.recipe_id}`)
+                                    }
                                 }}>
-                                    <h4 className="text-lg font-semibold text-text">{invitation.book_name}</h4>
+                                    <h4 className="text-lg font-semibold text-text">
+                                        {'book_name' in invitation ? invitation.book_name : invitation.recipe_title}
+                                    </h4>
                                     <div className="min-w-20 min-h-20 bg-gray-50 rounded-lg">
-                                        {invitation.book_image_url ? (
+                                        {('book_image_url' in invitation && invitation.book_image_url) || ('recipe_image_url' in invitation && invitation.recipe_image_url) ? (
                                             <Image
-                                                src={invitation.book_image_url}
-                                                alt={invitation.book_name}
+                                                src={'book_image_url' in invitation ? invitation.book_image_url! : invitation.recipe_image_url!}
+                                                alt={'book_name' in invitation ? invitation.book_name : invitation.recipe_title}
                                                 fill
                                                 className="object-cover rounded-lg"
                                             />
@@ -85,11 +104,17 @@ export default function UnreadFeed({ invitations }: { invitations: Invitation[] 
 
                             <div className="mt-4 flex gap-3 justify-end">
                                 <SecondaryButton
-                                    onClick={() => { declineInvitation(invitation.id) }}
+                                    onClick={() => { declineInvitation(invitation.id, 'book_id' in invitation) }}
                                     text="Decline"
                                 />
                                 <PrimaryButton
-                                    onClick={() => { acceptInvitation(invitation.id, invitation.book_id, invitation.can_edit,) }}
+                                    onClick={() => {
+                                        acceptInvitation(
+                                            invitation.id,
+                                            'book_id' in invitation ? invitation.book_id : invitation.recipe_id,
+                                            invitation.can_edit
+                                        )
+                                    }}
                                     type="button"
                                     text="Accept"
                                 />

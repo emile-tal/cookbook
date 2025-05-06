@@ -1,11 +1,13 @@
 import Link from "next/link"
 import UnreadFeed from "../ui/notifications/unread-feed"
-import { fetchPendingInvitationsByUser } from "../lib/data/invitations"
+import { fetchPendingBookInvitationsByUser } from "../lib/data/recipebookinvitations"
+import { fetchPendingRecipeInvitationsByUser } from "../lib/data/recipeinvitations"
 import { getCurrentUser } from "../lib/auth"
 import { redirect } from "next/navigation"
 
 export default async function Notifications() {
-    const pendingInvitations = await fetchPendingInvitationsByUser()
+    const pendingBookInvitations = await fetchPendingBookInvitationsByUser()
+    const pendingRecipeInvitations = await fetchPendingRecipeInvitationsByUser()
     const user = await getCurrentUser()
 
     if (!user) {
@@ -16,8 +18,8 @@ export default async function Notifications() {
         <main className="container-spacing mb-8">
             <div className="max-w-3xl mx-auto">
                 <h2 className="text-2xl font-bold mb-6">Pending Invitations</h2>
-                {pendingInvitations && pendingInvitations.length > 0 ? (
-                    <UnreadFeed invitations={pendingInvitations} />
+                {(pendingBookInvitations && pendingBookInvitations.length > 0) || (pendingRecipeInvitations && pendingRecipeInvitations.length > 0) ? (
+                    <UnreadFeed bookInvitations={pendingBookInvitations || []} recipeInvitations={pendingRecipeInvitations || []} />
                 ) : (
                     <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-center">
                         <div className="flex flex-col items-center gap-4">

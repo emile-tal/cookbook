@@ -66,11 +66,23 @@ export type UserCredentials = {
     email: string,
 }
 
-export type Invitation = {
+export type BookInvitation = {
     id: string,
     book_id: string,
     book_name: string,
     book_image_url: string,
+    sender_username: string,
+    recipient_email: string,
+    message: string,
+    can_edit: boolean,
+    created_at: string,
+}
+
+export type RecipeInvitation = {
+    id: string,
+    recipe_id: string,
+    recipe_title: string,
+    recipe_image_url: string,
     sender_username: string,
     recipient_email: string,
     message: string,
