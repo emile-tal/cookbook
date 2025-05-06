@@ -3,37 +3,37 @@
 import { useEffect, useState } from "react";
 
 import { BookNavBar } from "@/app/ui/books/nav-bar";
-import { ViewContext } from "@/app/context/display-view-context";
+import { DisplayViewProvider } from "@/app/context/display-view-context";
 
 export default function ClientBookLayout({ children, canEdit }: { children: React.ReactNode, canEdit: boolean }) {
-    const [view, setView] = useState<"list" | "grid">("grid");
+    const [displayView, setDisplayView] = useState<"list" | "grid">("grid");
 
     // Load saved preference from localStorage
     useEffect(() => {
-        const savedView = localStorage.getItem("booksView");
-        if (savedView === "list" || savedView === "grid") {
-            setView(savedView);
+        const savedDisplayView = localStorage.getItem("booksView");
+        if (savedDisplayView === "list" || savedDisplayView === "grid") {
+            setDisplayView(savedDisplayView);
         }
     }, []);
 
     // Save preference when it changes
     const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: "list" | "grid" | null) => {
         if (newView) {
-            setView(newView);
+            setDisplayView(newView);
             localStorage.setItem("booksView", newView);
         }
     };
 
     return (
-        <ViewContext.Provider value={{ view, setView }}>
-            <div>
+        <DisplayViewProvider>
+            <div className="container-spacing">
                 <BookNavBar
-                    view={view}
+                    displayView={displayView}
                     handleViewChange={handleViewChange}
                     canEdit={canEdit}
                 />
                 {children}
             </div>
-        </ViewContext.Provider>
+        </DisplayViewProvider>
     );
 }

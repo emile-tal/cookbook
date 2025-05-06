@@ -3,7 +3,6 @@
 import { useEffect, useRef } from 'react';
 
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
 interface BookContextMenuProps {
     position: { x: number, y: number };
@@ -16,7 +15,6 @@ interface BookContextMenuProps {
 }
 
 export default function BookContextMenu({ position, bookId, onClose, fullUrl, shareHandler, saved, saveHandler }: BookContextMenuProps) {
-    const { data: session, status } = useSession();
     const router = useRouter();
 
     const menuRef = useRef<HTMLDivElement>(null);

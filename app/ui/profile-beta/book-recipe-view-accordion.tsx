@@ -9,7 +9,7 @@ import { useState } from "react";
 const filters = ["all", "owned", "saved", "shared"];
 
 export default function BookRecipeViewAccordion({ id }: { id: string }) {
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const { bookRecipeView, setBookRecipeView } = useBookRecipeContext();
     const { bookFilter, setBookFilter } = useBookFilterContext();
     const { recipeFilter, setRecipeFilter } = useRecipeFilterContext();

@@ -13,12 +13,12 @@ import { createBook } from '@/app/lib/data/recipebooks';
 import { useState } from 'react';
 
 interface BookNavBarProps {
-    view: "grid" | "list";
+    displayView: "grid" | "list";
     handleViewChange: (event: React.MouseEvent<HTMLElement>, newView: "grid" | "list" | null) => void;
     canEdit: boolean;
 }
 
-export function BookNavBar({ view, handleViewChange, canEdit }: BookNavBarProps) {
+export function BookNavBar({ displayView, handleViewChange, canEdit }: BookNavBarProps) {
     const router = useRouter();
     const pathname = usePathname();
     const [openDialog, setOpenDialog] = useState(false);
@@ -55,7 +55,7 @@ export function BookNavBar({ view, handleViewChange, canEdit }: BookNavBarProps)
                     </div>
                     <div className="flex items-center gap-2">
                         <ToggleButtonGroup
-                            value={view}
+                            value={displayView}
                             exclusive
                             onChange={handleViewChange}
                             aria-label="view toggle"

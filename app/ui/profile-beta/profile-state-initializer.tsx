@@ -20,7 +20,7 @@ export default function ProfileStateInitializer() {
         if (savedProfileView === "books" || savedProfileView === "recipes") {
             setBookRecipeView(savedProfileView)
         }
-    }, [])
+    }, [setDisplayView, setBookRecipeView])
 
     return null
 } 

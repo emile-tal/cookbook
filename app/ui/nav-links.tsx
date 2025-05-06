@@ -15,6 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/PersonOutline';
 import PrimaryButton from './buttons/primary-button';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { Session } from 'next-auth';
 import clsx from 'clsx';
 import { fetchUnreadBookInvitationsCountByUser } from '../lib/data/recipebookinvitations';
@@ -23,6 +24,7 @@ import { getUserPublicInfo } from '../lib/data/user';
 import { poppins } from './fonts';
 
 const links = [
+    { name: 'Recipes', href: '/recipe', icon: <RestaurantIcon className='text-[rgb(30,30,30)] flex-shrink-0' /> },
     { name: 'Books', href: '/books', icon: <MenuBookIcon className='text-[rgb(30,30,30)] flex-shrink-0' /> },
 ];
 
@@ -99,7 +101,7 @@ export default function NavLinks() {
                         </div>
                     );
                 })}
-                <div className={clsx({ 'glow': pathname === '/profile' })}>
+                <div className={clsx({ 'glow': pathname === `/profile/${session?.user?.id}` })}>
                     <IconButton
                         onClick={handleClick}
                         size="medium"
@@ -166,7 +168,7 @@ export default function NavLinks() {
                                 <Person className='text-[rgb(30,30,30)] flex-shrink-0' />
                             </div>
                         )}
-                        <Link href="/profile" className={`w-full ${poppins.className}`}>
+                        <Link href={`/profile/${session?.user?.id}`} className={`w-full ${poppins.className}`}>
                             <span className={`hidden sm:inline ${poppins.className}`}>Profile</span>
                         </Link>
                     </div>
@@ -264,7 +266,7 @@ export default function NavLinks() {
                         <div className='flex items-center justify-center size-8'>
                             <Person className='text-[rgb(30,30,30)] flex-shrink-0' />
                         </div>
-                        <Link href="/profile" className={`w-full ${poppins.className}`}>
+                        <Link href={`/profile/${session?.user?.id}`} className={`w-full ${poppins.className}`}>
                             Profile
                         </Link>
                     </div>

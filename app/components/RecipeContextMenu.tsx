@@ -2,8 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-import { addSavedRecipe } from "../lib/data/recipes";
-import { removeSavedRecipe } from "../lib/data/recipes";
 import { useRouter } from "next/navigation";
 
 interface RecipeContextMenuProps {
