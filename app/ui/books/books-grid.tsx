@@ -21,9 +21,10 @@ import { useState } from "react";
 interface Props {
     books: Book[];
     savedBooks: string[];
+    editableBooks: string[]
 }
 
-export default function BooksGrid({ books, savedBooks = [] }: Props) {
+export default function BooksGrid({ books, savedBooks = [], editableBooks }: Props) {
     const router = useRouter();
     const { data: session, status } = useSession();
     const pathname = usePathname();
@@ -75,7 +76,7 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                                 </div>
                             )}
                             {showMenu && selectedBook === book.id && (
-                                <div className="absolute top-0 right-0 flex flex-col gap-2 h-full bg-gray-100 rounded-tr-xl p-2">
+                                <div className="absolute top-0 right-0 flex flex-col gap-1 h-full bg-gray-100 rounded-tr-xl p-2">
                                     <IconButton
                                         onClick={() => {
                                             setShowMenu(false)
@@ -85,11 +86,20 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                                         tooltipPlacement="right"
                                         variant="dark"
                                     />
-                                    {(session?.user?.username === book.username) &&
+                                    {editableBooks.includes(book.id) &&
                                         <IconButton
                                             onClick={() => router.push(`/books/${book.id}/edit?from=${fullUrl}`)}
                                             icon={EditIcon}
                                             tooltipTitle="Edit Book"
+                                            tooltipPlacement="right"
+                                            variant="dark"
+                                        />
+                                    }
+                                    {(session?.user?.username === book.username) &&
+                                        <IconButton
+                                            onClick={() => setShowShareDialog(true)}
+                                            icon={ShareIcon}
+                                            tooltipTitle="Share Book"
                                             tooltipPlacement="right"
                                             variant="dark"
                                         />
@@ -115,15 +125,6 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                                         tooltipPlacement="right"
                                         variant="dark"
                                     />
-                                    {(session?.user?.username === book.username) &&
-                                        <IconButton
-                                            onClick={() => setShowShareDialog(true)}
-                                            icon={ShareIcon}
-                                            tooltipTitle="Share Book"
-                                            tooltipPlacement="right"
-                                            variant="dark"
-                                        />
-                                    }
                                 </div>
                             )}
                         </div>

@@ -17,7 +17,7 @@ const tableHeaders = [
     {
         label: "Owner",
         sort: "owner",
-        column: 4
+        column: 3
     },
     {
         label: "Duration",
@@ -30,9 +30,10 @@ interface Props {
     recipes: LiteRecipe[] | null,
     editableBooks: Book[] | null,
     savedRecipes?: string[]
+    editableRecipes: string[]
 }
 
-export function RecipesDisplay({ recipes, editableBooks, savedRecipes = [] }: Props) {
+export function RecipesDisplay({ recipes, editableBooks, savedRecipes = [], editableRecipes }: Props) {
     const { displayView } = useDisplayView()
     const [sort, setSort] = useState<string>("title")
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
@@ -68,22 +69,24 @@ export function RecipesDisplay({ recipes, editableBooks, savedRecipes = [] }: Pr
         <div>
             {displayView === "list" ? (
                 <>
-                    <div className="grid grid-cols-12 pt-2 pb-4 font-bold border-b border-gray-200">
+                    <div className="grid grid-cols-12 pt-2 pb-4 px-2 gap-2 font-bold border-b border-gray-200">
                         {tableHeaders.map((header) => (
                             <div
                                 key={header.sort}
-                                className={`col-span-${header.column} flex gap-2 hover:cursor-pointer`}
+                                className={`col-span-${header.column} flex gap-0 sm:gap-2 hover:cursor-pointer`}
                                 onClick={() => handleSort(header.sort)}
                             >
-                                <h3>{header.label}</h3>
-                                <SwapVertIcon />
+                                <h3 className="text-sm md:text-base">{header.label}</h3>
+                                <div className="scale-75 sm:scale-100 flex items-center justify-start">
+                                    <SwapVertIcon />
+                                </div>
                             </div>
                         ))}
                     </div>
-                    <RecipesList recipes={sortedRecipes} savedRecipes={savedRecipes} />
+                    <RecipesList recipes={sortedRecipes} savedRecipes={savedRecipes} editableRecipes={editableRecipes} />
                 </>
             ) : (
-                <RecipesGrid recipes={sortedRecipes} editableBooks={editableBooks} savedRecipes={savedRecipes} />
+                <RecipesGrid recipes={sortedRecipes} editableBooks={editableBooks} savedRecipes={savedRecipes} editableRecipes={editableRecipes} />
             )}
         </div >
     )

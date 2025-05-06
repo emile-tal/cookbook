@@ -12,7 +12,10 @@ export function BackButton() {
 
     return (
         <IconButton
-            onClick={() => router.push(from)}
+            onClick={(e) => {
+                e.preventDefault();
+                router.push(from);
+            }}
             icon={ArrowBackIcon}
             tooltipTitle="Back"
             tooltipPlacement="bottom"

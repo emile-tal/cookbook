@@ -29,9 +29,10 @@ interface Props {
     recipes: LiteRecipe[] | null,
     editableBooks: Book[] | null,
     savedRecipes?: string[]
+    editableRecipes?: string[]
 }
 
-export default function RecipesGrid({ recipes, editableBooks, savedRecipes = [] }: Props) {
+export default function RecipesGrid({ recipes, editableBooks, savedRecipes = [], editableRecipes }: Props) {
     const router = useRouter();
     const [showMenu, setShowMenu] = useState(false);
     const [showBooks, setShowBooks] = useState(false);
@@ -184,7 +185,7 @@ export default function RecipesGrid({ recipes, editableBooks, savedRecipes = [] 
                                         tooltipPlacement="right"
                                         variant="dark"
                                     />
-                                    {session?.user?.username === recipe.username && (!showBooks || selectedRecipe !== recipe.id) && (
+                                    {editableRecipes?.includes(recipe.id) && (!showBooks) && (
                                         <IconButton
                                             onClick={() => {
                                                 router.push(`/recipe/${recipe.id}/edit?from=${fullUrl}`);
@@ -204,6 +205,15 @@ export default function RecipesGrid({ recipes, editableBooks, savedRecipes = [] 
                                         tooltipPlacement="right"
                                         variant="dark"
                                     />
+                                    {(session?.user?.username === recipe.username) &&
+                                        <IconButton
+                                            onClick={() => setShowShareDialog(true)}
+                                            icon={ShareIcon}
+                                            tooltipTitle="Share Recipe"
+                                            tooltipPlacement="right"
+                                            variant="dark"
+                                        />
+                                    }
                                     <IconButton
                                         onClick={() => {
                                             if (saved) {
@@ -225,15 +235,6 @@ export default function RecipesGrid({ recipes, editableBooks, savedRecipes = [] 
                                         tooltipPlacement="right"
                                         variant="dark"
                                     />
-                                    {(session?.user?.username === recipe.username) &&
-                                        <IconButton
-                                            onClick={() => setShowShareDialog(true)}
-                                            icon={ShareIcon}
-                                            tooltipTitle="Share Recipe"
-                                            tooltipPlacement="right"
-                                            variant="dark"
-                                        />
-                                    }
                                 </div>
                             )}
                         </div>

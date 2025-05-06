@@ -41,9 +41,6 @@ export async function fetchEditableBooks() {
         return null;
     }
     try {
-        const claims = JSON.stringify({ sub: user.id });
-        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
-
         const editableBooks = await sql<Book[]>`
             SELECT 
                 recipeBooks.id, 
@@ -72,11 +69,6 @@ export async function fetchEditableBooks() {
 export async function fetchBookByBookId(id: string) {
     const user = await getCurrentUser();
     try {
-        if (user) {
-            const claims = JSON.stringify({ sub: user.id });
-            await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
-        }
-
         const book = await sql<Book[]>`
         SELECT 
           recipeBooks.id, 
@@ -110,9 +102,6 @@ export async function fetchRecentlyViewedBooks() {
         return null;
     }
     try {
-        const claims = JSON.stringify({ sub: user.id });
-        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
-
         const recentlyViewedBooks = await sql<Book[]>`
             WITH recent_views AS (
                 SELECT 

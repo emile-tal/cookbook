@@ -19,10 +19,11 @@ interface ProfileDisplayProps {
     ownedBooks: Book[] | null,
     savedRecipes: LiteRecipe[] | null,
     ownedRecipes: LiteRecipe[] | null,
-    sharedRecipes: LiteRecipe[] | null
+    sharedRecipes: LiteRecipe[] | null,
+    editableRecipes: string[] | null
 }
 
-export default function ProfileDisplay({ userRecipes, userBooks, editableBooks, savedBooks, sharedBooks, ownedBooks, savedRecipes, ownedRecipes, sharedRecipes }: ProfileDisplayProps) {
+export default function ProfileDisplay({ userRecipes, userBooks, editableBooks, savedBooks, sharedBooks, ownedBooks, savedRecipes, ownedRecipes, sharedRecipes, editableRecipes }: ProfileDisplayProps) {
     const { bookRecipeView } = useBookRecipeContext();
     const { bookFilter } = useBookFilterContext();
     const { recipeFilter } = useRecipeFilterContext();
@@ -30,12 +31,12 @@ export default function ProfileDisplay({ userRecipes, userBooks, editableBooks, 
     if (bookRecipeView === "books") {
         if (bookFilter === "all") {
             return (
-                <BookDisplay books={userBooks} />
+                <BookDisplay books={userBooks} savedBooks={userBooks.map(book => book.id)} editableBooks={editableBooks} />
             )
         } else if (bookFilter === "owned") {
             return (
                 ownedBooks && ownedBooks.length > 0 ? (
-                    <BookDisplay books={ownedBooks} savedBooks={ownedBooks.map(book => book.id)} />
+                    <BookDisplay books={ownedBooks} savedBooks={ownedBooks.map(book => book.id)} editableBooks={editableBooks} />
                 ) : (
                     <NoBooks message="You haven't created any recipe books yet." />
                 )
@@ -43,7 +44,7 @@ export default function ProfileDisplay({ userRecipes, userBooks, editableBooks, 
         } else if (bookFilter === "saved") {
             return (
                 savedBooks && savedBooks.length > 0 ? (
-                    <BookDisplay books={savedBooks} savedBooks={savedBooks.map(book => book.id)} />
+                    <BookDisplay books={savedBooks} savedBooks={savedBooks.map(book => book.id)} editableBooks={editableBooks} />
                 ) : (
                     <NoBooks message="You haven't saved any books yet." />
                 )
@@ -51,7 +52,7 @@ export default function ProfileDisplay({ userRecipes, userBooks, editableBooks, 
         } else if (bookFilter === "shared" && sharedBooks) {
             return (
                 sharedBooks && sharedBooks.length > 0 ? (
-                    <BookDisplay books={sharedBooks} savedBooks={sharedBooks.map(book => book.id)} />
+                    <BookDisplay books={sharedBooks} savedBooks={sharedBooks.map(book => book.id)} editableBooks={editableBooks} />
                 ) : (
                     <NoBooks message="No shared books available yet." />
                 )
@@ -60,12 +61,12 @@ export default function ProfileDisplay({ userRecipes, userBooks, editableBooks, 
     } else {
         if (recipeFilter === "all") {
             return (
-                <RecipesDisplay recipes={userRecipes} editableBooks={editableBooks} savedRecipes={savedRecipes?.map(recipe => recipe.id) || []} />
+                <RecipesDisplay recipes={userRecipes} editableBooks={editableBooks} savedRecipes={savedRecipes?.map(recipe => recipe.id) || []} editableRecipes={editableRecipes || []} />
             )
         } else if (recipeFilter === "owned") {
             return (
                 ownedRecipes && ownedRecipes.length > 0 ? (
-                    <RecipesDisplay recipes={ownedRecipes} editableBooks={editableBooks} savedRecipes={ownedRecipes.map(recipe => recipe.id) || []} />
+                    <RecipesDisplay recipes={ownedRecipes} editableBooks={editableBooks} savedRecipes={ownedRecipes.map(recipe => recipe.id) || []} editableRecipes={editableRecipes || []} />
                 ) : (
                     <NoRecipes message="You haven't created any recipes yet." />
                 )
@@ -73,7 +74,7 @@ export default function ProfileDisplay({ userRecipes, userBooks, editableBooks, 
         } else if (recipeFilter === "saved") {
             return (
                 savedRecipes && savedRecipes.length > 0 ? (
-                    <RecipesDisplay recipes={savedRecipes} editableBooks={editableBooks} savedRecipes={savedRecipes.map(recipe => recipe.id) || []} />
+                    <RecipesDisplay recipes={savedRecipes} editableBooks={editableBooks} savedRecipes={savedRecipes.map(recipe => recipe.id) || []} editableRecipes={editableRecipes || []} />
                 ) : (
                     <NoRecipes message="You haven't saved any recipes yet." />
                 )
@@ -81,7 +82,7 @@ export default function ProfileDisplay({ userRecipes, userBooks, editableBooks, 
         } else if (recipeFilter === "shared" && sharedRecipes) {
             return (
                 sharedRecipes && sharedRecipes.length > 0 ? (
-                    <RecipesDisplay recipes={sharedRecipes} editableBooks={editableBooks} savedRecipes={sharedRecipes.map(recipe => recipe.id) || []} />
+                    <RecipesDisplay recipes={sharedRecipes} editableBooks={editableBooks} savedRecipes={sharedRecipes.map(recipe => recipe.id) || []} editableRecipes={editableRecipes || []} />
                 ) : (
                     <NoRecipes message="No shared recipes available yet." />
                 )

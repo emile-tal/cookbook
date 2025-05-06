@@ -550,3 +550,21 @@ export async function fetchUserRecipesByQuery(searchQuery?: string) {
         return null;
     }
 }
+
+export async function fetchEditableRecipes() {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        const recipes = await sql`
+        SELECT id FROM recipes WHERE user_id = ${user.id} OR id IN (
+            SELECT recipe_id FROM recipepermissions WHERE user_id = ${user.id} AND can_edit = true
+        )
+        `;
+        return recipes.map(recipe => recipe.id) || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}

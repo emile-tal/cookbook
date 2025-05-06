@@ -1,4 +1,4 @@
-import { fetchAllPublicRecipesByUserId, fetchSavedRecipesByQuery, fetchSharedRecipesByQuery, fetchUserRecipesByQuery } from "@/app/lib/data/recipes/fetch";
+import { fetchAllPublicRecipesByUserId, fetchEditableRecipes, fetchSavedRecipesByQuery, fetchSharedRecipesByQuery, fetchUserRecipesByQuery } from "@/app/lib/data/recipes/fetch";
 import { fetchEditableBooks, fetchPublicBooksByUserId, fetchSavedBooks, fetchSharedBooksByQuery, fetchUserBooks } from "@/app/lib/data/recipebooks/fetch";
 
 import ProfileDisplay from "./profile-display";
@@ -14,10 +14,9 @@ export default async function ProfileContent({ params, searchParams }: ProfileCo
     const { q } = await searchParams
     const user = await getCurrentUser()
 
-    const [userRecipes, userBooks, editableBooks] = await Promise.all([
+    const [userRecipes, userBooks] = await Promise.all([
         fetchAllPublicRecipesByUserId(id, q),
         fetchPublicBooksByUserId(id, q),
-        fetchEditableBooks(),
     ])
 
     let savedBooks
@@ -26,11 +25,15 @@ export default async function ProfileContent({ params, searchParams }: ProfileCo
     let savedRecipes
     let ownedRecipes
     let sharedRecipes
+    let editableBooks
+    let editableRecipes
 
     if (user) {
-        [savedBooks, savedRecipes] = await Promise.all([
+        [savedBooks, savedRecipes, editableBooks, editableRecipes] = await Promise.all([
             fetchSavedBooks(q),
-            fetchSavedRecipesByQuery(q)
+            fetchSavedRecipesByQuery(q),
+            fetchEditableBooks(),
+            fetchEditableRecipes()
         ])
     }
 
@@ -59,7 +62,8 @@ export default async function ProfileContent({ params, searchParams }: ProfileCo
                 ownedBooks={ownedBooks || null}
                 savedRecipes={savedRecipes || null}
                 ownedRecipes={ownedRecipes || null}
-                sharedRecipes={sharedRecipes || null} />
+                sharedRecipes={sharedRecipes || null}
+                editableRecipes={editableRecipes || null} />
         </div>
     )
 }

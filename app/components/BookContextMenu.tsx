@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 interface BookContextMenuProps {
     position: { x: number, y: number };
@@ -12,16 +13,20 @@ interface BookContextMenuProps {
     shareHandler: () => void;
     saved: boolean;
     saveHandler: (bookId: string) => void;
+    editable: boolean;
+    shareable: boolean;
 }
 
-export default function BookContextMenu({ position, bookId, onClose, fullUrl, shareHandler, saved, saveHandler }: BookContextMenuProps) {
+const BookContextMenu = forwardRef<HTMLDivElement, BookContextMenuProps>(({ position, bookId, onClose, fullUrl, shareHandler, saved, saveHandler, editable, shareable }, ref) => {
     const router = useRouter();
+    const localRef = useRef<HTMLDivElement>(null);
+    const { data: session } = useSession();
 
-    const menuRef = useRef<HTMLDivElement>(null);
+    useImperativeHandle(ref, () => localRef.current!, []);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+            if (localRef.current && !localRef.current.contains(e.target as Node)) {
                 onClose();
             }
         };
@@ -30,12 +35,14 @@ export default function BookContextMenu({ position, bookId, onClose, fullUrl, sh
     }, [onClose]);
 
     return (
-        <div ref={menuRef} className="absolute z-50 bg-white rounded-md shadow-lg border border-gray-200 min-w-[160px]" style={{ left: position.x, top: position.y }}>
+        <div ref={localRef} className="absolute z-50 bg-white rounded-md shadow-lg border border-gray-200 min-w-[160px]" style={{ left: position.x, top: position.y }}>
             <ul>
-                <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => router.push(`/books/${bookId}/edit?from=${fullUrl}`)}>Edit Book</li>
-                <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={shareHandler}>Share Book</li>
-                <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => saveHandler(bookId)}>{saved ? 'Unsave Book' : 'Save Book'}</li>
+                {editable && <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => router.push(`/books/${bookId}/edit?from=${fullUrl}`)}>Edit Book</li>}
+                {session && <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={shareHandler}>Share Book</li>}
+                {shareable && <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => saveHandler(bookId)}>{saved ? 'Unsave Book' : 'Save Book'}</li>}
             </ul>
         </div>
     )
-}
+})
+
+export default BookContextMenu;

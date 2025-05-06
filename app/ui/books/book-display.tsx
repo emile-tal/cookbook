@@ -28,10 +28,11 @@ const tableHeaders = [
 
 interface Props {
     books: Book[];
+    editableBooks: Book[];
     savedBooks?: string[];
 }
 
-export function BookDisplay({ books, savedBooks = [] }: Props) {
+export function BookDisplay({ books, editableBooks, savedBooks = [] }: Props) {
     const { displayView } = useDisplayView();
     const [sort, setSort] = useState<string>("name");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -69,22 +70,24 @@ export function BookDisplay({ books, savedBooks = [] }: Props) {
         <div className="w-full">
             {displayView === "list" ? (
                 <>
-                    <div className="grid grid-cols-12 pt-2 pb-4 font-bold border-b border-gray-200">
+                    <div className="grid grid-cols-12 gap-2 pt-2 pb-4 px-2 font-bold border-b border-gray-200">
                         {tableHeaders.map((header) => (
                             <div
                                 key={header.sort}
-                                className={`col-span-${header.column} flex gap-2 hover:cursor-pointer`}
+                                className={`col-span-${header.column} flex gap-0 sm:gap-2 hover:cursor-pointer`}
                                 onClick={() => handleSort(header.sort)}
                             >
-                                <h3>{header.label}</h3>
-                                <SwapVertIcon />
+                                <h3 className="text-sm md:text-base">{header.label}</h3>
+                                <div className="scale-75 sm:scale-100 flex items-center justify-start">
+                                    <SwapVertIcon />
+                                </div>
                             </div>
                         ))}
                     </div>
-                    <BooksList books={sortedBooks} savedBooks={savedBooks} />
+                    <BooksList books={sortedBooks} savedBooks={savedBooks} editableBooks={editableBooks.map((book) => book.id)} />
                 </>
             ) : (
-                <BooksGrid books={sortedBooks} savedBooks={savedBooks} />
+                <BooksGrid books={sortedBooks} savedBooks={savedBooks} editableBooks={editableBooks.map((book) => book.id)} />
             )}
         </div>
     )

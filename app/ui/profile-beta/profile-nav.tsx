@@ -23,7 +23,7 @@ export default function ProfileNav({ id }: { id: string }) {
                 <div className="pt-8 flex gap-2 justify-center">
                     <Tooltip title="Grid View">
                         <button
-                            className={`flex items-center justify-center text-sm sm:text-base border border-primary p-4 transition-colors rounded-full ${displayView === "grid" ? "bg-primary text-white hover:bg-opacity-90" : "text-primary border-primary hover:bg-primary/5"}`}
+                            className={`flex items-center justify-center scale-75 sm:scale-100 border border-primary p-4 transition-colors rounded-full ${displayView === "grid" ? "bg-primary text-white hover:bg-opacity-90" : "text-primary border-primary hover:bg-primary/5"}`}
                             onClick={() => handleViewChange("grid")}
                         >
                             <GridViewIcon />
@@ -32,7 +32,7 @@ export default function ProfileNav({ id }: { id: string }) {
 
                     <Tooltip title="List View">
                         <button
-                            className={`flex items-center justify-center text-sm sm:text-base border border-primary p-4 transition-colors rounded-full ${displayView === "list" ? "bg-primary text-white hover:bg-opacity-90" : "text-primary border-primary hover:bg-primary/5"}`}
+                            className={`flex items-center justify-center scale-75 sm:scale-100 border border-primary p-4 transition-colors rounded-full ${displayView === "list" ? "bg-primary text-white hover:bg-opacity-90" : "text-primary border-primary hover:bg-primary/5"}`}
                             onClick={() => handleViewChange("list")}
                         >
                             <ListIcon />
