@@ -11,6 +11,7 @@ interface ProfileAsideProps {
 
 export default function ProfileAside({ userPublicInfo }: ProfileAsideProps) {
 
+
     return (
         <div className="w-full sm:col-span-1 sm:sticky sm:top-4 sm:self-start">
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm py-8 px-4">

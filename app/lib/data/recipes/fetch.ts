@@ -386,7 +386,7 @@ export async function fetchAllRecipesByQuery(searchQuery?: string) {
 }
 
 // Fetches all public recipes by user id
-export async function fetchAllPublicRecipesByUserId(userId: string) {
+export async function fetchAllPublicRecipesByUserId(userId: string, searchQuery?: string) {
     try {
         const recipes = await sql<LiteRecipe[]>`
         WITH recipe_categories AS (
@@ -408,6 +408,12 @@ export async function fetchAllPublicRecipesByUserId(userId: string) {
         LEFT JOIN users ON recipes.user_id = users.id
         LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
         WHERE recipes.user_id = ${userId} AND recipes.is_public = true
+        ${searchQuery ? sql`AND (
+            recipes.title ILIKE ${`%${searchQuery}%`} OR
+            recipes.description ILIKE ${`%${searchQuery}%`} OR
+            COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR
+            recipes.duration::text ILIKE ${`%${searchQuery}%`}
+        )` : sql``}
         ORDER BY recipes.title ASC`;
         return recipes || null;
     } catch (error) {

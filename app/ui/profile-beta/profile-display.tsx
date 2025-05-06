@@ -10,10 +10,9 @@ interface ProfileDisplayProps {
     userRecipes: LiteRecipe[],
     userBooks: Book[],
     editableBooks: Book[],
-    savedBooks: Book[]
 }
 
-export default function ProfileDisplay({ userRecipes, userBooks, editableBooks, savedBooks }: ProfileDisplayProps) {
+export default function ProfileDisplay({ userRecipes, userBooks, editableBooks }: ProfileDisplayProps) {
     const { bookRecipeView } = useBookRecipeContext();
 
     if (bookRecipeView === "books") {

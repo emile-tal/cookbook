@@ -304,7 +304,7 @@ export async function fetchSharedBooksByQuery(searchQuery?: string) {
     }
 }
 
-export async function fetchPublicBooksByUserId(userId: string) {
+export async function fetchPublicBooksByUserId(userId: string, searchQuery?: string) {
     const user = await getCurrentUser();
 
     try {
@@ -326,6 +326,10 @@ export async function fetchPublicBooksByUserId(userId: string) {
                         SELECT book_id FROM permissions WHERE user_id = ${user.id}
                     )` : sql``}
                 )
+                ${searchQuery ? sql`AND (
+                    recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
+                    users.username ILIKE ${`%${searchQuery}%`}
+                )` : sql``}
             GROUP BY recipeBooks.id, recipeBooks.name, recipeBooks.image_url, recipeBooks.is_public, users.username
         `;
         return userBooks || null;
