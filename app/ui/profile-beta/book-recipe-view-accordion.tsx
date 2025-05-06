@@ -6,7 +6,7 @@ import { useRecipeFilterContext } from "@/app/context/recipe-filter-context";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-const filters = ["all", "created", "saved", "shared"];
+const filters = ["all", "owned", "saved", "shared"];
 
 export default function BookRecipeViewAccordion({ id }: { id: string }) {
     const { data: session, status } = useSession();
@@ -43,7 +43,7 @@ export default function BookRecipeViewAccordion({ id }: { id: string }) {
                     {filters.map((filter) => (
                         <button
                             key={filter}
-                            onClick={() => { setBookFilter(filter as "all" | "created" | "saved" | "shared") }}
+                            onClick={() => { setBookFilter(filter as "all" | "owned" | "saved" | "shared") }}
                             className={`w-full text-left px-6 py-2 text-sm hover:bg-primary/5 transition-colors border-x border-b border-gray-200 ${bookFilter === filter ? "bg-primary/10 text-primary font-medium" : "text-gray-600"
                                 }`}
                         >

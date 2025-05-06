@@ -10,9 +10,6 @@ export async function fetchUserBooks(searchQuery?: string) {
         return null;
     }
     try {
-        const claims = JSON.stringify({ sub: user.id });
-        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
-
         const userBooks = await sql<Book[]>`
             SELECT 
                 recipeBooks.id, 
@@ -322,7 +319,7 @@ export async function fetchPublicBooksByUserId(userId: string, searchQuery?: str
             WHERE recipeBooks.user_id = ${userId}
                 AND (
                     recipeBooks.is_public = true 
-                    ${user ? sql`OR recipeBooks.id IN (
+                    ${user ? sql`OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
                         SELECT book_id FROM permissions WHERE user_id = ${user.id}
                     )` : sql``}
                 )

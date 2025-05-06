@@ -3,14 +3,14 @@
 import { createContext, useContext, useState } from 'react';
 
 type BookFilterContextType = {
-    bookFilter: "all" | "created" | "saved" | "shared";
-    setBookFilter: (bookFilter: "all" | "created" | "saved" | "shared") => void;
+    bookFilter: "all" | "owned" | "saved" | "shared";
+    setBookFilter: (bookFilter: "all" | "owned" | "saved" | "shared") => void;
 };
 
 const BookFilterContext = createContext<BookFilterContextType | undefined>(undefined);
 
 export const BookFilterProvider = ({ children }: { children: React.ReactNode }) => {
-    const [bookFilter, setBookFilter] = useState<"all" | "created" | "saved" | "shared">("all");
+    const [bookFilter, setBookFilter] = useState<"all" | "owned" | "saved" | "shared">("all");
 
     return (
         <BookFilterContext.Provider value={{ bookFilter, setBookFilter }}>

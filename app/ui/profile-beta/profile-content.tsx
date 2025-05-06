@@ -20,11 +20,15 @@ export default async function ProfileContent({ params, searchParams }: ProfileCo
         fetchEditableBooks(),
     ])
 
+    let savedBooks
+    let sharedBooks
+    let ownedBooks
+
     if (user?.id === id) {
-        const [userBooks, savedBooks, sharedBooks] = await Promise.all([
-            fetchUserBooks(q),
+        [savedBooks, sharedBooks, ownedBooks] = await Promise.all([
             fetchSavedBooks(q),
             fetchSharedBooksByQuery(q),
+            fetchUserBooks(q),
         ])
     }
 
@@ -35,7 +39,7 @@ export default async function ProfileContent({ params, searchParams }: ProfileCo
 
     return (
         <div className='sm:col-span-2 md:col-span-3 lg:col-span-4'>
-            <ProfileDisplay userRecipes={userRecipes} userBooks={userBooks} editableBooks={editableBooks} />
+            <ProfileDisplay userRecipes={userRecipes} userBooks={userBooks} editableBooks={editableBooks} savedBooks={savedBooks || null} sharedBooks={sharedBooks || null} ownedBooks={ownedBooks || null} />
         </div>
     )
 }
