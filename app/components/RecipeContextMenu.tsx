@@ -12,10 +12,11 @@ interface RecipeContextMenuProps {
     onClose: () => void,
     fullUrl: string,
     saved: boolean,
-    handleSave: (recipeId: string) => void
+    handleSave: (recipeId: string) => void,
+    shareHandler: () => void
 }
 
-export default function RecipeContextMenu({ position, recipeId, onClose, fullUrl, saved, handleSave }: RecipeContextMenuProps) {
+export default function RecipeContextMenu({ position, recipeId, onClose, fullUrl, saved, handleSave, shareHandler }: RecipeContextMenuProps) {
     const router = useRouter();
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -44,6 +45,12 @@ export default function RecipeContextMenu({ position, recipeId, onClose, fullUrl
                     onClick={() => handleSave(recipeId)}
                 >
                     {saved ? "Unsave Recipe" : "Save Recipe"}
+                </li>
+                <li
+                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                    onClick={shareHandler}
+                >
+                    Share Recipe
                 </li>
             </ul>
         </div>

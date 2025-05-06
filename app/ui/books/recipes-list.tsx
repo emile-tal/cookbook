@@ -6,10 +6,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '../buttons/icon-button';
 import { LiteRecipe } from '@/app/types/definitions';
 import RecipeContextMenu from '@/app/components/RecipeContextMenu';
+import ShareDialog from '@/app/components/ShareDialog';
+import ShareIcon from '@mui/icons-material/Share';
 import { TurnedIn } from '@mui/icons-material';
 import { TurnedInNot } from '@mui/icons-material';
 import { addSavedRecipe } from '@/app/lib/data/recipes';
 import { removeSavedRecipe } from '@/app/lib/data/recipes';
+import { sendRecipeInvitation } from '@/app/lib/data/recipeinvitations';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
@@ -26,6 +29,7 @@ export default function RecipesList({ recipes, savedRecipes = [] }: Props) {
     const [menuVisible, setMenuVisible] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
+    const [showShareDialog, setShowShareDialog] = useState(false);
 
     const handleContextMenu = (e: React.MouseEvent, recipeId: string) => {
         e.preventDefault();
@@ -70,7 +74,7 @@ export default function RecipesList({ recipes, savedRecipes = [] }: Props) {
                             variant="light"
                             icon={EditIcon}
                         />}
-                        <IconButton
+                        {session && <IconButton
                             onClick={() => handleSave(recipe.id)}
                             renderIcon={() => {
                                 return savedRecipes.includes(recipe.id) ? (
@@ -82,10 +86,28 @@ export default function RecipesList({ recipes, savedRecipes = [] }: Props) {
                             tooltipTitle={savedRecipes.includes(recipe.id) ? "Unsave Recipe" : "Save Recipe"}
                             tooltipPlacement="right"
                             variant="light"
-                        />
+                        />}
+                        {session?.user?.username === recipe.username && <IconButton
+                            onClick={() => setShowShareDialog(true)}
+                            icon={ShareIcon}
+                            tooltipTitle="Share Recipe"
+                            tooltipPlacement="right"
+                            variant="dark"
+                        />}
                     </div>
                 </div>
             ))}
+            <ShareDialog
+                open={showShareDialog}
+                onClose={() => setShowShareDialog(false)}
+                onShare={(email, message, permission) => {
+                    if (selectedRecipe) {
+                        sendRecipeInvitation(selectedRecipe, email, message, permission)
+                    }
+                    setShowShareDialog(false)
+                }}
+                name={recipes?.find((recipe) => recipe.id === selectedRecipe)?.title || ''}
+            />
             {menuVisible && selectedRecipe && <RecipeContextMenu position={position} recipeId={selectedRecipe} onClose={() => setMenuVisible(false)} fullUrl={fullUrl} saved={savedRecipes.includes(selectedRecipe)} handleSave={handleSave} />}
         </div>
     )

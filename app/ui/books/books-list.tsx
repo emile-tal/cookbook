@@ -86,7 +86,7 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                                 variant="light"
                             />
                         }
-                        <IconButton
+                        {session && <IconButton
                             onClick={() => handleSave(book.id)}
                             renderIcon={() => {
                                 return savedBooks.includes(book.id) ? (
@@ -98,7 +98,7 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                             tooltipTitle={savedBooks.includes(book.id) ? "Unsave Book" : "Save Book"}
                             tooltipPlacement="top"
                             variant="light"
-                        />
+                        />}
                     </div>
                 </div>
             ))}
@@ -111,7 +111,7 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                     }
                     setShowShareDialog(false)
                 }}
-                bookName={books.find((book) => book.id === selectedBook)?.name || ''}
+                name={books.find((book) => book.id === selectedBook)?.name || ''}
             />
             {menuVisible && selectedBook && <BookContextMenu
                 position={position}

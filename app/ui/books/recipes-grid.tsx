@@ -14,11 +14,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import NewBookDialog from "@/app/components/NewBookDialog";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { Session } from "next-auth";
+import ShareDialog from "@/app/components/ShareDialog";
+import ShareIcon from "@mui/icons-material/Share";
 import { TurnedIn } from "@mui/icons-material";
 import TurnedInNot from "@mui/icons-material/TurnedInNot";
 import clsx from "clsx";
 import { createBookWithRecipe } from "@/app/lib/data/recipebooks";
 import { fetchBookIdsByRecipeId } from "@/app/lib/data/recipebooks/fetch";
+import { sendRecipeInvitation } from "@/app/lib/data/recipeinvitations";
 import { useSession } from "next-auth/react";
 import { useState } from 'react';
 
@@ -38,6 +41,7 @@ export default function RecipesGrid({ recipes, editableBooks, savedRecipes = [] 
     const { data: session, status } = useSession() as { data: Session | null, status: string }
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const [showShareDialog, setShowShareDialog] = useState(false);
 
     const fullUrl = pathname + '?' + searchParams.toString();
 
@@ -221,6 +225,15 @@ export default function RecipesGrid({ recipes, editableBooks, savedRecipes = [] 
                                         tooltipPlacement="right"
                                         variant="dark"
                                     />
+                                    {(session?.user?.username === recipe.username) &&
+                                        <IconButton
+                                            onClick={() => setShowShareDialog(true)}
+                                            icon={ShareIcon}
+                                            tooltipTitle="Share Recipe"
+                                            tooltipPlacement="right"
+                                            variant="dark"
+                                        />
+                                    }
                                 </div>
                             )}
                         </div>
@@ -272,6 +285,17 @@ export default function RecipesGrid({ recipes, editableBooks, savedRecipes = [] 
                 open={openNewBookDialog}
                 onClose={() => setOpenNewBookDialog(false)}
                 createRecipeBook={handleCreateBook}
+            />
+            <ShareDialog
+                open={showShareDialog}
+                onClose={() => setShowShareDialog(false)}
+                onShare={(email, message, permission) => {
+                    if (selectedRecipe) {
+                        sendRecipeInvitation(selectedRecipe, email, message, permission)
+                    }
+                    setShowShareDialog(false)
+                }}
+                name={recipes?.find((recipe) => recipe.id === selectedRecipe)?.title || ''}
             />
         </div>
     )

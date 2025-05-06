@@ -10,10 +10,10 @@ interface ShareDialogProps {
     open: boolean
     onClose: () => void
     onShare: (email: string, message: string, permission: string) => void
-    bookName: string
+    name: string
 }
 
-export default function ShareDialog({ open, onClose, onShare, bookName }: ShareDialogProps) {
+export default function ShareDialog({ open, onClose, onShare, name }: ShareDialogProps) {
     const [email, setEmail] = useState('')
     const [message, setMessage] = useState('')
     const [permission, setPermission] = useState<'editor' | 'viewer'>('editor')
@@ -40,7 +40,7 @@ export default function ShareDialog({ open, onClose, onShare, bookName }: ShareD
                 }
             }}
         >
-            <DialogTitle className="text-primary">{`Share "${bookName}"`}</DialogTitle>
+            <DialogTitle className="text-primary">{`Share "${name}"`}</DialogTitle>
             <DialogContent>
                 <div className="flex flex-col gap-4 py-2">
                     <div className="flex justify-between min-w-full">

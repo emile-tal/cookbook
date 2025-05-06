@@ -147,7 +147,7 @@ export default function BooksGrid({ books, savedBooks = [] }: Props) {
                     }
                     setShowShareDialog(false)
                 }}
-                bookName={books.find((book) => book.id === selectedBook)?.name || ''}
+                name={books.find((book) => book.id === selectedBook)?.name || ''}
             />
         </div>
     );
