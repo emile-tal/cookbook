@@ -106,3 +106,9 @@ export type ImportedRecipe = {
         instruction: string
     }[],
 }
+
+export type UserPersonalInfo = {
+    id: string,
+    username: string,
+    user_image_url: string,
+}

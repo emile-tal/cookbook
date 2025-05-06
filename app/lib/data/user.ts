@@ -1,6 +1,6 @@
 'use server'
 
-import { UserCredentials, UserPublicInfo } from "../../types/definitions";
+import { UserCredentials, UserPersonalInfo, UserPublicInfo } from "../../types/definitions";
 
 import sql from '../db';
 
@@ -73,5 +73,21 @@ export async function updateUserImage(id: string, imageUrl: string) {
         await sql`UPDATE users SET user_image_url = ${imageUrl} WHERE id = ${id}`;
     } catch (error) {
         console.error('Error updating user image:', error);
+    }
+}
+
+export async function getUserPersonalInfo(id: string) {
+    try {
+        const user = await sql<UserPersonalInfo[]>`
+            SELECT 
+                id,
+                username,
+                user_image_url
+            FROM users
+            WHERE id = ${id}`;
+        return user[0] || null;
+    } catch (error) {
+        console.error('Error getting user personal information:', error);
+        return null;
     }
 }

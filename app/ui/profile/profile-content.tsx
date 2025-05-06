@@ -5,13 +5,12 @@ import ProfileDisplay from "./profile-display";
 import { getCurrentUser } from "@/app/lib/auth";
 
 interface ProfileContentProps {
-    params: Promise<{ id: string }>,
-    searchParams: Promise<{ q?: string }>
+    id: string,
+    searchParams: string | undefined
 }
 
-export default async function ProfileContent({ params, searchParams }: ProfileContentProps) {
-    const { id } = await params;
-    const { q } = await searchParams
+export default async function ProfileContent({ id, searchParams }: ProfileContentProps) {
+    const q = searchParams || ''
     const user = await getCurrentUser()
 
     const [userRecipes, userBooks] = await Promise.all([

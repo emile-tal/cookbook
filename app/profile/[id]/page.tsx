@@ -1,16 +1,16 @@
 import Loading from "@/app/ui/loading";
-import ProfileAside from "@/app/ui/profile-beta/profile-aside";
-import ProfileContent from "@/app/ui/profile-beta/profile-content";
+import ProfileContent from "@/app/ui/profile/profile-content";
 import { Suspense } from "react";
 import { getUserPublicInfo } from "@/app/lib/data/user";
 
-interface ProfileBetaProps {
+interface ProfileProps {
     params: Promise<{ id: string }>,
     searchParams: Promise<{ q?: string }>
 }
 
-export default async function ProfileBeta({ params, searchParams }: ProfileBetaProps) {
+export default async function Profile({ params, searchParams }: ProfileProps) {
     const { id } = await params;
+    const { q } = await searchParams;
 
     const userPublicInfo = await getUserPublicInfo(id);
 
@@ -22,13 +22,9 @@ export default async function ProfileBeta({ params, searchParams }: ProfileBetaP
         )
     }
 
-
     return (
-        <main className="flex flex-col gap-8 sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            <ProfileAside userPublicInfo={userPublicInfo} />
-            <Suspense fallback={<Loading size={24} />}>
-                <ProfileContent params={params} searchParams={searchParams} />
-            </Suspense>
-        </main>
+        <Suspense fallback={<Loading size={24} />}>
+            <ProfileContent id={id} searchParams={q} />
+        </Suspense>
     )
 }

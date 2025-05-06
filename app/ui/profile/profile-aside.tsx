@@ -1,20 +1,27 @@
 'use client'
 
+import { usePathname, useRouter } from "next/navigation"
+
+import EditIcon from "@mui/icons-material/Edit"
+import IconButton from "@/app/ui/buttons/icon-button"
 import Image from "next/image"
 import { Person } from "@mui/icons-material"
 import ProfileNav from "./profile-nav"
 import { UserPublicInfo } from "@/app/types/definitions"
+import { useSession } from "next-auth/react"
 
 interface ProfileAsideProps {
     userPublicInfo: UserPublicInfo
 }
 
 export default function ProfileAside({ userPublicInfo }: ProfileAsideProps) {
-
+    const { data: session } = useSession();
+    const router = useRouter();
+    const pathname = usePathname();
 
     return (
         <div className="w-full sm:col-span-1 sm:sticky sm:top-4 sm:self-start">
-            <aside className="bg-white rounded-xl border border-gray-100 shadow-sm py-8 px-4">
+            <aside className="bg-white rounded-xl border border-gray-100 shadow-sm py-8 px-4 relative">
                 <div className="flex flex-col items-center gap-6">
                     <div className="relative min-w-32 h-32 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
                         {userPublicInfo.user_image_url ? (
@@ -46,6 +53,17 @@ export default function ProfileAside({ userPublicInfo }: ProfileAsideProps) {
                     </div>
                 </div>
                 <ProfileNav id={userPublicInfo.id} />
+                {userPublicInfo.id === session?.user?.id && !pathname.includes('edit') && (
+                    <div className="absolute right-2 top-2">
+                        <IconButton
+                            onClick={() => router.push(`/profile/${userPublicInfo.id}/edit`)}
+                            icon={EditIcon}
+                            tooltipTitle="Edit Profile"
+                            tooltipPlacement="top"
+                            variant="white"
+                        />
+                    </div>
+                )}
             </aside>
         </div>
     )

@@ -5,12 +5,12 @@ import { useRef, useState } from "react";
 import { EditIcon } from "lucide-react";
 import Image from "next/image";
 import { Person } from "@mui/icons-material";
-import { User } from "@/app/types/definitions";
+import { UserPersonalInfo } from "@/app/types/definitions";
 import { updateUserImage } from "@/app/lib/data/user";
 import { uploadImage } from "@/app/lib/uploadImage";
 import { useRouter } from "next/navigation";
 
-export default function ProfilePhoto({ userData }: { userData: User }) {
+export default function ProfilePhoto({ userData }: { userData: UserPersonalInfo }) {
     const [isUploading, setIsUploading] = useState(false)
     const [isHovering, setIsHovering] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -37,7 +37,7 @@ export default function ProfilePhoto({ userData }: { userData: User }) {
     }
 
     return (
-        <div className="relative">
+        <div className="col-span-1 relative flex items-center justify-center">
             <input
                 ref={fileInputRef}
                 type="file"
@@ -48,7 +48,7 @@ export default function ProfilePhoto({ userData }: { userData: User }) {
                 className="hidden"
             />
             <div
-                className="min-w-48 h-48 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center relative hover:cursor-pointer"
+                className="min-w-16 max-w-16 min-h-16 max-h-16 sm:min-w-48 sm:max-w-48 sm:min-h-48 sm:max-h-48 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center relative hover:cursor-pointer"
                 onClick={handleImageClick}
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
@@ -67,7 +67,7 @@ export default function ProfilePhoto({ userData }: { userData: User }) {
                 )}
                 {isHovering && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
-                        <EditIcon className="text-white text-2xl" />
+                        <EditIcon className="text-white text-base sm:text-2xl" />
                     </div>
                 )}
                 {isUploading && (

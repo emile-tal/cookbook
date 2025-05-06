@@ -1,3 +1,5 @@
+'use server'
+
 import NextAuth from "next-auth";
 import bcrypt from "bcryptjs";
 import { config } from "./config";
@@ -13,7 +15,7 @@ export async function getCurrentUser() {
     return session.user;
 }
 
-export function hashPassword(password: string) {
+export async function hashPassword(password: string) {
     return bcrypt.hash(password, 10);
 }
 

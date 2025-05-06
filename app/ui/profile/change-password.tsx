@@ -3,10 +3,11 @@
 import { useState, useTransition } from "react";
 
 import PrimaryButton from "../buttons/primary-button";
+import SecondaryButton from "../buttons/secondary-button";
 import { changePassword } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
 
-export default function ChangePassword() {
+export default function ChangePassword({ id }: { id: string }) {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -86,7 +87,11 @@ export default function ChangePassword() {
                     className="min-w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
             </div>
-            <div className="flex justify-center min-w-full pt-8">
+            <div className="flex justify-center min-w-full pt-8 gap-8">
+                <SecondaryButton
+                    onClick={() => router.push(`/profile/${id}/edit`)}
+                    text="Cancel"
+                />
                 <PrimaryButton
                     type="submit"
                     text={isPending ? "Updating..." : "Change Password"}
