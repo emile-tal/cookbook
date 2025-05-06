@@ -28,10 +28,11 @@ const tableHeaders = [
 
 interface Props {
     recipes: LiteRecipe[] | null,
-    editableBooks: Book[] | null
+    editableBooks: Book[] | null,
+    savedRecipes?: string[]
 }
 
-export function RecipesDisplay({ recipes, editableBooks }: Props) {
+export function RecipesDisplay({ recipes, editableBooks, savedRecipes = [] }: Props) {
     const { displayView } = useDisplayView()
     const [sort, setSort] = useState<string>("title")
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
@@ -79,10 +80,10 @@ export function RecipesDisplay({ recipes, editableBooks }: Props) {
                             </div>
                         ))}
                     </div>
-                    <RecipesList recipes={sortedRecipes} />
+                    <RecipesList recipes={sortedRecipes} savedRecipes={savedRecipes} />
                 </>
             ) : (
-                <RecipesGrid recipes={sortedRecipes} editableBooks={editableBooks} />
+                <RecipesGrid recipes={sortedRecipes} editableBooks={editableBooks} savedRecipes={savedRecipes} />
             )}
         </div >
     )

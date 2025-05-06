@@ -510,3 +510,43 @@ export async function fetchSharedRecipesByQuery(searchQuery?: string) {
         return null;
     }
 }
+
+export async function fetchUserRecipesByQuery(searchQuery?: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        const ownedRecipes = await sql<LiteRecipe[]>`
+        WITH recipe_categories AS (
+            SELECT 
+                recipe_id,
+                array_agg(category) as categories
+            FROM recipecategories
+            GROUP BY recipe_id
+        )
+        SELECT DISTINCT
+            recipes.id, 
+            recipes.title, 
+            recipes.image_url,
+            COALESCE(users.username, 'Unknown') as username, 
+            recipes.duration,
+            recipes.recipe_yield,
+            COALESCE(rc.categories, ARRAY[]::text[]) as categories
+        FROM recipes
+        LEFT JOIN users ON recipes.user_id = users.id
+        LEFT JOIN recipe_categories rc ON recipes.id = rc.recipe_id
+        WHERE recipes.user_id = ${user.id}
+        ${searchQuery ? sql`AND (
+            recipes.title ILIKE ${`%${searchQuery}%`} OR
+            recipes.description ILIKE ${`%${searchQuery}%`} OR
+            COALESCE(users.username, 'Unknown') ILIKE ${`%${searchQuery}%`} OR
+                recipes.duration::text ILIKE ${`%${searchQuery}%`}
+            )` : sql``}
+        `;
+        return ownedRecipes || null;
+    } catch (error) {
+        console.error(`Database error: ${error}`);
+        return null;
+    }
+}

@@ -12,7 +12,7 @@ import TurnedIn from '@mui/icons-material/TurnedIn';
 import TurnedInNot from '@mui/icons-material/TurnedInNot';
 import { addSavedBook } from '@/app/lib/data/recipebooks';
 import { removeSavedBook } from '@/app/lib/data/recipebooks';
-import { sendInvitation } from '@/app/lib/data/recipebookinvitations';
+import { sendBookInvitation } from '@/app/lib/data/recipebookinvitations';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
@@ -46,11 +46,10 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
     const handleSave = (bookId: string) => {
         if (savedBooks.includes(bookId)) {
             removeSavedBook(bookId);
-            router.refresh();
         } else {
             addSavedBook(bookId);
-            router.refresh();
         }
+        router.refresh();
     }
 
     return (
@@ -108,7 +107,7 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                 onClose={() => setShowShareDialog(false)}
                 onShare={(email, message, permission) => {
                     if (selectedBook) {
-                        sendInvitation(selectedBook, email, message, permission)
+                        sendBookInvitation(selectedBook, email, message, permission)
                     }
                     setShowShareDialog(false)
                 }}
@@ -125,7 +124,7 @@ export default function BooksList({ books, savedBooks = [] }: Props) {
                     }
                 }}
                 saved={savedBooks.includes(selectedBook)}
-                saveHandler={() => handleSave(selectedBook)}
+                saveHandler={handleSave}
             />}
         </div>
     );

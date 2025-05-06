@@ -6,14 +6,19 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '../buttons/icon-button';
 import { LiteRecipe } from '@/app/types/definitions';
 import RecipeContextMenu from '@/app/components/RecipeContextMenu';
+import { TurnedIn } from '@mui/icons-material';
+import { TurnedInNot } from '@mui/icons-material';
+import { addSavedRecipe } from '@/app/lib/data/recipes';
+import { removeSavedRecipe } from '@/app/lib/data/recipes';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 interface Props {
-    recipes: LiteRecipe[] | null
+    recipes: LiteRecipe[] | null,
+    savedRecipes?: string[]
 }
 
-export default function RecipesList({ recipes }: Props) {
+export default function RecipesList({ recipes, savedRecipes = [] }: Props) {
     const router = useRouter();
     const { data: session, status } = useSession();
     const pathname = usePathname();
@@ -33,6 +38,15 @@ export default function RecipesList({ recipes }: Props) {
 
     if (status === 'loading') {
         return <div>Loading...</div>
+    }
+
+    const handleSave = (recipeId: string) => {
+        if (savedRecipes.includes(recipeId)) {
+            removeSavedRecipe(recipeId);
+        } else {
+            addSavedRecipe(recipeId);
+        }
+        router.refresh();
     }
 
     return (
@@ -56,10 +70,23 @@ export default function RecipesList({ recipes }: Props) {
                             variant="light"
                             icon={EditIcon}
                         />}
+                        <IconButton
+                            onClick={() => handleSave(recipe.id)}
+                            renderIcon={() => {
+                                return savedRecipes.includes(recipe.id) ? (
+                                    <TurnedIn className="text-primary text-base group-hover:text-lg" />
+                                ) : (
+                                    <TurnedInNot className="text-text text-base group-hover:text-lg" />
+                                )
+                            }}
+                            tooltipTitle={savedRecipes.includes(recipe.id) ? "Unsave Recipe" : "Save Recipe"}
+                            tooltipPlacement="right"
+                            variant="light"
+                        />
                     </div>
                 </div>
             ))}
-            {menuVisible && selectedRecipe && <RecipeContextMenu position={position} recipeId={selectedRecipe} onClose={() => setMenuVisible(false)} fullUrl={fullUrl} />}
+            {menuVisible && selectedRecipe && <RecipeContextMenu position={position} recipeId={selectedRecipe} onClose={() => setMenuVisible(false)} fullUrl={fullUrl} saved={savedRecipes.includes(selectedRecipe)} handleSave={handleSave} />}
         </div>
     )
 }

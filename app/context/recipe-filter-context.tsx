@@ -3,14 +3,14 @@
 import { createContext, useContext, useState } from 'react';
 
 type RecipeFilterContextType = {
-    recipeFilter: "all" | "created" | "saved" | "shared";
-    setRecipeFilter: (recipeFilter: "all" | "created" | "saved" | "shared") => void;
+    recipeFilter: "all" | "owned" | "saved" | "shared";
+    setRecipeFilter: (recipeFilter: "all" | "owned" | "saved" | "shared") => void;
 };
 
 const RecipeFilterContext = createContext<RecipeFilterContextType | undefined>(undefined);
 
 export const RecipeFilterProvider = ({ children }: { children: React.ReactNode }) => {
-    const [recipeFilter, setRecipeFilter] = useState<"all" | "created" | "saved" | "shared">("all");
+    const [recipeFilter, setRecipeFilter] = useState<"all" | "owned" | "saved" | "shared">("all");
 
     return (
         <RecipeFilterContext.Provider value={{ recipeFilter, setRecipeFilter }}>

@@ -183,9 +183,6 @@ export async function fetchSavedBooks(searchQuery?: string) {
         return null;
     }
     try {
-        const claims = JSON.stringify({ sub: user.id });
-        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
-
         const savedBooks = await sql<Book[]>`
             SELECT 
                 recipeBooks.id, 
@@ -198,9 +195,9 @@ export async function fetchSavedBooks(searchQuery?: string) {
             JOIN savedrecipebooks ON recipeBooks.id = savedrecipebooks.book_id
             JOIN users ON recipeBooks.user_id = users.id
             LEFT JOIN recipeBookRecipes ON recipeBooks.id = recipeBookRecipes.book_id
-            WHERE savedrecipebooks.user_id = ${user.id} AND (recipeBooks.is_public = true OR recipeBooks.user_id = ${user.id} OR recipeBooks.id IN (
-                SELECT book_id FROM recipebookpermissions WHERE user_id = ${user.id}
-            ))
+            WHERE recipeBooks.id IN (
+                SELECT book_id FROM savedrecipebooks WHERE user_id = ${user.id}
+            )
             ${searchQuery ? sql`AND (
                 recipeBooks.name ILIKE ${`%${searchQuery}%`} OR
                 users.username ILIKE ${`%${searchQuery}%`}

@@ -11,7 +11,7 @@ interface BookContextMenuProps {
     fullUrl: string;
     shareHandler: () => void;
     saved: boolean;
-    saveHandler: () => void;
+    saveHandler: (bookId: string) => void;
 }
 
 export default function BookContextMenu({ position, bookId, onClose, fullUrl, shareHandler, saved, saveHandler }: BookContextMenuProps) {
@@ -34,7 +34,7 @@ export default function BookContextMenu({ position, bookId, onClose, fullUrl, sh
             <ul>
                 <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => router.push(`/books/${bookId}/edit?from=${fullUrl}`)}>Edit Book</li>
                 <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={shareHandler}>Share Book</li>
-                <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={saveHandler}>{saved ? 'Unsave Book' : 'Save Book'}</li>
+                <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => saveHandler(bookId)}>{saved ? 'Unsave Book' : 'Save Book'}</li>
             </ul>
         </div>
     )

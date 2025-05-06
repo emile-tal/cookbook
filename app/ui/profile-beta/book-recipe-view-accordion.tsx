@@ -70,7 +70,7 @@ export default function BookRecipeViewAccordion({ id }: { id: string }) {
                     {filters.map((filter) => (
                         <button
                             key={filter}
-                            onClick={() => setRecipeFilter(filter as "all" | "created" | "saved" | "shared")}
+                            onClick={() => setRecipeFilter(filter as "all" | "owned" | "saved" | "shared")}
                             className={`w-full text-left px-6 py-2 text-sm hover:bg-primary/5 transition-colors border-x border-b border-gray-200 ${filter === "shared" ? "rounded-b-md" : ""} ${recipeFilter === filter ? "bg-primary/10 text-primary font-medium" : "text-gray-600"}`}
                         >
                             {filter.charAt(0).toUpperCase() + filter.slice(1)}

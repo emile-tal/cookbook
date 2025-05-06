@@ -10,13 +10,10 @@ export async function addRecipeToBook(bookId: string, recipeId: string) {
         return null;
     }
     try {
-        const claims = JSON.stringify({ sub: user.id });
-        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
-
         const canInsert = await sql`
         SELECT 1
         FROM recipebooks rb
-        LEFT JOIN permissions p ON rb.id = p.book_id
+        LEFT JOIN recipebookpermissions p ON rb.id = p.book_id
         JOIN recipes r ON r.id = ${recipeId}
         WHERE rb.id = ${bookId}
           AND (
@@ -57,13 +54,10 @@ export async function removeRecipeFromBook(bookId: string, recipeId: string) {
         return null;
     }
     try {
-        const claims = JSON.stringify({ sub: user.id });
-        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
-
         const canDelete = await sql`
         SELECT 1
         FROM recipebooks rb
-        LEFT JOIN permissions p ON rb.id = p.book_id
+        LEFT JOIN recipebookpermissions p ON rb.id = p.book_id
         WHERE rb.id = ${bookId}
           AND (
             rb.user_id = ${user.id} OR
@@ -99,10 +93,34 @@ export async function deleteRecipe(id: string) {
         return null;
     }
     try {
-        const claims = JSON.stringify({ sub: user.id });
-        await sql`SELECT set_config('request.jwt.claims', ${claims}, true)`;
-
         await sql`DELETE FROM recipes WHERE id = ${id} AND user_id = ${user.id} `;
+    } catch (error) {
+        console.error(`Database error: ${error} `);
+        return null;
+    }
+}
+
+export async function addSavedRecipe(recipeId: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        await sql`INSERT INTO savedrecipes (user_id, recipe_id) VALUES (${user.id}, ${recipeId})`;
+    } catch (error) {
+        console.error(`Database error: ${error} `);
+        return null;
+    }
+}
+
+
+export async function removeSavedRecipe(recipeId: string) {
+    const user = await getCurrentUser();
+    if (!user) {
+        return null;
+    }
+    try {
+        await sql`DELETE FROM savedrecipes WHERE user_id = ${user.id} AND recipe_id = ${recipeId}`;
     } catch (error) {
         console.error(`Database error: ${error} `);
         return null;
