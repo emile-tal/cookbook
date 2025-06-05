@@ -112,3 +112,9 @@ export type UserPersonalInfo = {
     username: string,
     user_image_url: string,
 }
+
+export type NavLink = {
+    name: string;
+    href: string;
+    icon: React.ReactNode;
+}

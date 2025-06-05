@@ -11,6 +11,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Menu from '@mui/material/Menu';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MenuIcon from '@mui/icons-material/Menu';
+import NavHamburger from './nav-hamburger';
+import { NavLink } from '../types/definitions';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/PersonOutline';
 import PrimaryButton from './buttons/primary-button';
@@ -23,13 +25,7 @@ import { getUserPublicInfo } from '../lib/data/user';
 import { poppins } from './fonts';
 import { useContainerWidth } from '../lib/customHooks';
 
-type Link = {
-    name: string;
-    href: string;
-    icon: React.ReactNode;
-}
-
-const links: Link[] = [
+const links: NavLink[] = [
     { name: 'Recipes', href: '/recipe', icon: <RestaurantIcon className='text-[rgb(30,30,30)] flex-shrink-0' /> },
     { name: 'Books', href: '/books', icon: <MenuBookIcon className='text-[rgb(30,30,30)] flex-shrink-0' /> },
     { name: 'Notifications', href: '/notifications', icon: <NotificationsIcon className='text-[rgb(30,30,30)] flex-shrink-0' /> },
@@ -98,13 +94,8 @@ export default function NavLinks({ width, searchBarWidth }: NavLinksProps) {
                 <div className='relative'>
                     <MenuIcon onClick={() => setHamburgerOpen(!hamburgerOpen)} className='hover:cursor-pointer' />
                     {hamburgerOpen && (
-                        <div className='absolute top-full right-0 bg-white shadow-lg hover:cursor-pointer'>
-                            {links.slice(visibleLinks, links.length).map((link, index) => (
-                                <div key={index} onClick={() => { router.push(link.href); setHamburgerOpen(false); }}>
-                                    {link.icon}
-                                    {link.name}
-                                </div>
-                            ))}
+                        <div className='absolute top-full right-0 mt-2 bg-white shadow-lg hover:cursor-pointer z-10 rounded-lg'>
+                            <NavHamburger links={links.slice(visibleLinks, links.length)} closeHamburger={() => setHamburgerOpen(false)} />
                         </div>
                     )}
                 </div>
