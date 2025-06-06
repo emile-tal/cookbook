@@ -11,6 +11,7 @@ import NavHamburger from './nav-hamburger';
 import { NavLink } from '../types/definitions';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/PersonOutline';
+import PrimaryButton from './buttons/primary-button';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { Session } from 'next-auth';
 import clsx from 'clsx';
@@ -78,7 +79,9 @@ export default function NavLinks({ width, searchBarWidth }: NavLinksProps) {
     return (
         <div className='flex items-center gap-4'>
             {links.slice(0, visibleLinks).map((link, index) => (
-                <button
+                link.name === 'Sign In' ? (
+                    <PrimaryButton key={index} onClick={() => router.push('/login')} type="button" text="Sign In" />
+                ) : (<button
                     key={index}
                     onClick={() => {
                         if (link.name === 'Sign Out') {
@@ -89,10 +92,10 @@ export default function NavLinks({ width, searchBarWidth }: NavLinksProps) {
                             router.push(link.href);
                         }
                     }}
-                    className={clsx('flex items-center cursor-pointer', { 'glow': pathname === link.href })}>
+                    className={clsx('flex items-center cursor-pointer', { 'glow': pathname === link.href || (link.name === 'Profile' && pathname === `/profile/${session?.user?.id}`) })}>
                     {link.name}
                 </button>
-            ))}
+                )))}
             {visibleLinks < links.length && (
                 <div className='relative'>
                     <MenuIcon onClick={() => setHamburgerOpen(!hamburgerOpen)} className='hover:cursor-pointer' />
