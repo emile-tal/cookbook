@@ -1,5 +1,5 @@
 import Loading from "../ui/loading";
-import SearchResultsContent from "../ui/search-results-content"
+import SearchResultsContent from "../ui/search/search-results-content"
 import { Suspense } from "react"
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {

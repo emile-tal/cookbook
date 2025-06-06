@@ -22,6 +22,7 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
     const router = useRouter();
     const pathname = usePathname();
     const inputRef = useRef<HTMLInputElement>(null);
+    const suggestionsRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         async function loadSuggestions() {
@@ -40,8 +41,11 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
-                setShowSuggestions(false);
+            if ((inputRef.current && !inputRef.current.contains(event.target as Node)) ||
+                (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node))) {
+                setTimeout(() => {
+                    setShowSuggestions(false);
+                }, 100);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -160,7 +164,7 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
             </div>
 
             {combinedSuggestions.length > 0 && showSuggestions && (
-                <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 min-w-full">
+                <div ref={suggestionsRef} className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 min-w-full">
                     {combinedSuggestions.map(({ term, from }, index) => (
                         <div
                             key={index}
@@ -168,7 +172,7 @@ export function SearchBar({ placeholder = 'Search...' }: SearchBarProps) {
                             className={`px-4 py-2 cursor-pointer hover:bg-gray-100 transition-colors text-base ${from === 'personal' ? 'text-purple-900' : 'text-gray-900'
                                 } ${index === selectedIndex ? 'bg-gray-200 font-semibold' : ''}`}
                             dangerouslySetInnerHTML={{ __html: highlightMatch(term) }}
-                            onClick={() => handleSuggestionClick(term)}
+                            onMouseDown={() => handleSuggestionClick(term)}
                         />
                     ))}
                 </div>

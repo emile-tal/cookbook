@@ -1,6 +1,6 @@
-import RecipesGrid from "./recipe/recipes-grid"
-import { fetchAllRecipesByQuery } from "../lib/data/recipes/fetch"
-import { fetchEditableBooks } from "../lib/data/recipebooks/fetch"
+import RecipesGrid from "../../ui/recipe/recipes-grid"
+import { fetchAllRecipesByQuery } from "../../lib/data/recipes/fetch"
+import { fetchEditableBooks } from "../../lib/data/recipebooks/fetch"
 
 export default async function SearchResultsContent({ q }: { q?: string }) {
     const [allRecipes, editableBooks] = await Promise.all([
